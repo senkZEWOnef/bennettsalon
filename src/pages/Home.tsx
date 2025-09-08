@@ -1,6 +1,22 @@
 import { Container, Row, Col, Card, Button, Carousel } from 'react-bootstrap'
+import { useEffect } from 'react'
 
 const Home = () => {
+  useEffect(() => {
+    // Force dark background on the work showcase section
+    const showcaseSection = document.querySelector('.work-showcase-section')
+    if (showcaseSection) {
+      (showcaseSection as HTMLElement).style.cssText = `
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 25%, #2c3e50 50%, #1a252f 100%) !important;
+        background-color: #2c3e50 !important;
+        min-height: 700px !important;
+        padding: 100px 0 120px 0 !important;
+        position: relative !important;
+        overflow: hidden !important;
+      `
+    }
+  }, [])
+
   const workSlideImages = [
     { src: '/images/gallery/manicures/manicure2.jpg', caption: 'Diseños Elegantes de Manicura' },
     { src: '/images/gallery/manicures/manicure3.jpg', caption: 'Arte Creativo en Uñas' },
@@ -83,13 +99,21 @@ const Home = () => {
       </section>
 
       {/* Work Showcase Carousel */}
-      <section className="work-showcase-section">
+      <section 
+        className="work-showcase-section"
+        style={{
+          background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 25%, #2c3e50 50%, #1a252f 100%)',
+          backgroundColor: '#2c3e50',
+          minHeight: '700px',
+          padding: '100px 0 120px 0'
+        }}
+      >
         <Container>
           <Row>
             <Col lg={12} className="text-center mb-4">
-              <span className="section-badge">💎 NUESTRO TRABAJO</span>
-              <h2 className="display-4 fw-bold mb-3 text-gradient-blue">Resultados que Enamoran</h2>
-              <p className="lead text-white mb-4">Cada cliente es una obra de arte. Mira lo que podemos crear para ti en Aguada, PR</p>
+              <span className="section-badge-coral">💎 NUESTRO TRABAJO</span>
+              <h2 className="display-4 fw-bold mb-3 text-white" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}>Resultados que Enamoran</h2>
+              <p className="lead text-white mb-4" style={{textShadow: '1px 1px 4px rgba(0,0,0,0.4)'}}>Cada cliente es una obra de arte. Mira lo que podemos crear para ti en Aguada, PR</p>
             </Col>
           </Row>
           <Row>
