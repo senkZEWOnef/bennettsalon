@@ -1,56 +1,49 @@
 import React from 'react'
-import { Navbar, Nav, Container } from 'react-bootstrap'
+import { Navbar, Nav } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const Navigation: React.FC = () => {
   return (
-    <Navbar expand="lg" fixed="top" className="modern-navbar">
-      <Container>
+    <Navbar expand="lg" fixed="top" className="sleek-navbar">
+      <div className="w-100 d-flex align-items-center px-4">
         <LinkContainer to="/">
-          <Navbar.Brand className="modern-brand">
-            <div className="brand-icon">💅</div>
-            <div className="brand-text">
-              <span className="brand-main">Bennett</span>
-              <span className="brand-sub">Salon de Beauté</span>
-            </div>
+          <Navbar.Brand className="sleek-brand me-auto">
+            <span className="brand-bennett">Bennett</span>
+            <span className="brand-salon">Salon de Beauté</span>
           </Navbar.Brand>
         </LinkContainer>
         
-        <Navbar.Toggle aria-controls="basic-navbar-nav" className="modern-toggler">
-          <span className="toggler-line"></span>
-          <span className="toggler-line"></span>
-          <span className="toggler-line"></span>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="sleek-toggler ms-auto">
+          <span></span>
+          <span></span>
+          <span></span>
         </Navbar.Toggle>
         
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto nav-pills">
-            <LinkContainer to="/about">
-              <Nav.Link className="nav-pill">
-                <span className="nav-icon">ℹ️</span>
-                <span className="nav-text">Acerca</span>
+        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+          <Nav className="sleek-nav">
+            <LinkContainer to="/booking">
+              <Nav.Link className="sleek-link">
+                Reservar
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/booking">
-              <Nav.Link className="nav-pill nav-pill-primary">
-                <span className="nav-icon">📅</span>
-                <span className="nav-text">Reservar</span>
+            <LinkContainer to="/about">
+              <Nav.Link className="sleek-link">
+                Reglas
               </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/hiring">
-              <Nav.Link className="nav-pill">
-                <span className="nav-icon">💼</span>
-                <span className="nav-text">Empleos</span>
+              <Nav.Link className="sleek-link">
+                Empleos
               </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/admin/login">
-              <Nav.Link className="nav-pill" style={{ opacity: 0.7, fontSize: '0.9rem' }}>
-                <span className="nav-icon">🔐</span>
-                <span className="nav-text">Admin</span>
+              <Nav.Link className="sleek-admin" title="Admin">
+                ⚙️
               </Nav.Link>
             </LinkContainer>
           </Nav>
         </Navbar.Collapse>
-      </Container>
+      </div>
     </Navbar>
   )
 }

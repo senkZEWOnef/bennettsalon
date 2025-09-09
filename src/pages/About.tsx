@@ -3,22 +3,21 @@ import { Container, Row, Col, Card } from 'react-bootstrap'
 const About = () => {
   return (
     <>
-      {/* Hero Section with About Image */}
+      {/* Hero Section with Rules Image */}
       <section className="hero-section">
         <Container>
           <Row className="align-items-center min-vh-100" style={{ paddingTop: '80px' }}>
             <Col lg={6}>
               <h1 className="display-3 fw-bold mb-4">
-                Acerca de Bennett Salon de Beauté
+                Reglas del Salón
               </h1>
               <p className="lead mb-4">
-                Bienvenida a nuestro mundo de belleza y elegancia. En Bennett Salon de Beauté, 
-                creemos que cada cliente merece sentirse hermosa, segura y consentida.
+                Para garantizar una experiencia placentera y profesional para todas nuestras clientas, 
+                por favor lee y respeta nuestras políticas del salón.
               </p>
               <p className="mb-4">
-                Fundado con una pasión por la excelencia y un compromiso de brindar servicios 
-                de belleza de la más alta calidad, nos hemos convertido en un destino confiable 
-                para quienes buscan cuidado profesional de uñas y tratamientos de belleza.
+                Estas reglas nos ayudan a mantener un ambiente cómodo, seguro y de calidad 
+                para todas nuestras visitantes en Bennett Salon de Beauté.
               </p>
             </Col>
             <Col lg={6} className="text-center">
@@ -33,15 +32,15 @@ const About = () => {
         </Container>
       </section>
 
-      {/* Our Story Section */}
+      {/* Appointment Rules Section */}
       <section className="services-section">
         <Container>
           <Row>
             <Col lg={8} className="mx-auto text-center mb-5">
-              <h2 className="display-4 fw-bold mb-4">Nuestra Historia</h2>
+              <h2 className="display-4 fw-bold mb-4">Políticas de Citas</h2>
               <p className="lead">
-                Lo que comenzó como un sueño de crear un espacio acogedor para la belleza y el autocuidado 
-                se ha convertido en un salón querido donde las clientas se vuelven familia.
+                Para brindar el mejor servicio posible, seguimos estas políticas que 
+                benefician tanto a nuestras clientas como a nuestro equipo.
               </p>
             </Col>
           </Row>
@@ -49,39 +48,40 @@ const About = () => {
             <Col md={6}>
               <Card className="salon-card">
                 <Card.Body className="p-4">
-                  <h4 className="mb-3">Nuestra Misión</h4>
-                  <p className="mb-3">
-                    Brindar servicios excepcionales de belleza en un ambiente cálido y profesional 
-                    donde cada cliente se siente valorada y se va sintiéndose más segura y hermosa 
-                    de lo que llegó.
-                  </p>
-                  <p className="mb-0">
-                    Estamos comprometidas a usar productos de alta calidad, mantener los más altos 
-                    estándares de limpieza y seguridad, y mejorar continuamente nuestras habilidades 
-                    para ofrecer las últimas tendencias y técnicas en cuidado de uñas y belleza.
-                  </p>
+                  <h4 className="mb-3">📅 Reservas y Cancelaciones</h4>
+                  <ul className="list-unstyled">
+                    <li className="mb-2">
+                      <strong>⏰ Puntualidad:</strong> Llegar 15 minutos antes de la cita para registro
+                    </li>
+                    <li className="mb-2">
+                      <strong>❌ Cancelaciones:</strong> Mínimo 24 horas de anticipación
+                    </li>
+                    <li className="mb-2">
+                      <strong>⌛ Tardanzas:</strong> Más de 15 minutos tarde puede requerir reagendar
+                    </li>
+                    <li className="mb-2">
+                      <strong>🚫 No Shows:</strong> Tres ausencias sin aviso pueden requerir depósito
+                    </li>
+                  </ul>
                 </Card.Body>
               </Card>
             </Col>
             <Col md={6}>
               <Card className="salon-card">
                 <Card.Body className="p-4">
-                  <h4 className="mb-3">¿Por Qué Elegirnos?</h4>
+                  <h4 className="mb-3">💳 Pagos y Depósitos</h4>
                   <ul className="list-unstyled">
                     <li className="mb-2">
-                      <strong>✨ Excelencia Profesional:</strong> Años de experiencia y capacitación continua
+                      <strong>💸 Formas de Pago:</strong> Efectivo, ATH Móvil, tarjetas principales
                     </li>
                     <li className="mb-2">
-                      <strong>🌟 Atención Personal:</strong> Cada cliente recibe cuidado individualizado
+                      <strong>💰 Depósitos:</strong> Pueden requerirse para servicios largos
                     </li>
                     <li className="mb-2">
-                      <strong>🧼 Estándares de Higiene:</strong> Protocolos estrictos de sanitización y seguridad
+                      <strong>💎 Propinas:</strong> Se aprecian pero no son obligatorias
                     </li>
                     <li className="mb-2">
-                      <strong>💎 Productos de Calidad:</strong> Solo las mejores marcas y materiales
-                    </li>
-                    <li className="mb-0">
-                      <strong>🏠 Ambiente Acogedor:</strong> Un entorno cómodo y relajante
+                      <strong>🧾 Precios:</strong> Sujetos a cambio, confirma al agendar
                     </li>
                   </ul>
                 </Card.Body>
@@ -91,12 +91,12 @@ const About = () => {
         </Container>
       </section>
 
-      {/* Values Section */}
+      {/* Salon Rules Section */}
       <section className="testimonials-section">
         <Container>
           <Row>
             <Col lg={12} className="text-center mb-5">
-              <h2 className="display-4 fw-bold">Nuestros Valores</h2>
+              <h2 className="display-4 fw-bold">Reglas del Salón</h2>
             </Col>
           </Row>
           <Row>
@@ -104,12 +104,12 @@ const About = () => {
               <Card className="salon-card text-center h-100">
                 <Card.Body className="p-4">
                   <div className="mb-3" style={{ fontSize: '3rem', color: '#667eea' }}>
-                    💖
+                    🧼
                   </div>
-                  <Card.Title>Pasión</Card.Title>
+                  <Card.Title>Higiene y Salud</Card.Title>
                   <Card.Text>
-                    Somos apasionadas por la belleza y nos dedicamos a ayudar a nuestras clientas 
-                    a lucir y sentirse en su mejor momento.
+                    Por favor ven con manos y pies limpios. Si tienes alguna infección o 
+                    condición de salud, informa antes de la cita para todos estar seguros.
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -118,12 +118,42 @@ const About = () => {
               <Card className="salon-card text-center h-100">
                 <Card.Body className="p-4">
                   <div className="mb-3" style={{ fontSize: '3rem', color: '#667eea' }}>
-                    🎯
+                    👶
                   </div>
-                  <Card.Title>Precisión</Card.Title>
+                  <Card.Title>Niños</Card.Title>
                   <Card.Text>
-                    Atención al detalle y precisión en cada servicio que brindamos, 
-                    garantizando resultados impecables cada vez.
+                    Los niños son bienvenidos pero deben estar supervisados en todo momento. 
+                    Por seguridad, no pueden correr o tocar equipos del salón.
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={4} className="mb-4">
+              <Card className="salon-card text-center h-100">
+                <Card.Body className="p-4">
+                  <div className="mb-3" style={{ fontSize: '3rem', color: '#667eea' }}>
+                    📱
+                  </div>
+                  <Card.Title>Teléfonos</Card.Title>
+                  <Card.Text>
+                    Mantén el teléfono en silencio o vibración durante los servicios. 
+                    Las llamadas largas pueden afectar la calidad de tu servicio.
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={4} className="mb-4">
+              <Card className="salon-card text-center h-100">
+                <Card.Body className="p-4">
+                  <div className="mb-3" style={{ fontSize: '3rem', color: '#667eea' }}>
+                    🍽️
+                  </div>
+                  <Card.Title>Comida y Bebidas</Card.Title>
+                  <Card.Text>
+                    Solo agua está permitida en el área de servicios. 
+                    Comida y otras bebidas pueden consumirse en el área de espera.
                   </Card.Text>
                 </Card.Body>
               </Card>
@@ -134,10 +164,24 @@ const About = () => {
                   <div className="mb-3" style={{ fontSize: '3rem', color: '#667eea' }}>
                     🤝
                   </div>
-                  <Card.Title>Respeto</Card.Title>
+                  <Card.Title>Respeto Mutuo</Card.Title>
                   <Card.Text>
-                    Cada cliente es tratada con respeto, cuidado y la atención individual 
-                    que merece en nuestro salón.
+                    Tratamos a todas con respeto y esperamos lo mismo. 
+                    Comportamiento ofensivo resultará en terminación del servicio.
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={4} className="mb-4">
+              <Card className="salon-card text-center h-100">
+                <Card.Body className="p-4">
+                  <div className="mb-3" style={{ fontSize: '3rem', color: '#667eea' }}>
+                    📸
+                  </div>
+                  <Card.Title>Fotografías</Card.Title>
+                  <Card.Text>
+                    Pregunta antes de tomar fotos. Respetamos la privacidad de todas 
+                    nuestras clientas y esperamos que hagas lo mismo.
                   </Card.Text>
                 </Card.Body>
               </Card>
