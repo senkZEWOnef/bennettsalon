@@ -1218,6 +1218,49 @@ section.work-showcase-section,
   opacity: 0.1;
 }
 
+/* Payment Page Styles */
+.payment-option {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.payment-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.payment-option.selected {
+  border-color: #007bff !important;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);
+}
+
+.payment-option .btn {
+  transition: all 0.3s ease;
+}
+
+.payment-option:hover .btn {
+  transform: scale(1.05);
+}
+
+/* Timer Alert Styling */
+.alert-warning {
+  border-left: 4px solid #ffc107;
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+}
+
+.alert-danger {
+  border-left: 4px solid #dc3545;
+  background: linear-gradient(90deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+}
+
+/* Booking Summary Card */
+.salon-card .row > .col-md-6 > div {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border-left: 3px solid #e94560;
+}
+
 /* Responsive Design */
 @media (max-width: 991px) {
   .sleek-navbar {
@@ -1244,6 +1287,123 @@ section.work-showcase-section,
   .sleek-admin {
     text-align: center;
     padding: 8px 15px !important;
+  }
+
+  .payment-option {
+    margin-bottom: 15px;
+  }
+}
+
+/* Admin Calendar Styles */
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dee2e6;
+}
+
+.calendar-row {
+  display: flex;
+}
+
+.calendar-cell {
+  flex: 1;
+  min-height: 80px;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  position: relative;
+}
+
+.calendar-cell:last-child {
+  border-right: none;
+}
+
+.header-cell {
+  background: #f8f9fa;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.day-cell {
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.day-cell:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.day-cell.selected {
+  background-color: rgba(0, 123, 255, 0.1);
+  border: 2px solid #007bff;
+}
+
+.day-cell.today {
+  background-color: rgba(255, 193, 7, 0.1);
+  font-weight: 600;
+}
+
+.day-cell.other-month {
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+.day-number {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.day-status {
+  margin-top: auto;
+}
+
+.time-slots {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.time-slot-row {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.time-slot-row:last-child {
+  border-bottom: none;
+}
+
+.time-slot-row .form-check {
+  margin: 0;
+}
+
+.time-slot-row .form-check-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding-left: 8px;
+}
+
+/* Calendar responsive */
+@media (max-width: 768px) {
+  .calendar-cell {
+    min-height: 60px;
+  }
+  
+  .day-cell {
+    padding: 4px;
+  }
+  
+  .day-number {
+    font-size: 0.8rem;
+  }
+  
+  .day-status .badge {
+    font-size: 0.7rem;
   }
 }
 

@@ -3,7 +3,7 @@ import { Row, Col, Card, Badge, Button, Table, Modal, Form } from 'react-bootstr
 import { useAdmin, Booking } from '../../contexts/AdminContext'
 
 const AdminBookings = () => {
-  const { bookings, updateBookingStatus } = useAdmin()
+  const { bookings, updateBookingStatus, confirmBookingManually } = useAdmin()
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showModal, setShowModal] = useState(false)
 
@@ -149,6 +149,14 @@ const AdminBookings = () => {
                 <p><strong>Servicio:</strong> {selectedBooking.service}</p>
                 <p><strong>Estado:</strong> {getStatusBadge(selectedBooking.status)}</p>
                 <p><strong>Solicitada:</strong> {selectedBooking.createdAt.toLocaleDateString('es-PR')}</p>
+                {selectedBooking.status === 'pending' && selectedBooking.paymentDeadline && (
+                  <p><strong>Límite de Pago:</strong> {
+                    new Date(selectedBooking.paymentDeadline).toLocaleString('es-PR')
+                  }</p>
+                )}
+                {selectedBooking.depositAmount && (
+                  <p><strong>Depósito Requerido:</strong> ${selectedBooking.depositAmount}</p>
+                )}
               </Col>
             </Row>
           )}
@@ -158,9 +166,12 @@ const AdminBookings = () => {
             <>
               <Button 
                 variant="success"
-                onClick={() => handleStatusUpdate(selectedBooking.id, 'confirmed')}
+                onClick={() => {
+                  confirmBookingManually(selectedBooking.id)
+                  setShowModal(false)
+                }}
               >
-                ✅ Confirmar Cita
+                ✅ Confirmar Manualmente (Sin Depósito)
               </Button>
               <Button 
                 variant="danger"

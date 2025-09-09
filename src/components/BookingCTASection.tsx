@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Button, Form, Alert, Card } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { useAdmin } from '../contexts/AdminContext'
@@ -8,6 +9,7 @@ type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 const BookingCTASection = () => {
+  const navigate = useNavigate()
   const { scheduleSettings, addBooking } = useAdmin()
   const [selectedDate, setSelectedDate] = useState<Value>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
@@ -33,7 +35,7 @@ const BookingCTASection = () => {
       const bookingDate = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
       
       if (bookingDate) {
-        addBooking({
+        const bookingId = addBooking({
           date: bookingDate,
           time: selectedTime,
           service: selectedService,
@@ -43,14 +45,25 @@ const BookingCTASection = () => {
           status: 'pending'
         })
 
-        setSelectedDate(new Date())
-        setSelectedTime('')
-        setSelectedService('')
-        setClientName('')
-        setClientEmail('')
-        setClientPhone('')
-        setShowAlert(true)
-        setTimeout(() => setShowAlert(false), 5000)
+        // Create booking object for payment page
+        const newBooking = {
+          id: bookingId,
+          date: bookingDate,
+          time: selectedTime,
+          service: selectedService,
+          clientName,
+          clientEmail,
+          clientPhone,
+          status: 'pending' as const,
+          createdAt: new Date(),
+          paymentDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
+          depositAmount: 25
+        }
+
+        // Redirect to payment page with booking data
+        navigate('/payment', { 
+          state: { booking: newBooking }
+        })
       }
     }
   }

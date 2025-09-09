@@ -10,6 +10,9 @@ export interface Booking {
   clientPhone: string
   status: 'pending' | 'confirmed' | 'cancelled'
   createdAt: Date
+  paymentDeadline?: Date
+  paymentMethod?: 'stripe' | 'ath' | 'admin_override'
+  depositAmount?: number
 }
 
 export interface GalleryImage {
@@ -20,10 +23,24 @@ export interface GalleryImage {
   uploadedAt: Date
 }
 
+export interface TimeSlot {
+  time: string // "08:00", "08:30", etc.
+  available: boolean
+}
+
+export interface DaySchedule {
+  date: string // "2024-01-15"
+  isOpen: boolean
+  timeSlots: TimeSlot[]
+}
+
 export interface ScheduleSettings {
+  // Legacy support
   availableDays: number[]
   availableHours: string[]
   blockedDates: string[]
+  // New comprehensive calendar system
+  yearSchedule: DaySchedule[]
 }
 
 interface AdminContextType {
@@ -33,11 +50,20 @@ interface AdminContextType {
   scheduleSettings: ScheduleSettings
   login: (password: string) => boolean
   logout: () => void
-  addBooking: (booking: Omit<Booking, 'id' | 'createdAt'>) => void
-  updateBookingStatus: (id: string, status: Booking['status']) => void
+  addBooking: (booking: Omit<Booking, 'id' | 'createdAt' | 'paymentDeadline'>) => string
+  updateBookingStatus: (id: string, status: Booking['status'], paymentMethod?: string) => void
+  confirmBookingManually: (id: string) => void
   addGalleryImage: (image: Omit<GalleryImage, 'id' | 'uploadedAt'>) => void
   removeGalleryImage: (id: string) => void
   updateScheduleSettings: (settings: ScheduleSettings) => void
+  cleanupExpiredBookings: () => void
+  // New calendar management methods
+  updateTimeSlot: (date: string, time: string, available: boolean) => void
+  updateDayStatus: (date: string, isOpen: boolean) => void
+  updateMultipleDays: (dates: string[], isOpen: boolean) => void
+  updateTimeSlotBulk: (dates: string[], timeSlots: string[], available: boolean) => void
+  generateDefaultSchedule: (year: number) => void
+  isTimeSlotAvailable: (date: string, time: string) => boolean
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
@@ -48,13 +74,27 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const [bookings, setBookings] = useState<Booking[]>([])
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
+  // Generate time slots from 6am to 9pm in 30-minute intervals
+  const generateTimeSlots = (): TimeSlot[] => {
+    const slots: TimeSlot[] = []
+    for (let hour = 6; hour <= 21; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        if (hour === 21 && minute > 0) break // Stop at 9:00 PM
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        slots.push({ time, available: false }) // Default to closed
+      }
+    }
+    return slots
+  }
+
   const [scheduleSettings, setScheduleSettings] = useState<ScheduleSettings>({
     availableDays: [1, 2, 3, 4, 5], // Monday to Friday
     availableHours: [
       '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
       '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
     ],
-    blockedDates: []
+    blockedDates: [],
+    yearSchedule: [] // Will be initialized in useEffect
   })
 
   useEffect(() => {
@@ -128,20 +168,53 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.removeItem('adminAuthenticated')
   }
 
-  const addBooking = (bookingData: Omit<Booking, 'id' | 'createdAt'>) => {
+  const addBooking = (bookingData: Omit<Booking, 'id' | 'createdAt' | 'paymentDeadline'>): string => {
+    const now = new Date()
+    const paymentDeadline = new Date(now.getTime() + 30 * 60 * 1000) // 30 minutes from now
+    
     const newBooking: Booking = {
       ...bookingData,
       id: Date.now().toString(),
-      createdAt: new Date()
+      createdAt: now,
+      paymentDeadline,
+      depositAmount: 25
     }
     setBookings(prev => [newBooking, ...prev])
+    return newBooking.id
   }
 
-  const updateBookingStatus = (id: string, status: Booking['status']) => {
+  const updateBookingStatus = (id: string, status: Booking['status'], paymentMethod?: string) => {
     setBookings(prev => 
       prev.map(booking => 
-        booking.id === id ? { ...booking, status } : booking
+        booking.id === id 
+          ? { 
+              ...booking, 
+              status,
+              paymentMethod: paymentMethod as any,
+              paymentDeadline: status === 'confirmed' ? undefined : booking.paymentDeadline
+            } 
+          : booking
       )
+    )
+  }
+
+  const confirmBookingManually = (id: string) => {
+    updateBookingStatus(id, 'confirmed', 'admin_override')
+  }
+
+  const cleanupExpiredBookings = () => {
+    const now = new Date()
+    setBookings(prev => 
+      prev.map(booking => {
+        if (
+          booking.status === 'pending' && 
+          booking.paymentDeadline && 
+          now > booking.paymentDeadline
+        ) {
+          return { ...booking, status: 'cancelled' as const }
+        }
+        return booking
+      })
     )
   }
 
@@ -162,6 +235,114 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setScheduleSettings(settings)
   }
 
+  // New calendar management methods
+  const generateDefaultSchedule = (year: number) => {
+    const schedule: DaySchedule[] = []
+    const startDate = new Date(year, 0, 1)
+    const endDate = new Date(year, 11, 31)
+    
+    for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+      const dateString = date.toISOString().split('T')[0]
+      schedule.push({
+        date: dateString,
+        isOpen: false, // Default to closed
+        timeSlots: generateTimeSlots()
+      })
+    }
+    
+    setScheduleSettings(prev => ({
+      ...prev,
+      yearSchedule: schedule
+    }))
+  }
+
+  const updateTimeSlot = (date: string, time: string, available: boolean) => {
+    setScheduleSettings(prev => ({
+      ...prev,
+      yearSchedule: prev.yearSchedule.map(day => 
+        day.date === date 
+          ? {
+              ...day,
+              timeSlots: day.timeSlots.map(slot =>
+                slot.time === time ? { ...slot, available } : slot
+              )
+            }
+          : day
+      )
+    }))
+  }
+
+  const updateDayStatus = (date: string, isOpen: boolean) => {
+    setScheduleSettings(prev => ({
+      ...prev,
+      yearSchedule: prev.yearSchedule.map(day => 
+        day.date === date 
+          ? {
+              ...day,
+              isOpen,
+              // If closing the day, make all time slots unavailable
+              timeSlots: isOpen ? day.timeSlots : day.timeSlots.map(slot => ({ ...slot, available: false }))
+            }
+          : day
+      )
+    }))
+  }
+
+  const updateMultipleDays = (dates: string[], isOpen: boolean) => {
+    setScheduleSettings(prev => ({
+      ...prev,
+      yearSchedule: prev.yearSchedule.map(day => 
+        dates.includes(day.date)
+          ? {
+              ...day,
+              isOpen,
+              timeSlots: isOpen ? day.timeSlots : day.timeSlots.map(slot => ({ ...slot, available: false }))
+            }
+          : day
+      )
+    }))
+  }
+
+  const updateTimeSlotBulk = (dates: string[], timeSlots: string[], available: boolean) => {
+    setScheduleSettings(prev => ({
+      ...prev,
+      yearSchedule: prev.yearSchedule.map(day => 
+        dates.includes(day.date)
+          ? {
+              ...day,
+              timeSlots: day.timeSlots.map(slot =>
+                timeSlots.includes(slot.time) ? { ...slot, available } : slot
+              )
+            }
+          : day
+      )
+    }))
+  }
+
+  const isTimeSlotAvailable = (date: string, time: string): boolean => {
+    const day = scheduleSettings.yearSchedule.find(d => d.date === date)
+    if (!day || !day.isOpen) return false
+    
+    const slot = day.timeSlots.find(s => s.time === time)
+    return slot?.available || false
+  }
+
+  // Automatic cleanup of expired bookings
+  useEffect(() => {
+    const interval = setInterval(() => {
+      cleanupExpiredBookings()
+    }, 60000) // Check every minute
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Initialize year schedule if empty
+  useEffect(() => {
+    if (scheduleSettings.yearSchedule.length === 0) {
+      generateDefaultSchedule(new Date().getFullYear())
+    }
+  }, [])
+
   const value: AdminContextType = {
     isAuthenticated,
     bookings,
@@ -171,9 +352,18 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     logout,
     addBooking,
     updateBookingStatus,
+    confirmBookingManually,
     addGalleryImage,
     removeGalleryImage,
-    updateScheduleSettings
+    updateScheduleSettings,
+    cleanupExpiredBookings,
+    // New calendar management methods
+    updateTimeSlot,
+    updateDayStatus,
+    updateMultipleDays,
+    updateTimeSlotBulk,
+    generateDefaultSchedule,
+    isTimeSlotAvailable
   }
 
   return (

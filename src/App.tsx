@@ -5,6 +5,7 @@ import Navigation from './components/Navigation'
 import Home from './pages/Home'
 import About from './pages/About'
 import Booking from './pages/Booking'
+import Payment from './pages/Payment'
 import Gallery from './pages/Gallery'
 import Testimonials from './pages/Testimonials'
 import Hiring from './pages/Hiring'
@@ -38,6 +39,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/booking" element={<Booking />} />
+                  <Route path="/payment" element={<Payment />} />
                   <Route path="/gallery" element={<Gallery />} />
                   <Route path="/testimonials" element={<Testimonials />} />
                   <Route path="/hiring" element={<Hiring />} />

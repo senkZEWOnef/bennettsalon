@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { useAdmin } from '../contexts/AdminContext'
@@ -8,7 +9,9 @@ type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 const Booking = () => {
-  const { scheduleSettings, addBooking } = useAdmin()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { scheduleSettings, addBooking, bookings, isTimeSlotAvailable } = useAdmin()
   const [selectedDate, setSelectedDate] = useState<Value>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [selectedService, setSelectedService] = useState<string>('')
@@ -16,6 +19,8 @@ const Booking = () => {
   const [clientEmail, setClientEmail] = useState<string>('')
   const [clientPhone, setClientPhone] = useState<string>('')
   const [showAlert, setShowAlert] = useState<boolean>(false)
+  const [alertMessage, setAlertMessage] = useState<string>('')
+  const [alertType, setAlertType] = useState<'success' | 'info' | 'warning'>('success')
 
   const services = [
     'Manicura Clásica',
@@ -26,6 +31,19 @@ const Booking = () => {
     'Tratamiento Especial'
   ]
 
+  // Handle messages from payment page redirects
+  useEffect(() => {
+    if (location.state?.message) {
+      setAlertMessage(location.state.message)
+      setAlertType(location.state.type || 'success')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 6000)
+      
+      // Clear the state
+      navigate(location.pathname, { replace: true })
+    }
+  }, [location.state, navigate, location.pathname])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -33,7 +51,7 @@ const Booking = () => {
       const bookingDate = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
       
       if (bookingDate) {
-        addBooking({
+        const bookingId = addBooking({
           date: bookingDate,
           time: selectedTime,
           service: selectedService,
@@ -43,14 +61,25 @@ const Booking = () => {
           status: 'pending'
         })
 
-        setSelectedDate(new Date())
-        setSelectedTime('')
-        setSelectedService('')
-        setClientName('')
-        setClientEmail('')
-        setClientPhone('')
-        setShowAlert(true)
-        setTimeout(() => setShowAlert(false), 5000)
+        // Create booking object for payment page
+        const newBooking = {
+          id: bookingId,
+          date: bookingDate,
+          time: selectedTime,
+          service: selectedService,
+          clientName,
+          clientEmail,
+          clientPhone,
+          status: 'pending' as const,
+          createdAt: new Date(),
+          paymentDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
+          depositAmount: 25
+        }
+
+        // Redirect to payment page with booking data
+        navigate('/payment', { 
+          state: { booking: newBooking }
+        })
       }
     }
   }
@@ -60,10 +89,45 @@ const Booking = () => {
     today.setHours(0, 0, 0, 0)
     
     const isPastDate = date < today
+    const dateString = date.toISOString().split('T')[0]
+    
+    // Check new calendar system first
+    const daySchedule = scheduleSettings.yearSchedule?.find(d => d.date === dateString)
+    if (daySchedule) {
+      return isPastDate || !daySchedule.isOpen
+    }
+    
+    // Fallback to legacy system
     const isUnavailableDay = !scheduleSettings.availableDays.includes(date.getDay())
-    const isBlockedDate = scheduleSettings.blockedDates.includes(date.toISOString().split('T')[0])
+    const isBlockedDate = scheduleSettings.blockedDates.includes(dateString)
     
     return isPastDate || isUnavailableDay || isBlockedDate
+  }
+
+  // Get available hours for selected date
+  const getAvailableHours = () => {
+    if (!selectedDate) return []
+    
+    const date = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
+    if (!date) return []
+    
+    const dateString = date.toISOString().split('T')[0]
+    const daySchedule = scheduleSettings.yearSchedule?.find(d => d.date === dateString)
+    
+    if (daySchedule && daySchedule.isOpen) {
+      // Use new calendar system - convert 24h to 12h format
+      return daySchedule.timeSlots
+        .filter(slot => slot.available)
+        .map(slot => {
+          const [hours, minutes] = slot.time.split(':').map(Number)
+          const period = hours >= 12 ? 'PM' : 'AM'
+          const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
+          return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
+        })
+    }
+    
+    // Fallback to legacy system
+    return scheduleSettings.availableHours
   }
 
   return (
@@ -74,8 +138,8 @@ const Booking = () => {
           <h1 className="display-4 fw-bold text-center mb-5">📅 Reserva tu Cita</h1>
           
           {showAlert && (
-            <Alert variant="success" className="mb-4">
-              <strong>¡Solicitud de Cita Enviada!</strong> Te contactaremos pronto para confirmar tu cita.
+            <Alert variant={alertType} className="mb-4">
+              <div dangerouslySetInnerHTML={{ __html: alertMessage }} />
             </Alert>
           )}
 
@@ -125,7 +189,7 @@ const Booking = () => {
                         required
                       >
                         <option value="">Elige una hora...</option>
-                        {scheduleSettings.availableHours.map((time) => (
+                        {getAvailableHours().map((time) => (
                           <option key={time} value={time}>
                             {time}
                           </option>

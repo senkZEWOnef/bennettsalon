@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import AdminBookings from '../components/admin/AdminBookings'
 import AdminGallery from '../components/admin/AdminGallery'
 import AdminSchedule from '../components/admin/AdminSchedule'
+import AdminCalendar from '../components/admin/AdminCalendar'
 
-type AdminTab = 'overview' | 'bookings' | 'gallery' | 'schedule'
+type AdminTab = 'overview' | 'bookings' | 'gallery' | 'schedule' | 'calendar'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
@@ -29,6 +30,8 @@ const AdminDashboard = () => {
         return <AdminGallery />
       case 'schedule':
         return <AdminSchedule />
+      case 'calendar':
+        return <AdminCalendar />
       default:
         return (
           <Row>
@@ -126,6 +129,13 @@ const AdminDashboard = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   ⏰ Horarios
+                </Nav.Link>
+                <Nav.Link 
+                  className={activeTab === 'calendar' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
+                  onClick={() => setActiveTab('calendar')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  📅 Calendar Completo
                 </Nav.Link>
               </Nav>
 

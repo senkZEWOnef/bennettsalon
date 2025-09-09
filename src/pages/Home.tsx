@@ -49,7 +49,7 @@ const Home = () => {
                   es una experiencia única de elegancia y cuidado personal.
                 </p>
                 <div className="hero-buttons">
-                  <Button href="#booking-section" size="lg" className="btn-coral-primary me-3">
+                  <Button href="/booking" size="lg" className="btn-coral-primary me-3">
                     📅 Reservar Cita
                   </Button>
                   <Button href="#gallery-section" variant="outline-light" size="lg">
