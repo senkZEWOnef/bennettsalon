@@ -1,20 +1,8 @@
 import { Container, Row, Col, Card } from 'react-bootstrap'
+import { useAdmin } from '../contexts/AdminContext'
 
 const Gallery = () => {
-  const galleryImages = [
-    // Manicuras
-    { id: 1, src: '/images/gallery/manicures/manicure2.jpg', title: 'Diseño Elegante de Manicura', category: 'Manicura' },
-    { id: 2, src: '/images/gallery/manicures/manicure3.jpg', title: 'Arte Creativo en Uñas', category: 'Manicura' },
-    { id: 3, src: '/images/gallery/manicures/manicure4.jpg', title: 'Acabado Profesional', category: 'Manicura' },
-    { id: 4, src: '/images/gallery/manicures/manicure5.jpg', title: 'Combinación de Colores Elegante', category: 'Manicura' },
-    { id: 5, src: '/images/gallery/manicures/manicureclassic.jpg', title: 'Manicura Francesa Clásica', category: 'Manicura' },
-    { id: 6, src: '/images/gallery/manicures/manicureengaged.jpg', title: 'Diseño para Ocasión Especial', category: 'Manicura' },
-    { id: 7, src: '/images/gallery/manicures/manicurefresh.jpg', title: 'Look Fresco de Verano', category: 'Manicura' },
-    // Pedicuras  
-    { id: 8, src: '/images/gallery/pedicures/pedicure-classic.JPG', title: 'Pedicura Clásica', category: 'Pedicura' },
-    { id: 9, src: '/images/gallery/pedicures/pedicure.JPG', title: 'Pedicura Profesional', category: 'Pedicura' },
-    { id: 10, src: '/images/gallery/pedicures/pedicureRed.JPG', title: 'Pedicura Roja Vibrante', category: 'Pedicura' }
-  ]
+  const { galleryImages } = useAdmin()
 
   return (
     <Container style={{ paddingTop: '120px', paddingBottom: '60px' }}>
@@ -37,12 +25,16 @@ const Gallery = () => {
                   alt={image.title}
                   className="w-100 h-100"
                   style={{ objectFit: 'cover' }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBObyBEaXNwb25pYmxlPC90ZXh0Pgo8L3N2Zz4K'
+                  }}
                 />
               </div>
               <Card.Body>
                 <Card.Title>{image.title}</Card.Title>
                 <Card.Text>
-                  <span className={`badge ${image.category === 'Manicura' ? 'bg-primary' : 'bg-secondary'}`}>
+                  <span className={`badge ${image.category === 'Manicura' ? 'bg-primary' : image.category === 'Pedicura' ? 'bg-secondary' : 'bg-warning'}`}>
                     {image.category}
                   </span>
                 </Card.Text>

@@ -1,5 +1,6 @@
 import { Container, Row, Col, Card, Button, Carousel } from 'react-bootstrap'
 import { useEffect } from 'react'
+import BookingCTASection from '../components/BookingCTASection'
 
 const Home = () => {
   useEffect(() => {
@@ -48,10 +49,10 @@ const Home = () => {
                   es una experiencia única de elegancia y cuidado personal.
                 </p>
                 <div className="hero-buttons">
-                  <Button href="/booking" size="lg" className="btn-coral-primary me-3">
+                  <Button href="#booking-section" size="lg" className="btn-coral-primary me-3">
                     📅 Reservar Cita
                   </Button>
-                  <Button href="/gallery" variant="outline-light" size="lg">
+                  <Button href="#gallery-section" variant="outline-light" size="lg">
                     🖼️ Ver Galería
                   </Button>
                 </div>
@@ -93,60 +94,6 @@ const Home = () => {
                   />
                 </div>
               </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* Work Showcase Carousel */}
-      <section 
-        className="work-showcase-section"
-        style={{
-          background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 25%, #2c3e50 50%, #1a252f 100%)',
-          backgroundColor: '#2c3e50',
-          minHeight: '700px',
-          padding: '100px 0 120px 0'
-        }}
-      >
-        <Container>
-          <Row>
-            <Col lg={12} className="text-center mb-4">
-              <span className="section-badge-coral">💎 NUESTRO TRABAJO</span>
-              <h2 className="display-4 fw-bold mb-3 text-white" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}>Resultados que Enamoran</h2>
-              <p className="lead text-white mb-4" style={{textShadow: '1px 1px 4px rgba(0,0,0,0.4)'}}>Cada cliente es una obra de arte. Mira lo que podemos crear para ti en Aguada, PR</p>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={11} className="mx-auto">
-              <div className="carousel-container">
-                <Carousel className="work-carousel" indicators={true} controls={true} interval={4000}>
-                  {workSlideImages.map((image, index) => (
-                    <Carousel.Item key={index}>
-                      <div className="carousel-image-wrapper">
-                        <img
-                          className="d-block w-100"
-                          src={image.src}
-                          alt={image.caption}
-                          style={{ height: '600px', objectFit: 'cover', borderRadius: '25px' }}
-                        />
-                        <div className="carousel-overlay">
-                          <div className="carousel-content">
-                            <h3 className="fw-bold mb-3">{image.caption}</h3>
-                            <p className="mb-0">✨ Trabajo profesional realizado en Bennett Salon de Beauté - Aguada, PR</p>
-                          </div>
-                        </div>
-                      </div>
-                    </Carousel.Item>
-                  ))}
-                </Carousel>
-              </div>
-            </Col>
-          </Row>
-          <Row className="mt-4">
-            <Col className="text-center">
-              <Button href="/gallery" size="lg" className="btn-gradient-purple px-5">
-                🖼️ VER TODA LA GALERÍA
-              </Button>
             </Col>
           </Row>
         </Container>
@@ -219,6 +166,58 @@ const Home = () => {
         </Container>
       </section>
 
+      {/* Booking CTA Section */}
+      <BookingCTASection />
+
+      {/* Work Showcase Carousel */}
+      <section 
+        id="gallery-section"
+        className="work-showcase-section"
+        style={{
+          background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 25%, #2c3e50 50%, #1a252f 100%)',
+          backgroundColor: '#2c3e50',
+          minHeight: '700px',
+          padding: '100px 0 120px 0'
+        }}
+      >
+        <Container>
+          <Row>
+            <Col lg={12} className="text-center mb-4">
+              <span className="section-badge-coral">💎 NUESTRO TRABAJO</span>
+              <h2 className="display-4 fw-bold mb-3 text-white" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}>Resultados que Enamoran</h2>
+              <p className="lead text-white mb-4" style={{textShadow: '1px 1px 4px rgba(0,0,0,0.4)'}}>Cada cliente es una obra de arte. Mira lo que podemos crear para ti en Aguada, PR</p>
+            </Col>
+          </Row>
+          <Row>
+            <Col lg={11} className="mx-auto">
+              <div className="carousel-container" style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/gallery'}>
+                <Carousel className="work-carousel" indicators={true} controls={true} interval={4000}>
+                  {workSlideImages.map((image, index) => (
+                    <Carousel.Item key={index}>
+                      <div className="carousel-image-wrapper">
+                        <img
+                          className="d-block w-100"
+                          src={image.src}
+                          alt={image.caption}
+                          style={{ height: '600px', objectFit: 'cover', borderRadius: '25px' }}
+                        />
+                        <div className="carousel-overlay">
+                          <div className="carousel-content">
+                            <h3 className="fw-bold mb-3">{image.caption}</h3>
+                            <p className="mb-0">✨ Trabajo profesional realizado en Bennett Salon de Beauté - Aguada, PR</p>
+                            <p className="mt-2"><small>👆 Haz clic para ver toda la galería</small></p>
+                          </div>
+                        </div>
+                      </div>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
       {/* Location & Contact Section */}
       <section className="location-section">
         <Container>
@@ -269,45 +268,6 @@ const Home = () => {
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Bennett Salon de Beauté - Aguada, PR"
                 ></iframe>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* CTA Section */}
-      <section className="cta-section">
-        <Container>
-          <Row className="text-center">
-            <Col lg={10} className="mx-auto">
-              <div className="cta-content">
-                <span className="section-badge-pink">✨ LISTA PARA BRILLAR</span>
-                <h2 className="display-4 fw-bold mb-3 text-white" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}>
-                  ¡Tu Transformación Te Espera!
-                </h2>
-                <p className="lead mb-4 text-white" style={{fontSize: '1.2rem', fontWeight: 500, textShadow: '1px 1px 4px rgba(0,0,0,0.4)'}}>
-                  Únete a las cientos de clientas satisfechas en Aguada, PR. 
-                  Reserva tu cita hoy y descubre por qué somos el salón #1 de la zona.
-                </p>
-                <div className="d-flex flex-wrap justify-content-center gap-4 mb-5">
-                  <Button href="/booking" size="lg" className="btn-gradient-pink px-5 py-3">
-                    📅 RESERVAR AHORA
-                  </Button>
-                  <Button href="/testimonials" size="lg" className="btn-outline-white px-5 py-3">
-                    ⭐ VER TESTIMONIOS
-                  </Button>
-                </div>
-                <div className="social-proof">
-                  <p className="mb-3 text-white">🌟 Síguenos y mantente al día con nuestros trabajos</p>
-                  <div className="d-flex justify-content-center gap-4">
-                    <a href="https://instagram.com/bennettsalondebeaute" target="_blank" className="btn btn-social-lg btn-social-insta-lg">
-                      <i className="fab fa-instagram"></i> Instagram
-                    </a>
-                    <a href="https://facebook.com/bennettsalondebeaute" target="_blank" className="btn btn-social-lg btn-social-fb-lg">
-                      <i className="fab fa-facebook"></i> Facebook
-                    </a>
-                  </div>
-                </div>
               </div>
             </Col>
           </Row>

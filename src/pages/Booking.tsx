@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
+import { useAdmin } from '../contexts/AdminContext'
 
 type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 const Booking = () => {
+  const { scheduleSettings, addBooking } = useAdmin()
   const [selectedDate, setSelectedDate] = useState<Value>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [selectedService, setSelectedService] = useState<string>('')
@@ -14,11 +16,6 @@ const Booking = () => {
   const [clientEmail, setClientEmail] = useState<string>('')
   const [clientPhone, setClientPhone] = useState<string>('')
   const [showAlert, setShowAlert] = useState<boolean>(false)
-
-  const timeSlots = [
-    '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
-  ]
 
   const services = [
     'Manicura Clásica',
@@ -31,17 +28,42 @@ const Booking = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 5000)
-  }
+    
+    if (selectedDate && selectedTime && selectedService && clientName && clientEmail && clientPhone) {
+      const bookingDate = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
+      
+      if (bookingDate) {
+        addBooking({
+          date: bookingDate,
+          time: selectedTime,
+          service: selectedService,
+          clientName,
+          clientEmail,
+          clientPhone,
+          status: 'pending'
+        })
 
-  const isWeekend = (date: Date) => {
-    const day = date.getDay()
-    return day === 0 || day === 6
+        setSelectedDate(new Date())
+        setSelectedTime('')
+        setSelectedService('')
+        setClientName('')
+        setClientEmail('')
+        setClientPhone('')
+        setShowAlert(true)
+        setTimeout(() => setShowAlert(false), 5000)
+      }
+    }
   }
 
   const tileDisabled = ({ date }: { date: Date }) => {
-    return date < new Date() || isWeekend(date)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const isPastDate = date < today
+    const isUnavailableDay = !scheduleSettings.availableDays.includes(date.getDay())
+    const isBlockedDate = scheduleSettings.blockedDates.includes(date.toISOString().split('T')[0])
+    
+    return isPastDate || isUnavailableDay || isBlockedDate
   }
 
   return (
@@ -70,7 +92,7 @@ const Booking = () => {
                         className="w-100"
                       />
                       <small className="text-muted mt-2 d-block">
-                        * Los fines de semana no están disponibles. Las fechas pasadas están deshabilitadas.
+                        * Solo se muestran fechas disponibles según la configuración del salón.
                       </small>
                     </div>
                   </Col>
@@ -102,7 +124,7 @@ const Booking = () => {
                         required
                       >
                         <option value="">Elige una hora...</option>
-                        {timeSlots.map((time) => (
+                        {scheduleSettings.availableHours.map((time) => (
                           <option key={time} value={time}>
                             {time}
                           </option>

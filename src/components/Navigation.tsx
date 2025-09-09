@@ -24,12 +24,6 @@ const Navigation: React.FC = () => {
         
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto nav-pills">
-            <LinkContainer to="/">
-              <Nav.Link className="nav-pill">
-                <span className="nav-icon">🏠</span>
-                <span className="nav-text">Inicio</span>
-              </Nav.Link>
-            </LinkContainer>
             <LinkContainer to="/about">
               <Nav.Link className="nav-pill">
                 <span className="nav-icon">ℹ️</span>
@@ -42,22 +36,16 @@ const Navigation: React.FC = () => {
                 <span className="nav-text">Reservar</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/gallery">
-              <Nav.Link className="nav-pill">
-                <span className="nav-icon">🖼️</span>
-                <span className="nav-text">Galería</span>
-              </Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/testimonials">
-              <Nav.Link className="nav-pill">
-                <span className="nav-icon">⭐</span>
-                <span className="nav-text">Testimonios</span>
-              </Nav.Link>
-            </LinkContainer>
             <LinkContainer to="/hiring">
               <Nav.Link className="nav-pill">
                 <span className="nav-icon">💼</span>
                 <span className="nav-text">Empleos</span>
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/admin/login">
+              <Nav.Link className="nav-pill" style={{ opacity: 0.7, fontSize: '0.9rem' }}>
+                <span className="nav-icon">🔐</span>
+                <span className="nav-text">Admin</span>
               </Nav.Link>
             </LinkContainer>
           </Nav>
