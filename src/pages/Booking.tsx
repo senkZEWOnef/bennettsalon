@@ -67,7 +67,8 @@ const Booking = () => {
   }
 
   return (
-    <Container style={{ paddingTop: '120px', paddingBottom: '60px' }}>
+    <section className="services-section" style={{ minHeight: '100vh' }}>
+      <Container style={{ paddingTop: '120px', paddingBottom: '60px' }}>
       <Row>
         <Col lg={8} className="mx-auto">
           <h1 className="display-4 fw-bold text-center mb-5">📅 Reserva tu Cita</h1>
@@ -219,7 +220,8 @@ const Booking = () => {
           </Card>
         </Col>
       </Row>
-    </Container>
+      </Container>
+    </section>
   )
 }
 

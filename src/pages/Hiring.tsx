@@ -43,7 +43,8 @@ const Hiring = () => {
   }
 
   return (
-    <Container style={{ paddingTop: '120px', paddingBottom: '60px' }}>
+    <section className="services-section" style={{ minHeight: '100vh' }}>
+      <Container style={{ paddingTop: '120px', paddingBottom: '60px' }}>
       <Row>
         <Col lg={12} className="text-center mb-5">
           <h1 className="display-4 fw-bold">Únete a Nuestro Equipo</h1>
@@ -229,7 +230,8 @@ const Hiring = () => {
           </Card>
         </Col>
       </Row>
-    </Container>
+      </Container>
+    </section>
   )
 }
 
