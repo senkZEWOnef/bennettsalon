@@ -73,10 +73,45 @@ const BookingCTASection = () => {
     today.setHours(0, 0, 0, 0)
     
     const isPastDate = date < today
+    const dateString = date.toISOString().split('T')[0]
+    
+    // Check new calendar system first
+    const daySchedule = scheduleSettings.yearSchedule?.find(d => d.date === dateString)
+    if (daySchedule) {
+      return isPastDate || !daySchedule.isOpen
+    }
+    
+    // Fallback to legacy system
     const isUnavailableDay = !scheduleSettings.availableDays.includes(date.getDay())
-    const isBlockedDate = scheduleSettings.blockedDates.includes(date.toISOString().split('T')[0])
+    const isBlockedDate = scheduleSettings.blockedDates.includes(dateString)
     
     return isPastDate || isUnavailableDay || isBlockedDate
+  }
+
+  // Get available hours for selected date
+  const getAvailableHours = () => {
+    if (!selectedDate) return []
+    
+    const date = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
+    if (!date) return []
+    
+    const dateString = date.toISOString().split('T')[0]
+    const daySchedule = scheduleSettings.yearSchedule?.find(d => d.date === dateString)
+    
+    if (daySchedule && daySchedule.isOpen) {
+      // Use new calendar system - convert 24h to 12h format
+      return daySchedule.timeSlots
+        .filter(slot => slot.available)
+        .map(slot => {
+          const [hours, minutes] = slot.time.split(':').map(Number)
+          const period = hours >= 12 ? 'PM' : 'AM'
+          const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
+          return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
+        })
+    }
+    
+    // Fallback to legacy system
+    return scheduleSettings.availableHours
   }
 
   return (
@@ -86,10 +121,10 @@ const BookingCTASection = () => {
           <Col lg={10} className="mx-auto">
             <div className="cta-content">
               <span className="section-badge-pink">✨ LISTA PARA BRILLAR</span>
-              <h2 className="display-4 fw-bold mb-3 text-white" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.5)'}}>
+              <h2 className="display-4 fw-bold mb-3 text-dark" style={{textShadow: '2px 2px 4px rgba(255,255,255,0.8)'}}>
                 ¡Tu Transformación Te Espera!
               </h2>
-              <p className="lead mb-4 text-white" style={{fontSize: '1.2rem', fontWeight: 500, textShadow: '1px 1px 4px rgba(0,0,0,0.4)'}}>
+              <p className="lead mb-4 text-dark" style={{fontSize: '1.2rem', fontWeight: 500, textShadow: '1px 1px 2px rgba(255,255,255,0.6)'}}>
                 Únete a las cientos de clientas satisfechas en Aguada, PR. 
                 Reserva tu cita hoy y descubre por qué somos el salón #1 de la zona.
               </p>
@@ -152,7 +187,7 @@ const BookingCTASection = () => {
                           required
                         >
                           <option value="">Elige una hora...</option>
-                          {scheduleSettings.availableHours.map((time) => (
+                          {getAvailableHours().map((time) => (
                             <option key={time} value={time}>
                               {time}
                             </option>
@@ -217,7 +252,7 @@ const BookingCTASection = () => {
         <Row className="mt-5">
           <Col className="text-center">
             <div className="social-proof">
-              <p className="mb-3 text-white">🌟 Síguenos y mantente al día con nuestros trabajos</p>
+              <p className="mb-3 text-dark" style={{textShadow: '1px 1px 2px rgba(255,255,255,0.6)'}}>🌟 Síguenos y mantente al día con nuestros trabajos</p>
               <div className="d-flex justify-content-center gap-4">
                 <a href="https://instagram.com/bennettsalondebeaute" target="_blank" className="btn btn-social-lg btn-social-insta-lg">
                   <i className="fab fa-instagram"></i> Instagram

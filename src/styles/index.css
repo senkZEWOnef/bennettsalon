@@ -781,9 +781,25 @@ section.work-showcase-section,
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
   padding: 70px 0;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 60%, rgba(255,255,255,0.05) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+  background-size: 100% 100%;
+  z-index: 1;
 }
 
 .cta-content {
