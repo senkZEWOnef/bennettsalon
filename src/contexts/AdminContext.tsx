@@ -81,7 +81,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       for (let minute = 0; minute < 60; minute += 30) {
         if (hour === 21 && minute > 0) break // Stop at 9:00 PM
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-        slots.push({ time, available: false }) // Default to closed
+        slots.push({ time, available: true }) // Default to open
       }
     }
     return slots
@@ -243,9 +243,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
       const dateString = date.toISOString().split('T')[0]
+      const dayOfWeek = date.getDay()
+      
       schedule.push({
         date: dateString,
-        isOpen: false, // Default to closed
+        isOpen: true, // Default to open
         timeSlots: generateTimeSlots()
       })
     }
@@ -280,8 +282,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           ? {
               ...day,
               isOpen,
-              // If closing the day, make all time slots unavailable
-              timeSlots: isOpen ? day.timeSlots : day.timeSlots.map(slot => ({ ...slot, available: false }))
+              // If closing the day, make all time slots unavailable. If opening, make them all available
+              timeSlots: day.timeSlots.map(slot => ({ ...slot, available: isOpen }))
             }
           : day
       )
@@ -296,7 +298,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           ? {
               ...day,
               isOpen,
-              timeSlots: isOpen ? day.timeSlots : day.timeSlots.map(slot => ({ ...slot, available: false }))
+              // When changing day status, set all time slots to match the day status
+              timeSlots: day.timeSlots.map(slot => ({ ...slot, available: isOpen }))
             }
           : day
       )
@@ -340,6 +343,17 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (scheduleSettings.yearSchedule.length === 0) {
       generateDefaultSchedule(new Date().getFullYear())
+    }
+  }, [])
+
+  // Clear existing schedule data to apply new defaults (run once)
+  useEffect(() => {
+    const hasResetSchedule = localStorage.getItem('hasResetToOpenDefault')
+    if (!hasResetSchedule) {
+      // Clear existing schedule and regenerate with new defaults
+      localStorage.removeItem('adminSchedule')
+      generateDefaultSchedule(new Date().getFullYear())
+      localStorage.setItem('hasResetToOpenDefault', 'true')
     }
   }, [])
 
