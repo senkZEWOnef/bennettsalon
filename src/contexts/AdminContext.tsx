@@ -243,7 +243,6 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
       const dateString = date.toISOString().split('T')[0]
-      const dayOfWeek = date.getDay()
       
       schedule.push({
         date: dateString,
