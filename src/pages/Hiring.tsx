@@ -169,6 +169,11 @@ const Hiring = () => {
                   <small className="text-muted">
                     Formatos aceptados: PDF, DOC, DOCX (Tamaño máx: 5MB)
                   </small>
+                  {resume && (
+                    <small className="text-success d-block">
+                      ✓ Archivo seleccionado: {resume.name}
+                    </small>
+                  )}
                 </Form.Group>
 
                 <Form.Group className="mb-4">

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react'
-import { Container, Row, Col, Card, Button, Form, Modal, Alert, ButtonGroup, Badge } from 'react-bootstrap'
+import { useState, useMemo } from 'react'
+import { Container, Row, Col, Card, Button, Form, Modal, ButtonGroup, Badge } from 'react-bootstrap'
 import { useAdmin } from '../../contexts/AdminContext'
 
 const AdminCalendar = () => {
@@ -9,7 +9,7 @@ const AdminCalendar = () => {
     updateDayStatus, 
     updateMultipleDays, 
     updateTimeSlotBulk,
-    generateDefaultSchedule 
+    
   } = useAdmin()
 
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0])
@@ -37,7 +37,6 @@ const AdminCalendar = () => {
     const year = currentMonth.getFullYear()
     const month = currentMonth.getMonth()
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
     const startDate = new Date(firstDay)
     startDate.setDate(startDate.getDate() - firstDay.getDay())
     

@@ -1,6 +1,6 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AdminProvider } from './contexts/AdminContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import Navigation from './components/Navigation'
 import Home from './pages/Home'
 import About from './pages/About'
@@ -16,8 +16,9 @@ import Footer from './components/Footer'
 
 function App() {
   return (
-    <AdminProvider>
-      <Router>
+    <ErrorBoundary>
+      <AdminProvider>
+        <Router>
         <div className="App">
           <Routes>
             {/* Admin Routes */}
@@ -49,8 +50,9 @@ function App() {
             } />
           </Routes>
         </div>
-      </Router>
-    </AdminProvider>
+        </Router>
+      </AdminProvider>
+    </ErrorBoundary>
   )
 }
 

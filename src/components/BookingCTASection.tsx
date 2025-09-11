@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Container, Row, Col, Button, Form, Alert, Card } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar'
@@ -17,7 +17,7 @@ const BookingCTASection = () => {
   const [clientName, setClientName] = useState<string>('')
   const [clientEmail, setClientEmail] = useState<string>('')
   const [clientPhone, setClientPhone] = useState<string>('')
-  const [showAlert, setShowAlert] = useState<boolean>(false)
+  const [showAlert] = useState<boolean>(false)
 
   const services = [
     'Manicura Clásica',

@@ -11,7 +11,7 @@ type Value = ValuePiece | [ValuePiece, ValuePiece]
 const Booking = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { scheduleSettings, addBooking, bookings, isTimeSlotAvailable } = useAdmin()
+  const { scheduleSettings, addBooking } = useAdmin()
   const [selectedDate, setSelectedDate] = useState<Value>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [selectedService, setSelectedService] = useState<string>('')

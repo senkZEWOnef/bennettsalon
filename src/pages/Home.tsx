@@ -1,4 +1,4 @@
-import { Container, Row, Col, Card, Button, Carousel } from "react-bootstrap";
+import { Container, Row, Col, Button, Carousel } from "react-bootstrap";
 import { useEffect } from "react";
 import BookingCTASection from "../components/BookingCTASection";
 
@@ -378,7 +378,7 @@ const Home = () => {
                     borderRadius: "25px",
                     boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
                   }}
-                  allowFullScreen=""
+                  allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Bennett Salon de Beauté - Aguada, PR"
