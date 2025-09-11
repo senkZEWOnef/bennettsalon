@@ -1,8 +1,11 @@
 import { Container, Row, Col, Button, Carousel } from "react-bootstrap";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import BookingCTASection from "../components/BookingCTASection";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Force dark background on the work showcase section
     const showcaseSection = document.querySelector(".work-showcase-section");
@@ -81,7 +84,7 @@ const Home = () => {
                 </p>
                 <div className="hero-buttons">
                   <Button
-                    href="/booking"
+                    onClick={() => navigate('/booking')}
                     size="lg"
                     className="btn-coral-primary me-3 mb-2"
                   >
