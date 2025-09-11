@@ -68,7 +68,7 @@ const Home = () => {
         <div className="hero-background-overlay"></div>
         <Container className="position-relative hero-container">
           <Row className="min-vh-100 align-items-center">
-            <Col lg={6}>
+            <Col lg={6} className="order-2 order-lg-1">
               <div className="hero-content-welcome">
                 <h1 className="hero-welcome-title">
                   Bienvenidos a Bennett Salon de Beauté
@@ -83,7 +83,7 @@ const Home = () => {
                   <Button
                     href="/booking"
                     size="lg"
-                    className="btn-coral-primary me-3"
+                    className="btn-coral-primary me-3 mb-2"
                   >
                     📅 Reservar Cita
                   </Button>
@@ -91,13 +91,14 @@ const Home = () => {
                     href="#gallery-section"
                     variant="outline-light"
                     size="lg"
+                    className="mb-2"
                   >
                     🖼️ Ver Galería
                   </Button>
                 </div>
                 <div className="hero-social-links">
                   <p className="mb-2">Síguenos en redes sociales:</p>
-                  <div className="social-buttons d-flex gap-3">
+                  <div className="social-buttons d-flex gap-3 justify-content-center justify-content-lg-start">
                     <a
                       href="https://instagram.com/bennettsalondebeaute"
                       target="_blank"
@@ -116,7 +117,7 @@ const Home = () => {
                 </div>
               </div>
             </Col>
-            <Col lg={6} className="text-center">
+            <Col lg={6} className="text-center order-1 order-lg-2">
               <div className="hero-image-container">
                 <div className="floating-card card-1">
                   <img

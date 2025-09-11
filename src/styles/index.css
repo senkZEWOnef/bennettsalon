@@ -1502,48 +1502,127 @@ section.work-showcase-section,
 
 /* Mobile Carousel */
 @media (max-width: 768px) {
+  .work-showcase-section {
+    padding: 60px 0 80px 0 !important;
+    min-height: 500px !important;
+  }
+  
+  .carousel-container {
+    max-width: 100%;
+    margin: 0 10px;
+  }
+  
+  .work-carousel {
+    border-radius: 20px;
+  }
+  
   .carousel-item img {
-    height: 250px !important;
+    height: 300px !important;
     object-fit: cover;
+    border-radius: 20px;
   }
   
-  .carousel-caption {
-    bottom: 10px;
-    padding: 10px;
+  .carousel-overlay {
+    padding: 25px 20px !important;
   }
   
-  .carousel-caption h3 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+  .carousel-content h3 {
+    font-size: 1.4rem !important;
+    margin-bottom: 10px;
+    line-height: 1.3;
   }
   
-  .carousel-caption p {
-    font-size: 0.9rem;
-    margin: 0;
+  .carousel-content p {
+    font-size: 0.9rem !important;
+    margin: 5px 0;
+    line-height: 1.4;
+  }
+  
+  .carousel-content p small {
+    font-size: 0.8rem !important;
+  }
+  
+  /* Mobile carousel controls */
+  .work-carousel .carousel-control-prev,
+  .work-carousel .carousel-control-next {
+    width: 45px !important;
+    height: 45px !important;
+  }
+  
+  .work-carousel .carousel-control-prev {
+    left: 10px !important;
+  }
+  
+  .work-carousel .carousel-control-next {
+    right: 10px !important;
+  }
+  
+  .work-carousel .carousel-control-prev-icon,
+  .work-carousel .carousel-control-next-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  .work-carousel .carousel-indicators {
+    bottom: 10px !important;
+  }
+  
+  .work-carousel .carousel-indicators button {
+    width: 10px !important;
+    height: 10px !important;
+    margin: 0 3px !important;
   }
 }
 
 /* Mobile Booking Form */
 @media (max-width: 768px) {
+  .cta-section {
+    padding: 50px 0 !important;
+  }
+  
   .booking-calendar {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 auto;
   }
   
   .react-calendar {
     width: 100% !important;
     border: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
   
   .react-calendar__tile {
-    padding: 8px 4px !important;
+    padding: 12px 4px !important;
     font-size: 0.8rem;
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background-color: #e94560 !important;
+    color: white !important;
+  }
+  
+  .react-calendar__tile--active {
+    background: linear-gradient(135deg, #e94560 0%, #ff6b87 100%) !important;
+    color: white !important;
   }
   
   .react-calendar__navigation button {
-    min-width: 35px;
+    min-width: 40px;
     font-size: 0.9rem;
+    padding: 8px !important;
+  }
+  
+  .react-calendar__month-view__weekdays {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
   }
   
   .cta-section .container {
@@ -1551,16 +1630,35 @@ section.work-showcase-section,
   }
   
   .cta-content h2 {
-    font-size: 2rem !important;
+    font-size: 2.2rem !important;
+    text-align: center;
   }
   
   .cta-content p {
     font-size: 1rem !important;
+    text-align: center;
   }
   
   .salon-card {
-    margin: 20px 10px !important;
+    margin: 20px 5px !important;
     border-radius: 15px !important;
+  }
+  
+  .salon-card .card-body {
+    padding: 20px !important;
+  }
+  
+  /* Stack calendar and form on mobile */
+  .salon-card .row {
+    flex-direction: column;
+  }
+  
+  .salon-card .col-lg-6 {
+    margin-bottom: 30px;
+  }
+  
+  .salon-card .col-lg-6:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -1689,25 +1787,73 @@ section.work-showcase-section,
 @media (max-width: 768px) {
   .form-control,
   .form-select {
-    padding: 12px 15px;
-    font-size: 1rem; /* Prevent zoom on iOS */
+    padding: 16px 20px !important;
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    border-radius: 10px !important;
+    border: 2px solid #dee2e6 !important;
+    transition: all 0.3s ease;
+    min-height: 50px;
+  }
+  
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #e94560 !important;
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.15) !important;
+    transform: translateY(-1px);
   }
   
   .form-label {
-    font-size: 0.9rem;
+    font-size: 1rem !important;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    color: #333;
   }
   
   .btn {
-    padding: 12px 20px;
-    font-size: 1rem;
-    border-radius: 8px;
+    padding: 16px 24px !important;
+    font-size: 1.05rem !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    min-height: 50px;
+    border: none !important;
+    transition: all 0.3s ease !important;
   }
   
   .btn-lg {
-    padding: 15px 25px;
-    font-size: 1.1rem;
+    padding: 18px 30px !important;
+    font-size: 1.1rem !important;
+    min-height: 56px !important;
+  }
+  
+  /* Better tap targets for mobile buttons */
+  .btn-gradient-pink,
+  .btn-gradient-purple,
+  .btn-gradient-orange {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .btn-gradient-pink:active,
+  .btn-gradient-purple:active,
+  .btn-gradient-orange:active {
+    transform: translateY(1px) scale(0.98) !important;
+  }
+  
+  /* Social buttons mobile optimization */
+  .btn-social-lg {
+    padding: 15px 25px !important;
+    font-size: 1rem !important;
+    border-radius: 12px !important;
+    margin: 8px 4px !important;
+    min-height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .social-buttons .btn-social {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 1.5rem !important;
   }
 }
 
@@ -1787,18 +1933,74 @@ section.work-showcase-section,
 
 /* Mobile-specific improvements for floating cards */
 @media (max-width: 768px) {
-  .hero-images .floating-card {
-    display: none; /* Hide floating cards on mobile for cleaner look */
+  .hero-image-container {
+    height: 300px !important;
+    margin-top: 40px;
+  }
+  
+  .floating-card {
+    width: 70px !important;
+    height: 70px !important;
+    border-radius: 15px !important;
+    border: 3px solid rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  .card-1 {
+    top: 10px !important;
+    left: 10px !important;
+  }
+  
+  .card-2 {
+    top: 80px !important;
+    right: 10px !important;
+  }
+  
+  .card-3 {
+    bottom: 10px !important;
+    left: 20px !important;
+  }
+  
+  .card-4, .card-5 {
+    display: none; /* Hide the smaller cards on mobile */
   }
   
   .main-hero-image {
-    max-width: 100% !important;
+    max-width: 250px !important;
+    margin: 0 auto;
   }
   
   .elegant-hero-section .container,
   .hero-section .container {
     padding-left: 20px;
     padding-right: 20px;
+  }
+  
+  .hero-welcome-title {
+    font-size: 2.2rem !important;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .hero-welcome-subtitle {
+    font-size: 1.1rem !important;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .hero-buttons {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .hero-buttons .btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0 !important;
+    font-size: 1rem;
+  }
+  
+  .hero-social-links {
+    text-align: center;
   }
 }
 
@@ -1827,12 +2029,68 @@ section.work-showcase-section,
   }
   
   .react-calendar__tile {
-    padding: 6px 2px !important;
-    font-size: 0.7rem !important;
+    padding: 8px 2px !important;
+    font-size: 0.75rem !important;
+    min-height: 35px !important;
   }
   
   .react-calendar__navigation button {
-    min-width: 30px !important;
-    font-size: 0.8rem !important;
+    min-width: 35px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  /* Very small screen optimizations */
+  .hero-welcome-title {
+    font-size: 1.8rem !important;
+  }
+  
+  .hero-welcome-subtitle {
+    font-size: 1rem !important;
+  }
+  
+  .carousel-content h3 {
+    font-size: 1.2rem !important;
+  }
+  
+  .carousel-content p {
+    font-size: 0.85rem !important;
+  }
+  
+  .btn {
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+  }
+  
+  .form-control,
+  .form-select {
+    padding: 14px 16px !important;
+  }
+}
+
+/* Landscape phone optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .elegant-hero-section,
+  .hero-section {
+    min-height: 60vh !important;
+    padding: 40px 0 !important;
+  }
+  
+  .work-showcase-section {
+    min-height: 400px !important;
+    padding: 40px 0 60px 0 !important;
+  }
+  
+  .carousel-item img {
+    height: 250px !important;
+  }
+}
+
+/* High DPI mobile screens */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+  .floating-card img,
+  .carousel-item img,
+  .main-hero-image img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 }
