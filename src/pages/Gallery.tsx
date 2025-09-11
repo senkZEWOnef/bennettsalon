@@ -1,8 +1,13 @@
 import { Container, Row, Col, Card } from 'react-bootstrap'
+import { useEffect } from 'react'
 import { useAdmin } from '../contexts/AdminContext'
 
 const Gallery = () => {
   const { galleryImages } = useAdmin()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <Container style={{ paddingTop: '120px', paddingBottom: '60px' }}>
