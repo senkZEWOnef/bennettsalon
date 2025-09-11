@@ -1427,3 +1427,412 @@ section.work-showcase-section,
 .navbar-scrolled {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 50%, rgba(240, 147, 251, 0.95) 100%);
 }
+
+/* MOBILE RESPONSIVENESS IMPROVEMENTS */
+
+/* Mobile Navigation */
+@media (max-width: 991px) {
+  .sleek-navbar {
+    padding: 5px 0;
+  }
+  
+  .sleek-brand {
+    margin-right: 10px !important;
+  }
+  
+  .brand-bennett {
+    font-size: 1.4rem;
+  }
+  
+  .brand-salon {
+    font-size: 0.7rem;
+  }
+  
+  .sleek-nav {
+    background: rgba(26, 26, 26, 0.98);
+    border-radius: 8px;
+    margin-top: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+  }
+  
+  .sleek-link {
+    padding: 15px 20px !important;
+    margin: 5px 0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .sleek-link:hover {
+    background: linear-gradient(45deg, #e94560, #ff6b87);
+    color: white !important;
+    transform: translateX(5px);
+  }
+}
+
+/* Mobile Hero Sections */
+@media (max-width: 768px) {
+  .elegant-hero-section,
+  .hero-section {
+    padding: 80px 0 40px 0;
+    min-height: 70vh;
+    background-attachment: scroll !important; /* Fix parallax on mobile */
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.2;
+  }
+  
+  .hero-content .lead {
+    font-size: 1.1rem !important;
+    margin-bottom: 30px;
+  }
+  
+  .hero-content .btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile Carousel */
+@media (max-width: 768px) {
+  .carousel-item img {
+    height: 250px !important;
+    object-fit: cover;
+  }
+  
+  .carousel-caption {
+    bottom: 10px;
+    padding: 10px;
+  }
+  
+  .carousel-caption h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+  
+  .carousel-caption p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}
+
+/* Mobile Booking Form */
+@media (max-width: 768px) {
+  .booking-calendar {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .react-calendar {
+    width: 100% !important;
+    border: none;
+    font-size: 0.9rem;
+  }
+  
+  .react-calendar__tile {
+    padding: 8px 4px !important;
+    font-size: 0.8rem;
+  }
+  
+  .react-calendar__navigation button {
+    min-width: 35px;
+    font-size: 0.9rem;
+  }
+  
+  .cta-section .container {
+    padding: 0 15px;
+  }
+  
+  .cta-content h2 {
+    font-size: 2rem !important;
+  }
+  
+  .cta-content p {
+    font-size: 1rem !important;
+  }
+  
+  .salon-card {
+    margin: 20px 10px !important;
+    border-radius: 15px !important;
+  }
+}
+
+/* Mobile Gallery */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  
+  .gallery-item {
+    height: 150px !important;
+    border-radius: 8px;
+  }
+  
+  .gallery-item img {
+    border-radius: 8px;
+  }
+}
+
+/* Mobile Testimonials */
+@media (max-width: 768px) {
+  .testimonial-card {
+    margin: 0 10px 30px 10px;
+    padding: 20px !important;
+  }
+  
+  .testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  .testimonial-author {
+    font-size: 0.9rem;
+  }
+  
+  .testimonial-rating {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile Services Section */
+@media (max-width: 768px) {
+  .services-section {
+    padding: 60px 0 !important;
+  }
+  
+  .services-section h2 {
+    font-size: 2.2rem !important;
+    margin-bottom: 30px;
+  }
+  
+  .service-card {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .service-card h4 {
+    font-size: 1.3rem;
+  }
+  
+  .service-card p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile Footer */
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 0 20px 0;
+    text-align: center;
+  }
+  
+  .footer .row > div {
+    margin-bottom: 30px;
+  }
+  
+  .footer h5 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  
+  .footer p,
+  .footer a {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .social-links {
+    justify-content: center !important;
+    gap: 15px;
+  }
+  
+  .social-links a {
+    width: 45px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile Admin Dashboard */
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 20px 0;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .admin-nav .nav-link {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .admin-card {
+    margin-bottom: 20px;
+  }
+  
+  .table-responsive {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile Form Improvements */
+@media (max-width: 768px) {
+  .form-control,
+  .form-select {
+    padding: 12px 15px;
+    font-size: 1rem; /* Prevent zoom on iOS */
+  }
+  
+  .form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  
+  .btn-lg {
+    padding: 15px 25px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile Modal Improvements */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 10px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-footer {
+    padding: 15px 20px;
+    flex-wrap: wrap;
+  }
+  
+  .modal-footer .btn {
+    flex: 1;
+    margin: 5px;
+  }
+}
+
+/* Touch Improvements */
+@media (hover: none) and (pointer: coarse) {
+  .btn,
+  .nav-link,
+  .card {
+    transition: none; /* Remove hover effects on touch devices */
+  }
+  
+  .btn:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Fix text selection on mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    -webkit-touch-callout: none;
+  }
+  
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: default;
+  }
+}
+
+/* Ensure proper spacing on all mobile sizes */
+@media (max-width: 480px) {
+  .container,
+  .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .row {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+  
+  .row > * {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  h1 { font-size: 1.8rem !important; }
+  h2 { font-size: 1.6rem !important; }
+  h3 { font-size: 1.4rem !important; }
+  h4 { font-size: 1.2rem !important; }
+  h5 { font-size: 1.1rem !important; }
+}
+
+/* Mobile-specific improvements for floating cards */
+@media (max-width: 768px) {
+  .hero-images .floating-card {
+    display: none; /* Hide floating cards on mobile for cleaner look */
+  }
+  
+  .main-hero-image {
+    max-width: 100% !important;
+  }
+  
+  .elegant-hero-section .container,
+  .hero-section .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Improve tap targets for mobile */
+@media (max-width: 768px) {
+  .navbar-toggler {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .nav-link {
+    min-height: 44px;
+    line-height: 44px;
+  }
+}
+
+/* Fix calendar on very small screens */
+@media (max-width: 375px) {
+  .react-calendar {
+    font-size: 0.8rem !important;
+  }
+  
+  .react-calendar__tile {
+    padding: 6px 2px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  .react-calendar__navigation button {
+    min-width: 30px !important;
+    font-size: 0.8rem !important;
+  }
+}

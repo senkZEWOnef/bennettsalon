@@ -17,7 +17,7 @@ const Gallery = () => {
 
       <Row>
         {galleryImages.map((image) => (
-          <Col md={4} key={image.id} className="mb-4">
+          <Col sm={6} md={4} lg={3} key={image.id} className="mb-4">
             <Card className="salon-card h-100">
               <div style={{ height: '250px', overflow: 'hidden', borderRadius: '15px 15px 0 0' }}>
                 <img 

@@ -145,7 +145,7 @@ const BookingCTASection = () => {
               <Card.Body className="p-4">
                 <Form onSubmit={handleSubmit}>
                   <Row>
-                    <Col md={6}>
+                    <Col lg={6} className="mb-4">
                       <h5 className="mb-3 text-center">📅 Selecciona tu Fecha</h5>
                       <div className="d-flex justify-content-center mb-4">
                         <Calendar
@@ -160,7 +160,7 @@ const BookingCTASection = () => {
                       </small>
                     </Col>
 
-                    <Col md={6}>
+                    <Col lg={6}>
                       <h5 className="mb-3">✨ Detalles de tu Cita</h5>
                       
                       <Form.Group className="mb-3">
