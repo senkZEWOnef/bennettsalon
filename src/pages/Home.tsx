@@ -285,7 +285,7 @@ const Home = () => {
               <div
                 className="carousel-container"
                 style={{ cursor: "pointer" }}
-                onClick={() => (window.location.href = "/gallery")}
+                onClick={() => navigate('/gallery')}
               >
                 <Carousel
                   className="work-carousel"
