@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
             <p className="mb-2">
               <strong>🇵🇷 Orgullosamente sirviendo a Puerto Rico 🇵🇷</strong>
             </p>
-            <p className="mb-0">&copy; 2024 Bennett Salon de Beauté. Todos los derechos reservados.</p>
+            <p className="mb-0">&copy; {new Date().getFullYear()} Bennett Salon de Beauté. Todos los derechos reservados.</p>
           </Col>
         </Row>
       </Container>

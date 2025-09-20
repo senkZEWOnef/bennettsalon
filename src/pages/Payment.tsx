@@ -110,7 +110,7 @@ const Payment = () => {
     if (!window.ATHM_Checkout || !booking) return
 
     const config = {
-      publicToken: "sandbox", // Replace with actual public token in production
+      publicToken: process.env.VITE_ATHM_BUSINESS_TOKEN || "sandbox", // Replace with actual ATH Móvil business token
       timeout: 600, // 10 minutes timeout
       theme: "btn",
       lang: "es",

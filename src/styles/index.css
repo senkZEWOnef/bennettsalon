@@ -27,9 +27,9 @@ body {
   bottom: 0;
   background: linear-gradient(
     135deg, 
-    rgba(0, 0, 0, 0.4) 0%, 
-    rgba(0, 0, 0, 0.2) 50%, 
-    rgba(0, 0, 0, 0.3) 100%
+    rgba(0, 0, 0, 0.2) 0%, 
+    rgba(0, 0, 0, 0.1) 50%, 
+    rgba(0, 0, 0, 0.15) 100%
   );
   z-index: 1;
 }
@@ -805,6 +805,43 @@ section.work-showcase-section,
 .cta-content {
   position: relative;
   z-index: 10;
+}
+
+/* Fix for booking form interactivity */
+.cta-section .container,
+.cta-section .row,
+.cta-section .col,
+.cta-section .salon-card,
+.cta-section .card-body,
+.cta-section form,
+.cta-section .form-control,
+.cta-section .form-select,
+.cta-section .btn,
+.cta-section .react-calendar,
+.cta-section .booking-calendar {
+  position: relative;
+  z-index: 20;
+}
+
+.cta-section .salon-card {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: none !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure all interactive elements are clickable */
+.cta-section button,
+.cta-section select,
+.cta-section input,
+.cta-section .btn,
+.cta-section .form-control,
+.cta-section .form-select,
+.cta-section .react-calendar__tile,
+.cta-section .react-calendar__navigation__arrow,
+.cta-section .react-calendar__navigation__label {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: auto !important;
 }
 
 /* Enhanced Services Section */
@@ -1875,6 +1912,55 @@ section.work-showcase-section,
   .modal-footer .btn {
     flex: 1;
     margin: 5px;
+  }
+}
+
+/* Additional Mobile Improvements */
+@media (max-width: 576px) {
+  .hero-welcome-title {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 20px;
+  }
+  
+  .hero-welcome-subtitle {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 25px;
+  }
+  
+  .btn {
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+    border-radius: 8px !important;
+    min-height: 48px; /* Better touch targets */
+  }
+  
+  .floating-card {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .main-hero-image img {
+    max-height: 280px !important;
+    object-fit: cover;
+  }
+  
+  .contact-item {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+  
+  .work-showcase-section .display-4 {
+    font-size: 2rem !important;
+  }
+  
+  .services-main-title {
+    font-size: 2rem !important;
+  }
+  
+  .elegant-service-title {
+    font-size: 1.4rem !important;
   }
 }
 

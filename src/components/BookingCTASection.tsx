@@ -17,7 +17,9 @@ const BookingCTASection = () => {
   const [clientName, setClientName] = useState<string>('')
   const [clientEmail, setClientEmail] = useState<string>('')
   const [clientPhone, setClientPhone] = useState<string>('')
-  const [showAlert] = useState<boolean>(false)
+  const [showAlert, setShowAlert] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [validationErrors, setValidationErrors] = useState<string[]>([])
 
   const services = [
     'Manicura Clásica',
@@ -28,10 +30,39 @@ const BookingCTASection = () => {
     'Tratamiento Especial'
   ]
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    setValidationErrors([])
     
-    if (selectedDate && selectedTime && selectedService && clientName && clientEmail && clientPhone) {
+    // Validation
+    const errors: string[] = []
+    if (!selectedDate) errors.push('Por favor selecciona una fecha')
+    if (!selectedService) errors.push('Por favor selecciona un servicio')
+    if (!selectedTime) errors.push('Por favor selecciona una hora')
+    if (!clientName.trim()) errors.push('Por favor ingresa tu nombre')
+    if (!clientEmail.trim()) errors.push('Por favor ingresa tu email')
+    if (!clientPhone.trim()) errors.push('Por favor ingresa tu teléfono')
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (clientEmail.trim() && !emailRegex.test(clientEmail.trim())) {
+      errors.push('Por favor ingresa un email válido')
+    }
+    
+    // Phone validation
+    const phoneRegex = /^[\d\s\-\(\)\+]{10,}$/
+    if (clientPhone.trim() && !phoneRegex.test(clientPhone.trim())) {
+      errors.push('Por favor ingresa un teléfono válido')
+    }
+    
+    if (errors.length > 0) {
+      setValidationErrors(errors)
+      setIsSubmitting(false)
+      return
+    }
+    
+    try {
       const bookingDate = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
       
       if (bookingDate) {
@@ -39,9 +70,9 @@ const BookingCTASection = () => {
           date: bookingDate,
           time: selectedTime,
           service: selectedService,
-          clientName,
-          clientEmail,
-          clientPhone,
+          clientName: clientName.trim(),
+          clientEmail: clientEmail.trim(),
+          clientPhone: clientPhone.trim(),
           status: 'pending'
         })
 
@@ -51,20 +82,29 @@ const BookingCTASection = () => {
           date: bookingDate,
           time: selectedTime,
           service: selectedService,
-          clientName,
-          clientEmail,
-          clientPhone,
+          clientName: clientName.trim(),
+          clientEmail: clientEmail.trim(),
+          clientPhone: clientPhone.trim(),
           status: 'pending' as const,
           createdAt: new Date(),
           paymentDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
           depositAmount: 25
         }
 
-        // Redirect to payment page with booking data
-        navigate('/payment', { 
-          state: { booking: newBooking }
-        })
+        setShowAlert(true)
+        
+        // Redirect to payment page with booking data after a short delay
+        setTimeout(() => {
+          navigate('/payment', { 
+            state: { booking: newBooking }
+          })
+        }, 1500)
       }
+    } catch (error) {
+      console.error('Error creating booking:', error)
+      setValidationErrors(['Error al crear la reserva. Por favor intenta de nuevo.'])
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -137,7 +177,18 @@ const BookingCTASection = () => {
           <Col lg={10}>
             {showAlert && (
               <Alert variant="success" className="mb-4">
-                <strong>¡Solicitud de Cita Enviada!</strong> Te contactaremos pronto para confirmar tu cita.
+                <strong>¡Solicitud de Cita Enviada!</strong> Redirigiendo al pago para confirmar tu cita...
+              </Alert>
+            )}
+            
+            {validationErrors.length > 0 && (
+              <Alert variant="danger" className="mb-4">
+                <strong>Por favor corrige los siguientes errores:</strong>
+                <ul className="mb-0 mt-2">
+                  {validationErrors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
               </Alert>
             )}
             
@@ -237,8 +288,24 @@ const BookingCTASection = () => {
                         type="submit" 
                         className="btn-gradient-pink w-100" 
                         size="lg"
+                        disabled={isSubmitting}
+                        style={{
+                          background: isSubmitting 
+                            ? 'linear-gradient(135deg, #999 0%, #666 100%)' 
+                            : 'linear-gradient(135deg, #ff6b87 0%, #ff8a80 100%)',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
+                        }}
                       >
-                        📞 RESERVAR MI CITA
+                        {isSubmitting ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            PROCESANDO...
+                          </>
+                        ) : (
+                          '📞 RESERVAR MI CITA'
+                        )}
                       </Button>
                     </Col>
                   </Row>
