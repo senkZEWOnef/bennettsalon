@@ -31,7 +31,7 @@ const Payment = () => {
   const [booking] = useState<BookingData | null>(location.state?.booking || null)
   const [timeLeft, setTimeLeft] = useState(30 * 60) // 30 minutes in seconds
   const [showCancelModal, setShowCancelModal] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'ath' | null>(null)
+  const [paymentMethod, setPaymentMethod] = useState<'ath' | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [athMobilReady, setAthMobilReady] = useState(false)
 
@@ -83,10 +83,10 @@ const Payment = () => {
   const authorizationATHM = (data: any) => {
     console.log('ATH Móvil Payment Authorized:', data)
     if (booking) {
-      updateBookingStatus(booking.id, 'confirmed')
+      updateBookingStatus(booking.id, 'confirmed', 'ath')
       navigate('/booking', {
         state: { 
-          message: '¡Pago con ATH Móvil confirmado! Tu cita ha sido reservada exitosamente.',
+          message: '🎉 ¡Pago con ATH Móvil confirmado! Tu cita ha sido reservada exitosamente. Recibirás notificaciones por WhatsApp.',
           type: 'success'
         }
       })
@@ -110,7 +110,7 @@ const Payment = () => {
     if (!window.ATHM_Checkout || !booking) return
 
     const config = {
-      publicToken: process.env.VITE_ATHM_BUSINESS_TOKEN || "sandbox", // Replace with actual ATH Móvil business token
+      publicToken: import.meta.env.VITE_ATHM_BUSINESS_TOKEN || "sandbox", // Replace with actual ATH Móvil business token
       timeout: 600, // 10 minutes timeout
       theme: "btn",
       lang: "es",
@@ -139,29 +139,18 @@ const Payment = () => {
     window.ATHM_Checkout.config(config)
   }
 
-  const handlePayment = (method: 'stripe' | 'ath') => {
-    setPaymentMethod(method)
+  const handlePayment = () => {
+    setPaymentMethod('ath')
     setIsProcessing(true)
     
-    if (method === 'ath' && window.ATHM_Checkout && athMobilReady) {
+    if (window.ATHM_Checkout && athMobilReady) {
       // Trigger ATH Móvil payment
       window.ATHM_Checkout.checkout()
-    } else if (method === 'stripe') {
-      // Simulate Stripe payment processing
-      setTimeout(() => {
-        if (booking) {
-          updateBookingStatus(booking.id, 'confirmed')
-          navigate('/booking', {
-            state: { 
-              message: '¡Pago con tarjeta confirmado! Tu cita ha sido reservada exitosamente.',
-              type: 'success'
-            }
-          })
-        }
-      }, 2000)
     } else {
       setIsProcessing(false)
       setPaymentMethod(null)
+      // Show error message if ATH Móvil is not ready
+      alert('ATH Móvil no está disponible en este momento. Por favor, intenta de nuevo en unos segundos.')
     }
   }
 
@@ -254,7 +243,7 @@ const Payment = () => {
             {/* Payment Options */}
             <Card className="salon-card mb-4">
               <Card.Body className="p-4">
-                <h3 className="mb-4">💳 Confirma tu Cita con el Depósito</h3>
+                <h3 className="mb-4">📱 Confirma tu Cita con ATH Móvil</h3>
                 
                 <div className="text-center mb-4">
                   <div className="display-6 fw-bold text-primary mb-2">
@@ -265,63 +254,90 @@ const Payment = () => {
                   </p>
                 </div>
 
-                <Row>
-                  <Col md={6} className="mb-3">
-                    <Card 
-                      className={`payment-option ${paymentMethod === 'stripe' ? 'selected' : ''}`}
-                      style={{ 
-                        cursor: isProcessing ? 'not-allowed' : 'pointer',
-                        border: paymentMethod === 'stripe' ? '2px solid #007bff' : '1px solid #ddd'
-                      }}
-                      onClick={() => !isProcessing && handlePayment('stripe')}
-                    >
-                      <Card.Body className="text-center p-4">
-                        <div className="mb-3">
-                          <div style={{ fontSize: '3rem' }}>💳</div>
-                        </div>
-                        <h5>Tarjeta de Crédito/Débito</h5>
-                        <p className="text-muted mb-3">
-                          Visa, Mastercard, American Express
-                        </p>
-                        <Button 
-                          variant={paymentMethod === 'stripe' ? 'primary' : 'outline-primary'}
-                          disabled={isProcessing}
-                          className="w-100"
-                        >
-                          {isProcessing && paymentMethod === 'stripe' ? 'Procesando...' : 'Pagar con Stripe'}
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-
-                  <Col md={6} className="mb-3">
+                <Row className="justify-content-center">
+                  <Col lg={8} md={10}>
                     <Card 
                       className={`payment-option ${paymentMethod === 'ath' ? 'selected' : ''}`}
                       style={{ 
                         cursor: (isProcessing || !athMobilReady) ? 'not-allowed' : 'pointer',
-                        border: paymentMethod === 'ath' ? '2px solid #ff6b35' : '1px solid #ddd',
-                        opacity: athMobilReady ? 1 : 0.7
+                        border: paymentMethod === 'ath' ? '3px solid #ff6b35' : '2px solid #ff6b35',
+                        opacity: athMobilReady ? 1 : 0.7,
+                        boxShadow: '0 8px 25px rgba(255, 107, 53, 0.3)'
                       }}
-                      onClick={() => !isProcessing && athMobilReady && handlePayment('ath')}
+                      onClick={() => !isProcessing && athMobilReady && handlePayment()}
                     >
-                      <Card.Body className="text-center p-4">
-                        <div className="mb-3">
-                          <div style={{ fontSize: '3rem' }}>📱</div>
+                      <Card.Body className="text-center p-5">
+                        <div className="mb-4">
+                          <div style={{ 
+                            fontSize: '5rem',
+                            background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
+                            webkitBackgroundClip: 'text',
+                            webkitTextFillColor: 'transparent',
+                            backgroundClip: 'text'
+                          }}>📱</div>
                         </div>
-                        <h5>ATH Móvil</h5>
-                        <p className="text-muted mb-3">
-                          Pago local de Puerto Rico
+                        <h3 className="mb-3" style={{ color: '#ff6b35', fontWeight: '700' }}>
+                          Paga con ATH Móvil
+                        </h3>
+                        <p className="text-muted mb-4 fs-5">
+                          El sistema de pago oficial de Puerto Rico.<br/>
+                          <strong>Rápido, seguro y confiable.</strong>
                         </p>
+                        
+                        <div className="mb-4">
+                          <div className="bg-light rounded p-3 mb-3">
+                            <h5 className="mb-2">💡 ¿Cómo funciona?</h5>
+                            <small className="text-muted">
+                              1. Presiona "Pagar Ahora"<br/>
+                              2. Se abrirá ATH Móvil en tu teléfono<br/>
+                              3. Autoriza el pago de $25<br/>
+                              4. ¡Tu cita quedará confirmada!
+                            </small>
+                          </div>
+                        </div>
+
                         <Button 
-                          variant={paymentMethod === 'ath' ? 'warning' : 'outline-warning'}
+                          variant="warning"
                           disabled={isProcessing || !athMobilReady}
-                          className="w-100"
+                          className="w-100 py-3"
+                          style={{
+                            background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
+                            border: 'none',
+                            borderRadius: '15px',
+                            fontSize: '1.2rem',
+                            fontWeight: '700',
+                            boxShadow: '0 5px 15px rgba(255, 107, 53, 0.4)',
+                            color: 'white'
+                          }}
+                          onClick={handlePayment}
                         >
-                          {isProcessing && paymentMethod === 'ath' ? 'Procesando...' : 
-                           !athMobilReady ? 'Cargando ATH Móvil...' : 'Pagar con ATH Móvil'}
+                          {isProcessing && paymentMethod === 'ath' ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                              Procesando Pago...
+                            </>
+                          ) : !athMobilReady ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                              Cargando ATH Móvil...
+                            </>
+                          ) : (
+                            <>
+                              💰 Pagar $25 con ATH Móvil
+                            </>
+                          )}
                         </Button>
+                        
                         {/* ATH Móvil Button Container */}
                         <div id="ATHMovil_Checkout_Button_payment" style={{ display: 'none' }}></div>
+                        
+                        {athMobilReady && (
+                          <div className="mt-3">
+                            <small className="text-success">
+                              ✅ ATH Móvil listo para procesar tu pago
+                            </small>
+                          </div>
+                        )}
                       </Card.Body>
                     </Card>
                   </Col>
@@ -343,12 +359,35 @@ const Payment = () => {
             <Card className="salon-card">
               <Card.Body className="p-4">
                 <h5>ℹ️ Información Importante</h5>
-                <ul className="mb-0">
-                  <li>El depósito se aplicará al costo total de tu servicio</li>
-                  <li>Tienes 30 minutos para completar el pago</li>
-                  <li>Una vez confirmada, recibirás una notificación por email</li>
-                  <li>Para cambios o cancelaciones, contacta al salón directamente</li>
-                </ul>
+                <div className="row">
+                  <div className="col-md-6">
+                    <h6 className="text-primary">💰 Sobre el Depósito</h6>
+                    <ul className="small">
+                      <li>El depósito de <strong>$25</strong> se aplicará al costo total de tu servicio</li>
+                      <li>Solo aceptamos <strong>ATH Móvil</strong> para depósitos</li>
+                      <li>El pago es seguro y está procesado por ATH Móvil</li>
+                    </ul>
+                  </div>
+                  <div className="col-md-6">
+                    <h6 className="text-warning">⏰ Tiempo y Confirmación</h6>
+                    <ul className="small">
+                      <li>Tienes <strong>30 minutos</strong> para completar el pago</li>
+                      <li>Recibirás notificación por <strong>WhatsApp</strong> al confirmar</li>
+                      <li>Para cambios, contacta al salón con 24 horas de anticipación</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="mt-3 p-3 bg-light rounded">
+                  <h6 className="mb-2">📱 ¿No tienes ATH Móvil?</h6>
+                  <small className="text-muted">
+                    ATH Móvil es gratuito y fácil de instalar. Descárgalo desde:
+                    <br/>
+                    📱 <strong>App Store</strong> (iPhone) | 🤖 <strong>Google Play</strong> (Android)
+                    <br/>
+                    Solo necesitas tu número de teléfono y una cuenta bancaria en Puerto Rico.
+                  </small>
+                </div>
               </Card.Body>
             </Card>
           </Col>

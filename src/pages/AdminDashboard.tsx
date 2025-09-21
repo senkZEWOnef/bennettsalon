@@ -6,8 +6,10 @@ import AdminBookings from '../components/admin/AdminBookings'
 import AdminGallery from '../components/admin/AdminGallery'
 import AdminSchedule from '../components/admin/AdminSchedule'
 import AdminCalendar from '../components/admin/AdminCalendar'
+import AdminWhatsApp from '../components/admin/AdminWhatsApp'
+import AdminATHMovil from '../components/admin/AdminATHMovil'
 
-type AdminTab = 'overview' | 'bookings' | 'gallery' | 'schedule' | 'calendar'
+type AdminTab = 'overview' | 'bookings' | 'gallery' | 'schedule' | 'calendar' | 'whatsapp' | 'athm'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
@@ -32,6 +34,10 @@ const AdminDashboard = () => {
         return <AdminSchedule />
       case 'calendar':
         return <AdminCalendar />
+      case 'whatsapp':
+        return <AdminWhatsApp />
+      case 'athm':
+        return <AdminATHMovil />
       default:
         return (
           <Row>
@@ -136,6 +142,20 @@ const AdminDashboard = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   📅 Calendar Completo
+                </Nav.Link>
+                <Nav.Link 
+                  className={activeTab === 'whatsapp' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
+                  onClick={() => setActiveTab('whatsapp')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  📱 WhatsApp
+                </Nav.Link>
+                <Nav.Link 
+                  className={activeTab === 'athm' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
+                  onClick={() => setActiveTab('athm')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  💳 ATH Móvil
                 </Nav.Link>
               </Nav>
 

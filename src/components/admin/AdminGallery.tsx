@@ -3,7 +3,7 @@ import { Row, Col, Card, Button, Modal, Form, Alert, Badge } from 'react-bootstr
 import { useAdmin, GalleryImage } from '../../contexts/AdminContext'
 
 const AdminGallery = () => {
-  const { galleryImages, addGalleryImage, removeGalleryImage } = useAdmin()
+  const { galleryImages, addGalleryImage, removeGalleryImage, resetGalleryToDefaults } = useAdmin()
   const [showAddModal, setShowAddModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
@@ -65,12 +65,25 @@ const AdminGallery = () => {
           <h4>🖼️ Gestionar Galería</h4>
           <p className="text-muted mb-0">Total de imágenes: {galleryImages.length}</p>
         </div>
-        <Button 
-          variant="primary" 
-          onClick={() => setShowAddModal(true)}
-        >
-          ➕ Añadir Imagen
-        </Button>
+        <div className="d-flex gap-2">
+          <Button 
+            variant="outline-secondary" 
+            onClick={() => {
+              resetGalleryToDefaults()
+              setAlertMessage('¡Galería restablecida a imágenes por defecto!')
+              setShowAlert(true)
+              setTimeout(() => setShowAlert(false), 3000)
+            }}
+          >
+            🔄 Restablecer
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={() => setShowAddModal(true)}
+          >
+            ➕ Añadir Imagen
+          </Button>
+        </div>
       </div>
 
       <Row>

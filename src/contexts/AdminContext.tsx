@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { triggerWhatsAppNotifications } from '../utils/whatsapp'
 
 export interface Booking {
   id: string
@@ -11,7 +12,7 @@ export interface Booking {
   status: 'pending' | 'confirmed' | 'cancelled'
   createdAt: Date
   paymentDeadline?: Date
-  paymentMethod?: 'stripe' | 'ath' | 'admin_override'
+  paymentMethod?: 'ath' | 'admin_override'
   depositAmount?: number
 }
 
@@ -43,11 +44,19 @@ export interface ScheduleSettings {
   yearSchedule: DaySchedule[]
 }
 
+export interface WhatsAppSettings {
+  adminNumber: string
+  businessName: string
+  businessAddress: string
+  enableNotifications: boolean
+}
+
 interface AdminContextType {
   isAuthenticated: boolean
   bookings: Booking[]
   galleryImages: GalleryImage[]
   scheduleSettings: ScheduleSettings
+  whatsappSettings: WhatsAppSettings
   login: (password: string) => boolean
   logout: () => void
   addBooking: (booking: Omit<Booking, 'id' | 'createdAt' | 'paymentDeadline'>) => string
@@ -55,7 +64,9 @@ interface AdminContextType {
   confirmBookingManually: (id: string) => void
   addGalleryImage: (image: Omit<GalleryImage, 'id' | 'uploadedAt'>) => void
   removeGalleryImage: (id: string) => void
+  resetGalleryToDefaults: () => void
   updateScheduleSettings: (settings: ScheduleSettings) => void
+  updateWhatsAppSettings: (settings: WhatsAppSettings) => void
   cleanupExpiredBookings: () => void
   // New calendar management methods
   updateTimeSlot: (date: string, time: string, available: boolean) => void
@@ -97,6 +108,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     yearSchedule: [] // Will be initialized in useEffect
   })
 
+  const [whatsappSettings, setWhatsAppSettings] = useState<WhatsAppSettings>({
+    adminNumber: '17878682382',
+    businessName: 'Bennett Salon de Beauté',
+    businessAddress: 'Aguada, Puerto Rico',
+    enableNotifications: true
+  })
+
   useEffect(() => {
     const authStatus = localStorage.getItem('adminAuthenticated')
     if (authStatus === 'true') {
@@ -113,32 +131,43 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setBookings(parsedBookings)
     }
 
+    const defaultGallery: GalleryImage[] = [
+      { id: '1', src: '/images/gallery/manicures/manicure2.jpg', title: 'Diseño Elegante de Manicura', category: 'Manicura', uploadedAt: new Date() },
+      { id: '2', src: '/images/gallery/manicures/manicure3.jpg', title: 'Arte Creativo en Uñas', category: 'Manicura', uploadedAt: new Date() },
+      { id: '3', src: '/images/gallery/manicures/manicure4.jpg', title: 'Acabado Profesional', category: 'Manicura', uploadedAt: new Date() },
+      { id: '4', src: '/images/gallery/manicures/manicure5.jpg', title: 'Combinación de Colores Elegante', category: 'Manicura', uploadedAt: new Date() },
+      { id: '5', src: '/images/gallery/manicures/manicureclassic.jpg', title: 'Manicura Francesa Clásica', category: 'Manicura', uploadedAt: new Date() },
+      { id: '6', src: '/images/gallery/manicures/manicureengaged.jpg', title: 'Diseño para Ocasión Especial', category: 'Manicura', uploadedAt: new Date() },
+      { id: '7', src: '/images/gallery/manicures/manicurefresh.jpg', title: 'Look Fresco de Verano', category: 'Manicura', uploadedAt: new Date() },
+      { id: '8', src: '/images/gallery/pedicures/pedicure-classic.JPG', title: 'Pedicura Clásica', category: 'Pedicura', uploadedAt: new Date() },
+      { id: '9', src: '/images/gallery/pedicures/pedicure.JPG', title: 'Pedicura Profesional', category: 'Pedicura', uploadedAt: new Date() },
+      { id: '10', src: '/images/gallery/pedicures/pedicureRed.JPG', title: 'Pedicura Roja Vibrante', category: 'Pedicura', uploadedAt: new Date() }
+    ]
+
     const savedGallery = localStorage.getItem('adminGallery')
     if (savedGallery) {
       const parsedGallery = JSON.parse(savedGallery).map((image: any) => ({
         ...image,
         uploadedAt: new Date(image.uploadedAt)
       }))
-      setGalleryImages(parsedGallery)
+      // If saved gallery is empty, load default gallery
+      if (parsedGallery.length === 0) {
+        setGalleryImages(defaultGallery)
+      } else {
+        setGalleryImages(parsedGallery)
+      }
     } else {
-      const defaultGallery: GalleryImage[] = [
-        { id: '1', src: '/images/gallery/manicures/manicure2.jpg', title: 'Diseño Elegante de Manicura', category: 'Manicura', uploadedAt: new Date() },
-        { id: '2', src: '/images/gallery/manicures/manicure3.jpg', title: 'Arte Creativo en Uñas', category: 'Manicura', uploadedAt: new Date() },
-        { id: '3', src: '/images/gallery/manicures/manicure4.jpg', title: 'Acabado Profesional', category: 'Manicura', uploadedAt: new Date() },
-        { id: '4', src: '/images/gallery/manicures/manicure5.jpg', title: 'Combinación de Colores Elegante', category: 'Manicura', uploadedAt: new Date() },
-        { id: '5', src: '/images/gallery/manicures/manicureclassic.jpg', title: 'Manicura Francesa Clásica', category: 'Manicura', uploadedAt: new Date() },
-        { id: '6', src: '/images/gallery/manicures/manicureengaged.jpg', title: 'Diseño para Ocasión Especial', category: 'Manicura', uploadedAt: new Date() },
-        { id: '7', src: '/images/gallery/manicures/manicurefresh.jpg', title: 'Look Fresco de Verano', category: 'Manicura', uploadedAt: new Date() },
-        { id: '8', src: '/images/gallery/pedicures/pedicure-classic.JPG', title: 'Pedicura Clásica', category: 'Pedicura', uploadedAt: new Date() },
-        { id: '9', src: '/images/gallery/pedicures/pedicure.JPG', title: 'Pedicura Profesional', category: 'Pedicura', uploadedAt: new Date() },
-        { id: '10', src: '/images/gallery/pedicures/pedicureRed.JPG', title: 'Pedicura Roja Vibrante', category: 'Pedicura', uploadedAt: new Date() }
-      ]
       setGalleryImages(defaultGallery)
     }
 
     const savedSchedule = localStorage.getItem('adminSchedule')
     if (savedSchedule) {
       setScheduleSettings(JSON.parse(savedSchedule))
+    }
+
+    const savedWhatsApp = localStorage.getItem('adminWhatsApp')
+    if (savedWhatsApp) {
+      setWhatsAppSettings(JSON.parse(savedWhatsApp))
     }
   }, [])
 
@@ -153,6 +182,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('adminSchedule', JSON.stringify(scheduleSettings))
   }, [scheduleSettings])
+
+  useEffect(() => {
+    localStorage.setItem('adminWhatsApp', JSON.stringify(whatsappSettings))
+  }, [whatsappSettings])
 
   const login = (password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
@@ -185,16 +218,41 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateBookingStatus = (id: string, status: Booking['status'], paymentMethod?: string) => {
     setBookings(prev => 
-      prev.map(booking => 
-        booking.id === id 
-          ? { 
-              ...booking, 
-              status,
-              paymentMethod: paymentMethod as any,
-              paymentDeadline: status === 'confirmed' ? undefined : booking.paymentDeadline
-            } 
-          : booking
-      )
+      prev.map(booking => {
+        if (booking.id === id) {
+          const updatedBooking = { 
+            ...booking, 
+            status,
+            paymentMethod: paymentMethod as any,
+            paymentDeadline: status === 'confirmed' ? undefined : booking.paymentDeadline
+          }
+          
+          // Send WhatsApp notifications when booking is confirmed
+          if (status === 'confirmed' && whatsappSettings.enableNotifications) {
+            const bookingDetails = {
+              clientName: updatedBooking.clientName,
+              clientPhone: updatedBooking.clientPhone,
+              service: updatedBooking.service,
+              date: updatedBooking.date,
+              time: updatedBooking.time,
+              bookingId: updatedBooking.id
+            }
+            
+            // Trigger WhatsApp notifications with a small delay to ensure state update
+            setTimeout(() => {
+              const whatsappConfig = {
+                adminNumber: whatsappSettings.adminNumber,
+                businessName: whatsappSettings.businessName,
+                businessAddress: whatsappSettings.businessAddress
+              }
+              triggerWhatsAppNotifications(bookingDetails, whatsappConfig)
+            }, 1000)
+          }
+          
+          return updatedBooking
+        }
+        return booking
+      })
     )
   }
 
@@ -231,8 +289,28 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setGalleryImages(prev => prev.filter(image => image.id !== id))
   }
 
+  const resetGalleryToDefaults = () => {
+    const defaultGallery: GalleryImage[] = [
+      { id: '1', src: '/images/gallery/manicures/manicure2.jpg', title: 'Diseño Elegante de Manicura', category: 'Manicura', uploadedAt: new Date() },
+      { id: '2', src: '/images/gallery/manicures/manicure3.jpg', title: 'Arte Creativo en Uñas', category: 'Manicura', uploadedAt: new Date() },
+      { id: '3', src: '/images/gallery/manicures/manicure4.jpg', title: 'Acabado Profesional', category: 'Manicura', uploadedAt: new Date() },
+      { id: '4', src: '/images/gallery/manicures/manicure5.jpg', title: 'Combinación de Colores Elegante', category: 'Manicura', uploadedAt: new Date() },
+      { id: '5', src: '/images/gallery/manicures/manicureclassic.jpg', title: 'Manicura Francesa Clásica', category: 'Manicura', uploadedAt: new Date() },
+      { id: '6', src: '/images/gallery/manicures/manicureengaged.jpg', title: 'Diseño para Ocasión Especial', category: 'Manicura', uploadedAt: new Date() },
+      { id: '7', src: '/images/gallery/manicures/manicurefresh.jpg', title: 'Look Fresco de Verano', category: 'Manicura', uploadedAt: new Date() },
+      { id: '8', src: '/images/gallery/pedicures/pedicure-classic.JPG', title: 'Pedicura Clásica', category: 'Pedicura', uploadedAt: new Date() },
+      { id: '9', src: '/images/gallery/pedicures/pedicure.JPG', title: 'Pedicura Profesional', category: 'Pedicura', uploadedAt: new Date() },
+      { id: '10', src: '/images/gallery/pedicures/pedicureRed.JPG', title: 'Pedicura Roja Vibrante', category: 'Pedicura', uploadedAt: new Date() }
+    ]
+    setGalleryImages(defaultGallery)
+  }
+
   const updateScheduleSettings = (settings: ScheduleSettings) => {
     setScheduleSettings(settings)
+  }
+
+  const updateWhatsAppSettings = (settings: WhatsAppSettings) => {
+    setWhatsAppSettings(settings)
   }
 
   // New calendar management methods
@@ -361,6 +439,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     bookings,
     galleryImages,
     scheduleSettings,
+    whatsappSettings,
     login,
     logout,
     addBooking,
@@ -368,7 +447,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     confirmBookingManually,
     addGalleryImage,
     removeGalleryImage,
+    resetGalleryToDefaults,
     updateScheduleSettings,
+    updateWhatsAppSettings,
     cleanupExpiredBookings,
     // New calendar management methods
     updateTimeSlot,

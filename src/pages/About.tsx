@@ -6,27 +6,31 @@ const About = () => {
       {/* Hero Section with Rules Image */}
       <section className="hero-section">
         <Container>
-          <Row className="align-items-center min-vh-100" style={{ paddingTop: '80px' }}>
-            <Col lg={6}>
-              <h1 className="display-3 fw-bold mb-4">
+          <Row className="justify-content-center min-vh-100" style={{ paddingTop: '80px' }}>
+            <Col lg={8} className="text-center">
+              <h1 className="display-3 fw-bold mb-4" style={{ 
+                textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0px 0px 8px rgba(0,0,0,0.6)',
+                color: 'white',
+                fontWeight: '900'
+              }}>
                 Reglas del Salón
               </h1>
-              <p className="lead mb-4">
+              <p className="lead mb-4" style={{ 
+                textShadow: '1px 1px 3px rgba(0,0,0,0.8), 0px 0px 6px rgba(0,0,0,0.5)',
+                color: 'white',
+                fontWeight: '600'
+              }}>
                 Para garantizar una experiencia placentera y profesional para todas nuestras clientas, 
                 por favor lee y respeta nuestras políticas del salón.
               </p>
-              <p className="mb-4">
+              <p className="mb-4" style={{ 
+                textShadow: '1px 1px 3px rgba(0,0,0,0.8), 0px 0px 6px rgba(0,0,0,0.5)',
+                color: 'white',
+                fontWeight: '500'
+              }}>
                 Estas reglas nos ayudan a mantener un ambiente cómodo, seguro y de calidad 
                 para todas nuestras visitantes en Bennett Salon de Beauté.
               </p>
-            </Col>
-            <Col lg={6} className="text-center">
-              <img 
-                src="/images/hero/about.jpg" 
-                alt="Bennett Salon de Beauté Interior" 
-                className="img-fluid rounded-4 shadow-lg"
-                style={{ maxHeight: '500px', objectFit: 'cover' }}
-              />
             </Col>
           </Row>
         </Container>

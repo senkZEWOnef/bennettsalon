@@ -157,6 +157,13 @@ const AdminBookings = () => {
                 {selectedBooking.depositAmount && (
                   <p><strong>Depósito Requerido:</strong> ${selectedBooking.depositAmount}</p>
                 )}
+                {selectedBooking.paymentMethod && (
+                  <p><strong>Método de Pago:</strong> {
+                    selectedBooking.paymentMethod === 'ath' ? '📱 ATH Móvil' : 
+                    selectedBooking.paymentMethod === 'admin_override' ? '👩‍💼 Confirmación Manual' :
+                    selectedBooking.paymentMethod
+                  }</p>
+                )}
               </Col>
             </Row>
           )}
@@ -171,7 +178,7 @@ const AdminBookings = () => {
                   setShowModal(false)
                 }}
               >
-                ✅ Confirmar Manualmente (Sin Depósito)
+                ✅ Confirmar Manualmente
               </Button>
               <Button 
                 variant="danger"

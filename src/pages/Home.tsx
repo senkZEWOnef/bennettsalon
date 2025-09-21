@@ -180,232 +180,6 @@ const Home = () => {
         </Container>
       </section>
 
-      {/* Services Section - Elegant Carousel Style */}
-      <section style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-        padding: '100px 0',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        {/* Background Pattern */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 0%, transparent 50%)`,
-          zIndex: 1
-        }}></div>
-
-        <Container style={{ position: 'relative', zIndex: 10 }}>
-          {/* Header */}
-          <Row>
-            <Col className="text-center mb-5">
-              <h2 style={{ 
-                color: 'white', 
-                fontSize: '3.5rem', 
-                fontWeight: '800',
-                textShadow: '3px 3px 6px rgba(0,0,0,0.4)',
-                marginBottom: '20px'
-              }}>
-                ✨ Nuestros Servicios ✨
-              </h2>
-              <p style={{ 
-                color: 'rgba(255,255,255,0.9)', 
-                fontSize: '1.3rem', 
-                fontWeight: '400',
-                textShadow: '1px 1px 3px rgba(0,0,0,0.3)'
-              }}>
-                Experiencias de belleza profesionales en Aguada, Puerto Rico
-              </p>
-            </Col>
-          </Row>
-
-          {/* Services Grid - New Layout */}
-          <Row className="g-4 align-items-stretch">
-            {/* Left Column - Manicure & Pedicure */}
-            <Col lg={6}>
-              <Row className="g-3 h-100">
-                {/* Manicure */}
-                <Col md={12}>
-                  <div style={{
-                    background: 'linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%)',
-                    borderRadius: '25px',
-                    padding: '25px',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    backdropFilter: 'blur(10px)'
-                  }}>
-                    <Row className="align-items-center">
-                      <Col md={4} className="text-center">
-                        <div style={{ 
-                          background: 'rgba(255,255,255,0.9)', 
-                          borderRadius: '15px', 
-                          padding: '15px',
-                          marginBottom: '15px'
-                        }}>
-                          <span style={{ fontSize: '3rem', display: 'block' }}>💅</span>
-                          <h5 style={{ color: '#ff6b87', fontWeight: '700', margin: 0 }}>MANICURAS</h5>
-                        </div>
-                      </Col>
-                      <Col md={8}>
-                        <p style={{ color: 'white', fontWeight: '600', fontSize: '1rem', margin: 0, textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
-                          Manicuras clásicas, en gel, diseños personalizados y nail art profesional para todas las ocasiones.
-                        </p>
-                      </Col>
-                    </Row>
-                    <div className="mt-3">
-                      <img 
-                        src="/images/gallery/manicures/manicure2.jpg" 
-                        alt="Manicuras" 
-                        style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '15px' }}
-                      />
-                    </div>
-                  </div>
-                </Col>
-
-                {/* Pedicure */}
-                <Col md={12}>
-                  <div style={{
-                    background: 'linear-gradient(45deg, #a8edea 0%, #fed6e3 100%)',
-                    borderRadius: '25px',
-                    padding: '25px',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    backdropFilter: 'blur(10px)'
-                  }}>
-                    <Row className="align-items-center">
-                      <Col md={4} className="text-center">
-                        <div style={{ 
-                          background: 'rgba(255,255,255,0.9)', 
-                          borderRadius: '15px', 
-                          padding: '15px',
-                          marginBottom: '15px'
-                        }}>
-                          <span style={{ fontSize: '3rem', display: 'block' }}>🦶</span>
-                          <h5 style={{ color: '#4ecdc4', fontWeight: '700', margin: 0 }}>PEDICURAS</h5>
-                        </div>
-                      </Col>
-                      <Col md={8}>
-                        <p style={{ color: 'white', fontWeight: '600', fontSize: '1rem', margin: 0, textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
-                          Pedicuras relajantes, spa para pies y tratamientos especiales para la salud y belleza de tus pies.
-                        </p>
-                      </Col>
-                    </Row>
-                    <div className="mt-3">
-                      <img 
-                        src="/images/gallery/pedicures/pedicureRed.JPG" 
-                        alt="Pedicuras" 
-                        style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '15px' }}
-                      />
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-            </Col>
-
-            {/* Right Column - Combos & Onyfix */}
-            <Col lg={6}>
-              <Row className="g-3 h-100">
-                {/* Combos */}
-                <Col md={12}>
-                  <div style={{
-                    background: 'linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%)',
-                    borderRadius: '25px',
-                    padding: '25px',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    backdropFilter: 'blur(10px)'
-                  }}>
-                    <Row className="align-items-center">
-                      <Col md={4} className="text-center">
-                        <div style={{ 
-                          background: 'rgba(255,255,255,0.9)', 
-                          borderRadius: '15px', 
-                          padding: '15px',
-                          marginBottom: '15px'
-                        }}>
-                          <span style={{ fontSize: '3rem', display: 'block' }}>✨</span>
-                          <h5 style={{ color: '#ff8a80', fontWeight: '700', margin: 0 }}>COMBOS</h5>
-                        </div>
-                      </Col>
-                      <Col md={8}>
-                        <p style={{ color: 'white', fontWeight: '600', fontSize: '1rem', margin: 0, textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
-                          Manicura + Pedicura. Paquetes especiales con descuentos para tu cuidado completo de belleza.
-                        </p>
-                      </Col>
-                    </Row>
-                    <div className="mt-3">
-                      <img 
-                        src="/images/gallery/manicures/manicureclassic.jpg" 
-                        alt="Combos" 
-                        style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '15px' }}
-                      />
-                    </div>
-                  </div>
-                </Col>
-
-                {/* Onyfix Certification */}
-                <Col md={12}>
-                  <div style={{
-                    background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
-                    borderRadius: '25px',
-                    padding: '25px',
-                    boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
-                    border: '3px solid #ffd93d',
-                    backdropFilter: 'blur(10px)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}>
-                    <div style={{
-                      position: 'absolute',
-                      top: '-10px',
-                      right: '-10px',
-                      background: '#ffd93d',
-                      color: '#333',
-                      padding: '5px 15px',
-                      borderRadius: '0 20px 0 20px',
-                      fontSize: '0.8rem',
-                      fontWeight: '800'
-                    }}>
-                      CERTIFICADO
-                    </div>
-                    
-                    <div className="text-center mb-3">
-                      <span style={{ fontSize: '2.5rem', color: '#ffd93d' }}>🩺</span>
-                      <h4 style={{ color: 'white', fontWeight: '800', margin: '10px 0 5px 0' }}>
-                        Servicio Onyfix
-                      </h4>
-                      <p style={{ color: '#ffd93d', fontWeight: '700', fontSize: '1.1rem', margin: '0 0 10px 0' }}>
-                        ¡No más dolor para ti!
-                      </p>
-                    </div>
-                    
-                    <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '0.9rem', textAlign: 'center', lineHeight: '1.4', marginBottom: '15px' }}>
-                      En Bennett ofrecemos el servicio correctivo Onyfix. Con este sistema innovador 
-                      podemos tratar y corregir uñas encarnadas, onicocriptosis y uñas involutas sin dolor.
-                    </p>
-                    
-                    <div className="text-center">
-                      <img 
-                        src="/images/onyx.JPG" 
-                        alt="Onyfix System" 
-                        style={{ width: '80%', height: '120px', objectFit: 'contain', borderRadius: '10px', background: 'rgba(255,255,255,0.1)', padding: '10px' }}
-                      />
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      {/* Booking CTA Section */}
-      <BookingCTASection />
-
       {/* Work Showcase Carousel */}
       <section
         id="gallery-section"
@@ -439,11 +213,7 @@ const Home = () => {
           </Row>
           <Row>
             <Col lg={11} className="mx-auto">
-              <div
-                className="carousel-container"
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate('/gallery')}
-              >
+              <div className="carousel-container">
                 <Carousel
                   className="work-carousel"
                   indicators={true}
@@ -461,9 +231,15 @@ const Home = () => {
                             height: "600px",
                             objectFit: "cover",
                             borderRadius: "25px",
+                            cursor: "pointer"
                           }}
+                          onClick={() => navigate('/gallery')}
                         />
-                        <div className="carousel-overlay">
+                        <div 
+                          className="carousel-overlay"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => navigate('/gallery')}
+                        >
                           <div className="carousel-content">
                             <h3 className="fw-bold mb-3">{image.caption}</h3>
                             <p className="mb-0">
@@ -487,11 +263,350 @@ const Home = () => {
         </Container>
       </section>
 
+      {/* Booking CTA Section */}
+      <BookingCTASection />
+
+      {/* Services Section - Compact Card Style */}
+      <section style={{ 
+        background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+        padding: '80px 0',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <Container>
+          {/* Header */}
+          <Row>
+            <Col lg={8} className="mx-auto text-center mb-5">
+              <span className="section-badge-coral">💎 NUESTROS SERVICIOS</span>
+              <h2 style={{ 
+                color: 'white', 
+                fontSize: '2.8rem', 
+                fontWeight: '700',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                marginBottom: '20px'
+              }}>
+                Experiencias de Belleza Premium
+              </h2>
+              <p style={{ 
+                color: 'rgba(255,255,255,0.8)', 
+                fontSize: '1.1rem', 
+                fontWeight: '400'
+              }}>
+                Servicios profesionales especializados en Aguada, Puerto Rico
+              </p>
+            </Col>
+          </Row>
+
+          {/* Services Grid - Compact Cards */}
+          <Row className="justify-content-center">
+            <Col lg={10}>
+              <Row className="g-4">
+                {/* Manicuras */}
+                <Col md={6} lg={3}>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '20px',
+                    padding: '30px 20px',
+                    textAlign: 'center',
+                    boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    height: '100%',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-10px)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 25px 50px rgba(0,0,0,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+                  }}>
+                    <div style={{
+                      width: '80px',
+                      height: '80px',
+                      background: 'linear-gradient(135deg, #ff6b87 0%, #ff8a80 100%)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px auto',
+                      boxShadow: '0 10px 20px rgba(255, 107, 135, 0.3)'
+                    }}>
+                      <span style={{ fontSize: '2.5rem' }}>💅</span>
+                    </div>
+                    <h4 style={{ 
+                      color: '#333', 
+                      fontWeight: '700', 
+                      marginBottom: '15px',
+                      fontSize: '1.3rem'
+                    }}>
+                      Manicuras
+                    </h4>
+                    <p style={{ 
+                      color: '#666', 
+                      fontSize: '0.9rem', 
+                      lineHeight: '1.5',
+                      marginBottom: '20px'
+                    }}>
+                      Clásicas, en gel, diseños personalizados y nail art profesional
+                    </p>
+                    <div style={{
+                      width: '40px',
+                      height: '3px',
+                      background: 'linear-gradient(135deg, #ff6b87 0%, #ff8a80 100%)',
+                      margin: '0 auto',
+                      borderRadius: '2px'
+                    }}></div>
+                  </div>
+                </Col>
+
+                {/* Pedicuras */}
+                <Col md={6} lg={3}>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '20px',
+                    padding: '30px 20px',
+                    textAlign: 'center',
+                    boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    height: '100%',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-10px)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 25px 50px rgba(0,0,0,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+                  }}>
+                    <div style={{
+                      width: '80px',
+                      height: '80px',
+                      background: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px auto',
+                      boxShadow: '0 10px 20px rgba(78, 205, 196, 0.3)'
+                    }}>
+                      <span style={{ fontSize: '2.5rem' }}>🦶</span>
+                    </div>
+                    <h4 style={{ 
+                      color: '#333', 
+                      fontWeight: '700', 
+                      marginBottom: '15px',
+                      fontSize: '1.3rem'
+                    }}>
+                      Pedicuras
+                    </h4>
+                    <p style={{ 
+                      color: '#666', 
+                      fontSize: '0.9rem', 
+                      lineHeight: '1.5',
+                      marginBottom: '20px'
+                    }}>
+                      Relajantes, spa para pies y tratamientos especiales de belleza
+                    </p>
+                    <div style={{
+                      width: '40px',
+                      height: '3px',
+                      background: 'linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%)',
+                      margin: '0 auto',
+                      borderRadius: '2px'
+                    }}></div>
+                  </div>
+                </Col>
+
+                {/* Combos */}
+                <Col md={6} lg={3}>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '20px',
+                    padding: '30px 20px',
+                    textAlign: 'center',
+                    boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    height: '100%',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-10px)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 25px 50px rgba(0,0,0,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+                  }}>
+                    <div style={{
+                      width: '80px',
+                      height: '80px',
+                      background: 'linear-gradient(135deg, #ffd93d 0%, #ff8a80 100%)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px auto',
+                      boxShadow: '0 10px 20px rgba(255, 217, 61, 0.3)'
+                    }}>
+                      <span style={{ fontSize: '2.5rem' }}>✨</span>
+                    </div>
+                    <h4 style={{ 
+                      color: '#333', 
+                      fontWeight: '700', 
+                      marginBottom: '15px',
+                      fontSize: '1.3rem'
+                    }}>
+                      Combos
+                    </h4>
+                    <p style={{ 
+                      color: '#666', 
+                      fontSize: '0.9rem', 
+                      lineHeight: '1.5',
+                      marginBottom: '20px'
+                    }}>
+                      Manicura + Pedicura con descuentos especiales para ti
+                    </p>
+                    <div style={{
+                      width: '40px',
+                      height: '3px',
+                      background: 'linear-gradient(135deg, #ffd93d 0%, #ff8a80 100%)',
+                      margin: '0 auto',
+                      borderRadius: '2px'
+                    }}></div>
+                  </div>
+                </Col>
+
+                {/* Onyfix */}
+                <Col md={6} lg={3}>
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '20px',
+                    padding: '30px 20px',
+                    textAlign: 'center',
+                    boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
+                    border: '2px solid #ffd93d',
+                    height: '100%',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-10px)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 25px 50px rgba(0,0,0,0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                    (e.currentTarget as HTMLElement).style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '-8px',
+                      right: '-8px',
+                      background: '#ffd93d',
+                      color: '#333',
+                      padding: '4px 12px',
+                      borderRadius: '12px',
+                      fontSize: '0.7rem',
+                      fontWeight: '800',
+                      textTransform: 'uppercase'
+                    }}>
+                      Certificado
+                    </div>
+                    <div style={{
+                      width: '80px',
+                      height: '80px',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 20px auto',
+                      boxShadow: '0 10px 20px rgba(102, 126, 234, 0.3)'
+                    }}>
+                      <span style={{ fontSize: '2.5rem' }}>🩺</span>
+                    </div>
+                    <h4 style={{ 
+                      color: '#333', 
+                      fontWeight: '700', 
+                      marginBottom: '8px',
+                      fontSize: '1.3rem'
+                    }}>
+                      Onyfix
+                    </h4>
+                    <p style={{ 
+                      color: '#ffd93d', 
+                      fontSize: '0.8rem', 
+                      fontWeight: '700',
+                      marginBottom: '10px'
+                    }}>
+                      ¡No más dolor!
+                    </p>
+                    <p style={{ 
+                      color: '#666', 
+                      fontSize: '0.9rem', 
+                      lineHeight: '1.5',
+                      marginBottom: '20px'
+                    }}>
+                      Sistema correctivo para uñas encarnadas sin dolor
+                    </p>
+                    <div style={{
+                      width: '40px',
+                      height: '3px',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      margin: '0 auto',
+                      borderRadius: '2px'
+                    }}></div>
+                  </div>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+          {/* CTA Button */}
+          <Row className="mt-5">
+            <Col className="text-center">
+              <Button
+                onClick={() => navigate('/booking')}
+                size="lg"
+                style={{
+                  background: 'linear-gradient(135deg, #ff6b87 0%, #ff8a80 100%)',
+                  border: 'none',
+                  borderRadius: '25px',
+                  padding: '15px 40px',
+                  fontWeight: '700',
+                  fontSize: '1.1rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  boxShadow: '0 8px 25px rgba(255, 107, 135, 0.4)',
+                  transition: 'all 0.3s ease',
+                  color: 'white'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.transform = 'translateY(-3px) scale(1.05)';
+                  (e.target as HTMLElement).style.boxShadow = '0 15px 35px rgba(255, 107, 135, 0.6)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.transform = 'translateY(0) scale(1)';
+                  (e.target as HTMLElement).style.boxShadow = '0 8px 25px rgba(255, 107, 135, 0.4)';
+                }}
+              >
+                💅 Reservar Tu Cita Ahora
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
       {/* Location & Contact Section */}
-      <section className="location-section">
+      <section className="location-section" style={{ padding: '80px 0' }}>
         <Container>
           <Row className="align-items-center">
-            <Col lg={6} className="mb-5 mb-lg-0">
+            <Col lg={6} className="mb-4 mb-lg-0">
               <div className="location-content">
                 <span className="section-badge-orange">📍 ENCUÉNTRANOS</span>
                 <h2 className="display-5 fw-bold mb-3 text-gradient-orange">
@@ -522,28 +637,54 @@ const Home = () => {
                   href="https://maps.google.com/?q=Aguada,PR+Bennett+Salon"
                   target="_blank"
                   size="lg"
-                  className="btn-gradient-orange px-5"
+                  className="btn-gradient-orange px-5 d-block d-sm-inline-block"
+                  style={{ width: 'fit-content', margin: '0 auto' }}
                 >
                   🗺️ ABRIR EN GOOGLE MAPS
                 </Button>
               </div>
             </Col>
             <Col lg={6}>
-              <div className="map-container">
+              <div 
+                className="map-container"
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  paddingBottom: '56.25%', // 16:9 aspect ratio
+                  height: 0,
+                  overflow: 'hidden'
+                }}
+              >
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.8!2d-67.1847!3d18.3831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c037f6d1b1b1b1b%3A0x1b1b1b1b1b1b1b1b!2sAguada%2C%20PR!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus"
-                  width="100%"
-                  height="400"
                   style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
                     border: 0,
-                    borderRadius: "25px",
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                    borderRadius: "20px",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
                   }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Bennett Salon de Beauté - Aguada, PR"
                 ></iframe>
+              </div>
+              
+              {/* Mobile-friendly Google Maps button */}
+              <div className="d-lg-none text-center mt-3">
+                <Button
+                  href="https://maps.google.com/?q=Aguada,PR+Bennett+Salon"
+                  target="_blank"
+                  size="sm"
+                  variant="outline-primary"
+                  className="px-4"
+                >
+                  📱 Abrir en Google Maps
+                </Button>
               </div>
             </Col>
           </Row>
