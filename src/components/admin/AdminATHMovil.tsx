@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Row, Col, Card, Alert, Button, Form, InputGroup } from 'react-bootstrap'
 
 const AdminATHMovil = () => {
   const [showToken, setShowToken] = useState(false)
-  const currentToken = import.meta.env.VITE_ATHM_BUSINESS_TOKEN
+  const currentToken = (import.meta as any).env.VITE_ATHM_BUSINESS_TOKEN
 
   const testATHConfiguration = () => {
     if (window.ATHM_Checkout) {

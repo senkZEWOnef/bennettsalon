@@ -110,7 +110,7 @@ const Payment = () => {
     if (!window.ATHM_Checkout || !booking) return
 
     const config = {
-      publicToken: import.meta.env.VITE_ATHM_BUSINESS_TOKEN || "sandbox", // Replace with actual ATH Móvil business token
+      publicToken: (import.meta as any).env.VITE_ATHM_BUSINESS_TOKEN || "sandbox", // Replace with actual ATH Móvil business token
       timeout: 600, // 10 minutes timeout
       theme: "btn",
       lang: "es",
@@ -271,10 +271,10 @@ const Payment = () => {
                           <div style={{ 
                             fontSize: '5rem',
                             background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
-                            webkitBackgroundClip: 'text',
-                            webkitTextFillColor: 'transparent',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text'
-                          }}>📱</div>
+                          } as React.CSSProperties}>📱</div>
                         </div>
                         <h3 className="mb-3" style={{ color: '#ff6b35', fontWeight: '700' }}>
                           Paga con ATH Móvil
