@@ -95,78 +95,145 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div style={{ paddingTop: '120px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
-      <Container fluid>
+    <div style={{ 
+      paddingTop: '120px', 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      position: 'relative'
+    }}>
+      {/* Background Pattern */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                          radial-gradient(circle at 40% 80%, rgba(255,255,255,0.03) 0%, transparent 50%)`,
+        zIndex: 1,
+        pointerEvents: 'none'
+      }}></div>
+      
+      <Container fluid style={{ position: 'relative', zIndex: 10 }}>
         <Row>
-          {/* Sidebar */}
-          <Col lg={3} xl={2} className="bg-white shadow-sm" style={{ minHeight: '100vh' }}>
+          {/* Modern Sidebar */}
+          <Col lg={3} xl={2} style={{ 
+            background: 'rgba(255,255,255,0.95)', 
+            backdropFilter: 'blur(20px)',
+            minHeight: '100vh',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+            borderRight: '1px solid rgba(255,255,255,0.2)'
+          }}>
             <div className="p-4">
               <div className="text-center mb-4">
-                <div style={{ fontSize: '2rem' }} className="mb-2">💅</div>
-                <h5 className="mb-0">Admin Panel</h5>
-                <small className="text-muted">Bennett Salon</small>
+                <div style={{ 
+                  fontSize: '2.5rem',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }} className="mb-3">💅</div>
+                <h5 className="mb-0" style={{ fontWeight: '700', color: '#2d3748' }}>Admin Panel</h5>
+                <small style={{ 
+                  color: '#667eea', 
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  fontSize: '0.75rem'
+                }}>Bennett Salon</small>
               </div>
 
               <Nav className="flex-column">
-                <Nav.Link 
-                  className={activeTab === 'overview' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('overview')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  📊 Resumen
-                </Nav.Link>
-                <Nav.Link 
-                  className={activeTab === 'bookings' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('bookings')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  📅 Citas ({pendingBookings} pendientes)
-                </Nav.Link>
-                <Nav.Link 
-                  className={activeTab === 'gallery' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('gallery')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  🖼️ Galería
-                </Nav.Link>
-                <Nav.Link 
-                  className={activeTab === 'schedule' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('schedule')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  ⏰ Horarios
-                </Nav.Link>
-                <Nav.Link 
-                  className={activeTab === 'calendar' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('calendar')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  📅 Calendar Completo
-                </Nav.Link>
-                <Nav.Link 
-                  className={activeTab === 'whatsapp' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('whatsapp')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  📱 WhatsApp
-                </Nav.Link>
-                <Nav.Link 
-                  className={activeTab === 'athm' ? 'active bg-primary text-white rounded mb-2' : 'mb-2'}
-                  onClick={() => setActiveTab('athm')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  💳 ATH Móvil
-                </Nav.Link>
+                {[
+                  { key: 'overview', icon: '📊', label: 'Resumen' },
+                  { key: 'bookings', icon: '📅', label: `Citas ${pendingBookings > 0 ? `(${pendingBookings})` : ''}` },
+                  { key: 'gallery', icon: '🖼️', label: 'Galería' },
+                  { key: 'schedule', icon: '⏰', label: 'Horarios' },
+                  { key: 'calendar', icon: '📅', label: 'Calendario' },
+                  { key: 'whatsapp', icon: '📱', label: 'WhatsApp' },
+                  { key: 'athm', icon: '💳', label: 'ATH Móvil' }
+                ].map((item) => (
+                  <Nav.Link 
+                    key={item.key}
+                    onClick={() => setActiveTab(item.key as any)}
+                    style={{ 
+                      cursor: 'pointer',
+                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      marginBottom: '8px',
+                      fontWeight: '600',
+                      fontSize: '0.9rem',
+                      border: 'none',
+                      transition: 'all 0.3s ease',
+                      background: activeTab === item.key 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                        : 'transparent',
+                      color: activeTab === item.key ? 'white' : '#4a5568',
+                      boxShadow: activeTab === item.key 
+                        ? '0 4px 15px rgba(102, 126, 234, 0.3)' 
+                        : 'none',
+                      transform: activeTab === item.key ? 'translateX(4px)' : 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (activeTab !== item.key) {
+                        (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.1)'
+                        ;(e.target as HTMLElement).style.transform = 'translateX(2px)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== item.key) {
+                        (e.target as HTMLElement).style.background = 'transparent'
+                        ;(e.target as HTMLElement).style.transform = 'none'
+                      }
+                    }}
+                  >
+                    <span style={{ marginRight: '8px' }}>{item.icon}</span>
+                    {item.label}
+                    {item.key === 'bookings' && pendingBookings > 0 && (
+                      <span style={{
+                        background: '#ff6b35',
+                        color: 'white',
+                        borderRadius: '10px',
+                        padding: '2px 6px',
+                        fontSize: '0.7rem',
+                        marginLeft: '8px',
+                        fontWeight: '700'
+                      }}>{pendingBookings}</span>
+                    )}
+                  </Nav.Link>
+                ))}
               </Nav>
 
-              <hr />
+              <div style={{ 
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent 0%, rgba(102, 126, 234, 0.3) 50%, transparent 100%)',
+                margin: '24px 0'
+              }}></div>
 
               <div className="text-center">
                 <Button 
-                  variant="outline-danger" 
-                  size="sm" 
                   onClick={handleLogout}
-                  className="w-100"
+                  style={{
+                    background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '10px 20px',
+                    fontWeight: '600',
+                    fontSize: '0.9rem',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)',
+                    transition: 'all 0.3s ease',
+                    width: '100%'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                    ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.4)'
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.transform = 'translateY(0)'
+                    ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.3)'
+                  }}
                 >
                   🚪 Cerrar Sesión
                 </Button>
@@ -176,16 +243,55 @@ const AdminDashboard = () => {
 
           {/* Main Content */}
           <Col lg={9} xl={10}>
-            <div className="p-4">
+            <div style={{
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '20px',
+              margin: '16px',
+              padding: '32px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              minHeight: 'calc(100vh - 180px)'
+            }}>
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                  <h1 className="h3 mb-1">Panel de Administración</h1>
-                  <p className="text-muted mb-0">Gestiona tu salón de belleza</p>
+                  <h1 style={{ 
+                    fontSize: '2rem',
+                    fontWeight: '700',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    marginBottom: '4px'
+                  } as React.CSSProperties}>Panel de Administración</h1>
+                  <p style={{ 
+                    color: '#718096', 
+                    margin: 0,
+                    fontSize: '1.1rem',
+                    fontWeight: '500'
+                  }}>Gestiona tu salón de belleza</p>
                 </div>
                 <Button 
-                  variant="outline-primary" 
                   href="/" 
                   target="_blank"
+                  style={{
+                    background: 'rgba(102, 126, 234, 0.1)',
+                    border: '1px solid rgba(102, 126, 234, 0.3)',
+                    borderRadius: '12px',
+                    padding: '8px 16px',
+                    fontWeight: '600',
+                    fontSize: '0.9rem',
+                    color: '#667eea',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.2)'
+                    ;(e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.1)'
+                    ;(e.target as HTMLElement).style.transform = 'translateY(0)'
+                  }}
                 >
                   👁️ Ver Sitio Web
                 </Button>

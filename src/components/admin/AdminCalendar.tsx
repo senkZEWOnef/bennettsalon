@@ -100,25 +100,99 @@ const AdminCalendar = () => {
       {/* Header Controls */}
       <Row className="mb-4">
         <Col lg={6}>
-          <h3>📅 Gestión de Calendar Completo</h3>
-          <p className="text-muted">Control total sobre cada día y horario del año</p>
+          <h2 style={{ 
+            fontWeight: '700',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          } as React.CSSProperties}>📅 Gestión de Calendario Completo</h2>
+          <p style={{ 
+            color: '#718096',
+            margin: 0,
+            fontSize: '1.1rem',
+            fontWeight: '500'
+          }}>Control total sobre cada día y horario del año</p>
         </Col>
         <Col lg={6} className="text-end">
-          <ButtonGroup className="me-3">
+          <ButtonGroup className="me-3" style={{ borderRadius: '15px', overflow: 'hidden' }}>
             <Button 
-              variant={viewMode === 'calendar' ? 'primary' : 'outline-primary'}
               onClick={() => setViewMode('calendar')}
+              style={{
+                background: viewMode === 'calendar' 
+                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                  : 'rgba(102, 126, 234, 0.1)',
+                border: '1px solid rgba(102, 126, 234, 0.3)',
+                borderRadius: '0',
+                padding: '10px 16px',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                color: viewMode === 'calendar' ? 'white' : '#667eea',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (viewMode !== 'calendar') {
+                  (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.2)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (viewMode !== 'calendar') {
+                  (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.1)'
+                }
+              }}
             >
-              📅 Calendar
+              📅 Calendario
             </Button>
             <Button 
-              variant={viewMode === 'timeline' ? 'primary' : 'outline-primary'}
               onClick={() => setViewMode('timeline')}
+              style={{
+                background: viewMode === 'timeline' 
+                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                  : 'rgba(102, 126, 234, 0.1)',
+                border: '1px solid rgba(102, 126, 234, 0.3)',
+                borderRadius: '0',
+                padding: '10px 16px',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                color: viewMode === 'timeline' ? 'white' : '#667eea',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (viewMode !== 'timeline') {
+                  (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.2)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (viewMode !== 'timeline') {
+                  (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.1)'
+                }
+              }}
             >
               ⏰ Timeline
             </Button>
           </ButtonGroup>
-          <Button variant="success" onClick={() => setShowBulkModal(true)}>
+          <Button 
+            onClick={() => setShowBulkModal(true)}
+            style={{
+              background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
+              border: 'none',
+              borderRadius: '15px',
+              padding: '10px 20px',
+              fontWeight: '700',
+              fontSize: '0.9rem',
+              color: 'white',
+              boxShadow: '0 5px 15px rgba(255, 107, 53, 0.3)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+              ;(e.target as HTMLElement).style.boxShadow = '0 7px 20px rgba(255, 107, 53, 0.4)'
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.transform = 'translateY(0)'
+              ;(e.target as HTMLElement).style.boxShadow = '0 5px 15px rgba(255, 107, 53, 0.3)'
+            }}
+          >
             ⚡ Operaciones en Lote
           </Button>
         </Col>
@@ -127,15 +201,71 @@ const AdminCalendar = () => {
       <Row>
         {/* Calendar View */}
         <Col lg={8}>
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <Button variant="outline-secondary" onClick={() => navigateMonth('prev')}>
+          <Card style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+          }}>
+            <Card.Header style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              borderRadius: '20px 20px 0 0',
+              padding: '20px 24px'
+            }} className="d-flex justify-content-between align-items-center">
+              <Button 
+                onClick={() => navigateMonth('prev')}
+                style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  borderRadius: '12px',
+                  padding: '8px 16px',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  color: 'white',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.3)'
+                  ;(e.target as HTMLElement).style.transform = 'translateX(-2px)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)'
+                  ;(e.target as HTMLElement).style.transform = 'translateX(0)'
+                }}
+              >
                 ← Anterior
               </Button>
-              <h5 className="mb-0">
+              <h4 style={{
+                margin: 0,
+                fontWeight: '700',
+                color: 'white',
+                textTransform: 'capitalize'
+              }}>
                 {currentMonth.toLocaleString('es', { month: 'long', year: 'numeric' })}
-              </h5>
-              <Button variant="outline-secondary" onClick={() => navigateMonth('next')}>
+              </h4>
+              <Button 
+                onClick={() => navigateMonth('next')}
+                style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  borderRadius: '12px',
+                  padding: '8px 16px',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  color: 'white',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.3)'
+                  ;(e.target as HTMLElement).style.transform = 'translateX(2px)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)'
+                  ;(e.target as HTMLElement).style.transform = 'translateX(0)'
+                }}
+              >
                 Siguiente →
               </Button>
             </Card.Header>
@@ -189,37 +319,95 @@ const AdminCalendar = () => {
 
         {/* Time Slot Editor */}
         <Col lg={4}>
-          <Card>
-            <Card.Header>
-              <h6 className="mb-0">
-                Editar: {new Date(selectedDate + 'T00:00:00').toLocaleDateString('es')}
-              </h6>
-              <div className="mt-2">
+          <Card style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+          }}>
+            <Card.Header style={{
+              background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+              border: 'none',
+              borderRadius: '20px 20px 0 0',
+              padding: '20px 24px'
+            }}>
+              <h5 style={{
+                margin: 0,
+                fontWeight: '700',
+                color: 'white'
+              }}>
+                ✏️ Editar: {new Date(selectedDate + 'T00:00:00').toLocaleDateString('es')}
+              </h5>
+              <div className="mt-3">
                 <Form.Check
                   type="switch"
                   id="day-status"
                   label={selectedDay?.isOpen ? "Día Abierto" : "Día Cerrado"}
                   checked={selectedDay?.isOpen || false}
                   onChange={(e) => handleDayToggle(e.target.checked)}
+                  style={{
+                    color: 'white',
+                    fontWeight: '600'
+                  }}
                 />
               </div>
             </Card.Header>
-            <Card.Body style={{ maxHeight: '600px', overflowY: 'auto' }}>
+            <Card.Body style={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto',
+              padding: '24px'
+            }}>
               {selectedDay?.isOpen && (
                 <div className="time-slots">
-                  <div className="mb-3">
+                  <div className="mb-3 d-flex gap-2">
                     <Button 
-                      variant="outline-success" 
                       size="sm"
                       onClick={() => timeSlots.forEach(time => handleTimeSlotToggle(time, true))}
+                      style={{
+                        background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        padding: '8px 12px',
+                        fontWeight: '600',
+                        fontSize: '0.8rem',
+                        color: 'white',
+                        boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.transform = 'translateY(-1px)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 5px 15px rgba(40, 167, 69, 0.4)'
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.transform = 'translateY(0)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 3px 10px rgba(40, 167, 69, 0.3)'
+                      }}
                     >
                       ✅ Activar Todos
                     </Button>
-                    {' '}
                     <Button 
-                      variant="outline-danger" 
                       size="sm"
                       onClick={() => timeSlots.forEach(time => handleTimeSlotToggle(time, false))}
+                      style={{
+                        background: 'linear-gradient(135deg, #dc3545 0%, #e83e8c 100%)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        padding: '8px 12px',
+                        fontWeight: '600',
+                        fontSize: '0.8rem',
+                        color: 'white',
+                        boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.transform = 'translateY(-1px)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 5px 15px rgba(220, 53, 69, 0.4)'
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.transform = 'translateY(0)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 3px 10px rgba(220, 53, 69, 0.3)'
+                      }}
                     >
                       ❌ Desactivar Todos
                     </Button>

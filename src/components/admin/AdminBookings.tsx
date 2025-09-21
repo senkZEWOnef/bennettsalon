@@ -46,37 +46,125 @@ const AdminBookings = () => {
   return (
     <>
       <Row className="mb-4">
-        <Col md={4}>
-          <Card className="text-center border-warning">
-            <Card.Body>
-              <h3 className="text-warning">{pendingBookings.length}</h3>
-              <p className="mb-0">Citas Pendientes</p>
+        <Col md={4} className="mb-3">
+          <Card style={{ 
+            background: 'rgba(255, 193, 7, 0.1)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 193, 7, 0.3)',
+            borderRadius: '20px',
+            boxShadow: '0 8px 32px rgba(255, 193, 7, 0.2)',
+            transition: 'all 0.3s ease'
+          }} className="text-center h-100">
+            <Card.Body className="p-4">
+              <div style={{ 
+                fontSize: '3rem',
+                background: 'linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              } as React.CSSProperties} className="mb-3">⏳</div>
+              <h2 style={{ 
+                color: '#ffc107',
+                fontWeight: '700',
+                fontSize: '2.5rem'
+              }}>{pendingBookings.length}</h2>
+              <p style={{ 
+                margin: 0,
+                fontWeight: '600',
+                color: '#666',
+                fontSize: '1.1rem'
+              }}>Citas Pendientes</p>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}>
-          <Card className="text-center border-success">
-            <Card.Body>
-              <h3 className="text-success">{confirmedBookings.length}</h3>
-              <p className="mb-0">Citas Confirmadas</p>
+        <Col md={4} className="mb-3">
+          <Card style={{ 
+            background: 'rgba(40, 167, 69, 0.1)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(40, 167, 69, 0.3)',
+            borderRadius: '20px',
+            boxShadow: '0 8px 32px rgba(40, 167, 69, 0.2)',
+            transition: 'all 0.3s ease'
+          }} className="text-center h-100">
+            <Card.Body className="p-4">
+              <div style={{ 
+                fontSize: '3rem',
+                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              } as React.CSSProperties} className="mb-3">✅</div>
+              <h2 style={{ 
+                color: '#28a745',
+                fontWeight: '700',
+                fontSize: '2.5rem'
+              }}>{confirmedBookings.length}</h2>
+              <p style={{ 
+                margin: 0,
+                fontWeight: '600',
+                color: '#666',
+                fontSize: '1.1rem'
+              }}>Citas Confirmadas</p>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={4}>
-          <Card className="text-center border-danger">
-            <Card.Body>
-              <h3 className="text-danger">{cancelledBookings.length}</h3>
-              <p className="mb-0">Citas Canceladas</p>
+        <Col md={4} className="mb-3">
+          <Card style={{ 
+            background: 'rgba(220, 53, 69, 0.1)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(220, 53, 69, 0.3)',
+            borderRadius: '20px',
+            boxShadow: '0 8px 32px rgba(220, 53, 69, 0.2)',
+            transition: 'all 0.3s ease'
+          }} className="text-center h-100">
+            <Card.Body className="p-4">
+              <div style={{ 
+                fontSize: '3rem',
+                background: 'linear-gradient(135deg, #dc3545 0%, #e83e8c 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              } as React.CSSProperties} className="mb-3">❌</div>
+              <h2 style={{ 
+                color: '#dc3545',
+                fontWeight: '700',
+                fontSize: '2.5rem'
+              }}>{cancelledBookings.length}</h2>
+              <p style={{ 
+                margin: 0,
+                fontWeight: '600',
+                color: '#666',
+                fontSize: '1.1rem'
+              }}>Citas Canceladas</p>
             </Card.Body>
           </Card>
         </Col>
       </Row>
 
-      <Card>
-        <Card.Header>
-          <h5 className="mb-0">📅 Todas las Citas</h5>
+      <Card style={{ 
+        background: 'rgba(255,255,255,0.95)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '20px',
+        border: '1px solid rgba(255,255,255,0.2)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+      }}>
+        <Card.Header style={{ 
+          background: 'transparent',
+          border: 'none',
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          borderRadius: '20px 20px 0 0',
+          padding: '24px 32px'
+        }}>
+          <h4 style={{ 
+            margin: 0,
+            fontWeight: '700',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          } as React.CSSProperties}>📅 Todas las Citas</h4>
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ padding: '32px' }}>
           {bookings.length === 0 ? (
             <div className="text-center py-5">
               <div style={{ fontSize: '4rem' }} className="mb-3">📭</div>
@@ -114,10 +202,28 @@ const AdminBookings = () => {
                     <td>
                       <Button
                         size="sm"
-                        variant="outline-primary"
                         onClick={() => handleViewDetails(booking)}
+                        style={{
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          border: 'none',
+                          borderRadius: '12px',
+                          padding: '8px 16px',
+                          fontWeight: '600',
+                          fontSize: '0.85rem',
+                          color: 'white',
+                          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                          ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)'
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.target as HTMLElement).style.transform = 'translateY(0)'
+                          ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)'
+                        }}
                       >
-                        Ver Detalles
+                        👁️ Ver Detalles
                       </Button>
                     </td>
                   </tr>
@@ -130,10 +236,22 @@ const AdminBookings = () => {
 
       {/* Booking Details Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Detalles de la Cita</Modal.Title>
+        <Modal.Header closeButton style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          border: 'none',
+          borderRadius: '12px 12px 0 0',
+          color: 'white'
+        }}>
+          <Modal.Title style={{ 
+            fontWeight: '700',
+            color: 'white'
+          }}>✨ Detalles de la Cita</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ 
+          background: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(20px)',
+          padding: '32px'
+        }}>
           {selectedBooking && (
             <Row>
               <Col md={6}>
@@ -168,21 +286,63 @@ const AdminBookings = () => {
             </Row>
           )}
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{ 
+          background: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(20px)',
+          border: 'none',
+          borderRadius: '0 0 12px 12px',
+          padding: '24px 32px'
+        }}>
           {selectedBooking && selectedBooking.status === 'pending' && (
             <>
               <Button 
-                variant="success"
                 onClick={() => {
                   confirmBookingManually(selectedBooking.id)
                   setShowModal(false)
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '10px 20px',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  color: 'white',
+                  boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                  ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(40, 167, 69, 0.4)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.transform = 'translateY(0)'
+                  ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(40, 167, 69, 0.3)'
                 }}
               >
                 ✅ Confirmar Manualmente
               </Button>
               <Button 
-                variant="danger"
                 onClick={() => handleStatusUpdate(selectedBooking.id, 'cancelled')}
+                style={{
+                  background: 'linear-gradient(135deg, #dc3545 0%, #e83e8c 100%)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '10px 20px',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  color: 'white',
+                  boxShadow: '0 4px 15px rgba(220, 53, 69, 0.3)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                  ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(220, 53, 69, 0.4)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.transform = 'translateY(0)'
+                  ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(220, 53, 69, 0.3)'
+                }}
               >
                 ❌ Cancelar Cita
               </Button>
@@ -190,13 +350,51 @@ const AdminBookings = () => {
           )}
           {selectedBooking && selectedBooking.status === 'confirmed' && (
             <Button 
-              variant="warning"
               onClick={() => handleStatusUpdate(selectedBooking.id, 'cancelled')}
+              style={{
+                background: 'linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '10px 20px',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                color: 'white',
+                boxShadow: '0 4px 15px rgba(255, 193, 7, 0.3)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(255, 193, 7, 0.4)'
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(0)'
+                ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(255, 193, 7, 0.3)'
+              }}
             >
               ❌ Cancelar Cita
             </Button>
           )}
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button 
+            onClick={() => setShowModal(false)}
+            style={{
+              background: 'rgba(108, 117, 125, 0.1)',
+              border: '1px solid rgba(108, 117, 125, 0.3)',
+              borderRadius: '12px',
+              padding: '10px 20px',
+              fontWeight: '600',
+              fontSize: '0.9rem',
+              color: '#6c757d',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.background = 'rgba(108, 117, 125, 0.2)'
+              ;(e.target as HTMLElement).style.transform = 'translateY(-2px)'
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.background = 'rgba(108, 117, 125, 0.1)'
+              ;(e.target as HTMLElement).style.transform = 'translateY(0)'
+            }}
+          >
             Cerrar
           </Button>
         </Modal.Footer>

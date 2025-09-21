@@ -12,24 +12,88 @@ const AdminGallery = () => {
     title: '',
     category: 'Manicura' as 'Manicura' | 'Pedicura' | 'Especial'
   })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
-  const handleAddImage = (e: React.FormEvent) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+      if (!validTypes.includes(file.type)) {
+        setAlertMessage('Por favor selecciona una imagen válida (JPG, PNG, WebP)')
+        setShowAlert(true)
+        setTimeout(() => setShowAlert(false), 3000)
+        return
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setAlertMessage('La imagen debe ser menor a 5MB')
+        setShowAlert(true)
+        setTimeout(() => setShowAlert(false), 3000)
+        return
+      }
+
+      setSelectedFile(file)
+      
+      // Create preview URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setNewImage(prev => ({...prev, src: e.target?.result as string}))
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const handleAddImage = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newImage.src || !newImage.title) {
-      setAlertMessage('Por favor, completa todos los campos.')
+    
+    if (!selectedFile || !newImage.title) {
+      setAlertMessage('Por favor, selecciona una imagen y añade un título.')
       setShowAlert(true)
       setTimeout(() => setShowAlert(false), 3000)
       return
     }
 
-    addGalleryImage(newImage)
-    setNewImage({ src: '', title: '', category: 'Manicura' })
-    setShowAddModal(false)
-    setAlertMessage('¡Imagen añadida exitosamente!')
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 3000)
+    setIsUploading(true)
+    
+    try {
+      // Convert file to base64 for local storage
+      const base64String = await convertFileToBase64(selectedFile)
+      
+      // Add image with base64 data
+      addGalleryImage({
+        src: base64String,
+        title: newImage.title,
+        category: newImage.category
+      })
+      
+      // Reset form
+      setNewImage({ src: '', title: '', category: 'Manicura' })
+      setSelectedFile(null)
+      setShowAddModal(false)
+      setAlertMessage('¡Imagen añadida exitosamente!')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 3000)
+    } catch (error) {
+      setAlertMessage('Error al procesar la imagen. Por favor, intenta de nuevo.')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 3000)
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   const handleDeleteImage = () => {
@@ -151,18 +215,26 @@ const AdminGallery = () => {
         <Form onSubmit={handleAddImage}>
           <Modal.Body>
             <Form.Group className="mb-3">
-              <Form.Label>URL de la Imagen</Form.Label>
+              <Form.Label>Seleccionar Imagen</Form.Label>
               <Form.Control
-                type="url"
-                placeholder="https://ejemplo.com/imagen.jpg"
-                value={newImage.src}
-                onChange={(e) => setNewImage({...newImage, src: e.target.value})}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                onChange={handleFileSelect}
                 required
               />
               <Form.Text className="text-muted">
-                Puede ser una URL de internet o una ruta local como /images/gallery/nueva-imagen.jpg
+                Formatos permitidos: JPG, PNG, WebP. Tamaño máximo: 5MB
               </Form.Text>
             </Form.Group>
+
+            {selectedFile && (
+              <div className="mb-3 p-3 bg-light rounded">
+                <small className="text-muted">
+                  <strong>Archivo seleccionado:</strong> {selectedFile.name} 
+                  ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                </small>
+              </div>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label>Título de la Imagen</Form.Label>
@@ -203,11 +275,30 @@ const AdminGallery = () => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                setShowAddModal(false)
+                setNewImage({ src: '', title: '', category: 'Manicura' })
+                setSelectedFile(null)
+              }}
+              disabled={isUploading}
+            >
               Cancelar
             </Button>
-            <Button type="submit" variant="primary">
-              ➕ Añadir Imagen
+            <Button 
+              type="submit" 
+              variant="primary"
+              disabled={isUploading || !selectedFile}
+            >
+              {isUploading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                  Subiendo...
+                </>
+              ) : (
+                '📁 Subir Imagen'
+              )}
             </Button>
           </Modal.Footer>
         </Form>

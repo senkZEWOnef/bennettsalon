@@ -55,18 +55,47 @@ Si recibiste este mensaje, la configuración está funcionando correctamente! �
   return (
     <>
       {showAlert && (
-        <Alert variant={alertType} className="mb-4">
-          {alertMessage}
+        <Alert 
+          variant={alertType} 
+          className="mb-4"
+          style={{ 
+            background: alertType === 'success' 
+              ? 'rgba(40, 167, 69, 0.1)' 
+              : 'rgba(220, 53, 69, 0.1)',
+            border: `1px solid ${alertType === 'success' 
+              ? 'rgba(40, 167, 69, 0.3)' 
+              : 'rgba(220, 53, 69, 0.3)'}`,
+            borderRadius: '15px',
+            color: alertType === 'success' ? '#28a745' : '#dc3545',
+            fontWeight: '600'
+          }}
+        >
+          {alertType === 'success' ? '✅' : '❌'} {alertMessage}
         </Alert>
       )}
 
       <Row>
         <Col lg={8}>
-          <Card>
-            <Card.Header>
-              <h5 className="mb-0">📱 Configuración de WhatsApp</h5>
+          <Card style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+          }}>
+            <Card.Header style={{ 
+              background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)',
+              border: 'none',
+              borderRadius: '20px 20px 0 0',
+              padding: '20px 24px'
+            }}>
+              <h4 style={{ 
+                margin: 0,
+                fontWeight: '700',
+                color: 'white'
+              }}>📱 Configuración de WhatsApp</h4>
             </Card.Header>
-            <Card.Body>
+            <Card.Body style={{ padding: '32px' }}>
               <Form onSubmit={handleSave}>
                 <Row>
                   <Col md={6}>
@@ -129,15 +158,65 @@ Si recibiste este mensaje, la configuración está funcionando correctamente! �
                   />
                 </Form.Group>
 
-                <div className="d-flex gap-2">
-                  <Button type="submit" variant="primary">
+                <div className="d-flex gap-3">
+                  <Button 
+                    type="submit"
+                    style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                      borderRadius: '15px',
+                      padding: '12px 24px',
+                      fontWeight: '700',
+                      fontSize: '1rem',
+                      color: 'white',
+                      boxShadow: '0 6px 20px rgba(102, 126, 234, 0.3)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                      ;(e.target as HTMLElement).style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)'
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.target as HTMLElement).style.transform = 'translateY(0)'
+                      ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.3)'
+                    }}
+                  >
                     💾 Guardar Configuración
                   </Button>
                   <Button 
                     type="button" 
-                    variant="outline-success" 
                     onClick={handleTestMessage}
                     disabled={!settings.adminNumber}
+                    style={{
+                      background: settings.adminNumber 
+                        ? 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)' 
+                        : 'rgba(108, 117, 125, 0.1)',
+                      border: settings.adminNumber 
+                        ? 'none' 
+                        : '1px solid rgba(108, 117, 125, 0.3)',
+                      borderRadius: '15px',
+                      padding: '12px 24px',
+                      fontWeight: '700',
+                      fontSize: '1rem',
+                      color: settings.adminNumber ? 'white' : '#6c757d',
+                      boxShadow: settings.adminNumber 
+                        ? '0 6px 20px rgba(37, 211, 102, 0.3)' 
+                        : 'none',
+                      transition: 'all 0.3s ease',
+                      cursor: settings.adminNumber ? 'pointer' : 'not-allowed'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (settings.adminNumber) {
+                        (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 8px 25px rgba(37, 211, 102, 0.4)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (settings.adminNumber) {
+                        (e.target as HTMLElement).style.transform = 'translateY(0)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(37, 211, 102, 0.3)'
+                      }
+                    }}
                   >
                     🧪 Enviar Mensaje de Prueba
                   </Button>
@@ -148,11 +227,26 @@ Si recibiste este mensaje, la configuración está funcionando correctamente! �
         </Col>
 
         <Col lg={4}>
-          <Card>
-            <Card.Header>
-              <h6 className="mb-0">ℹ️ Información</h6>
+          <Card style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+          }}>
+            <Card.Header style={{ 
+              background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
+              border: 'none',
+              borderRadius: '20px 20px 0 0',
+              padding: '16px 20px'
+            }}>
+              <h5 style={{ 
+                margin: 0,
+                fontWeight: '700',
+                color: 'white'
+              }}>ℹ️ Información</h5>
             </Card.Header>
-            <Card.Body>
+            <Card.Body style={{ padding: '20px' }}>
               <h6>¿Cómo funciona?</h6>
               <ul className="small">
                 <li><strong>Confirmación automática:</strong> Cuando confirmes una cita, se abrirán dos ventanas de WhatsApp automáticamente.</li>
@@ -175,11 +269,26 @@ Si recibiste este mensaje, la configuración está funcionando correctamente! �
             </Card.Body>
           </Card>
 
-          <Card className="mt-3">
-            <Card.Header>
-              <h6 className="mb-0">📋 Vista Previa del Mensaje</h6>
+          <Card className="mt-3" style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+          }}>
+            <Card.Header style={{ 
+              background: 'linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)',
+              border: 'none',
+              borderRadius: '20px 20px 0 0',
+              padding: '16px 20px'
+            }}>
+              <h5 style={{ 
+                margin: 0,
+                fontWeight: '700',
+                color: 'white'
+              }}>📋 Vista Previa del Mensaje</h5>
             </Card.Header>
-            <Card.Body>
+            <Card.Body style={{ padding: '20px' }}>
               <small className="text-muted">
                 <strong>Para el cliente:</strong><br/>
                 "¡Hola [Nombre]! 💅✨<br/>
