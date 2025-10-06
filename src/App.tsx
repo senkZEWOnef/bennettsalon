@@ -13,12 +13,14 @@ import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   return (
     <ErrorBoundary>
       <AdminProvider>
         <Router>
+        <ScrollToTop />
         <div className="App">
           <Routes>
             {/* Admin Routes */}
