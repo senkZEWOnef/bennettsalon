@@ -24,6 +24,10 @@ const BookingCTASection = () => {
   const services = [
     'Manicura Clásica',
     'Manicura en Gel',
+    'Manicura Rusa',
+    'Diseños Personalizados',
+    'Gel Tips',
+    'Hard Gel',
     'Pedicura Clásica',
     'Pedicura Spa',
     'Combo Manicura & Pedicura',
@@ -88,7 +92,7 @@ const BookingCTASection = () => {
           status: 'pending' as const,
           createdAt: new Date(),
           paymentDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
-          depositAmount: 25
+          depositAmount: 20
         }
 
         setShowAlert(true)

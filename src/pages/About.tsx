@@ -55,16 +55,16 @@ const About = () => {
                   <h4 className="mb-3">📅 Reservas y Cancelaciones</h4>
                   <ul className="list-unstyled">
                     <li className="mb-2">
-                      <strong>⏰ Puntualidad:</strong> Llegar 15 minutos antes de la cita para registro
+                      <strong>⏰ Puntualidad:</strong> Llegar 10 minutos antes de la cita para registro
                     </li>
                     <li className="mb-2">
                       <strong>❌ Cancelaciones:</strong> Mínimo 24 horas de anticipación
                     </li>
                     <li className="mb-2">
-                      <strong>⌛ Tardanzas:</strong> Más de 15 minutos tarde puede requerir reagendar
+                      <strong>⌛ Tardanzas:</strong> Tardanza puede llevar a cancelación o eliminación de algún servicio
                     </li>
                     <li className="mb-2">
-                      <strong>🚫 No Shows:</strong> Tres ausencias sin aviso pueden requerir depósito
+                      <strong>🚫 NO al No Show:</strong> Ausencias sin aviso requieren nuevo depósito
                     </li>
                   </ul>
                 </Card.Body>
@@ -79,7 +79,7 @@ const About = () => {
                       <strong>💸 Formas de Pago:</strong> Efectivo, ATH Móvil, tarjetas principales
                     </li>
                     <li className="mb-2">
-                      <strong>💰 Depósitos:</strong> Pueden requerirse para servicios largos
+                      <strong>💰 Depósito:</strong> $20 no reembolsable requerido para cualquier servicio vía ATH Móvil
                     </li>
                     <li className="mb-2">
                       <strong>💎 Propinas:</strong> Se aprecian pero no son obligatorias

@@ -74,7 +74,7 @@ const AdminATHMovil = () => {
               <div className="bg-light p-3 rounded">
                 <h6>📋 Configuración Actual</h6>
                 <ul className="mb-0 small">
-                  <li><strong>Depósito:</strong> $25.00 USD</li>
+                  <li><strong>Depósito:</strong> $20.00 USD</li>
                   <li><strong>Tiempo límite:</strong> 30 minutos</li>
                   <li><strong>Idioma:</strong> Español</li>
                   <li><strong>Modo:</strong> {currentToken ? 'Producción' : 'Sandbox (Pruebas)'}</li>
@@ -122,7 +122,7 @@ const AdminATHMovil = () => {
             <Card.Body>
               <div className="small">
                 <h6>Depósitos Requeridos</h6>
-                <p>Todos los servicios requieren un depósito de <strong>$25</strong> para confirmar la cita.</p>
+                <p>Todos los servicios requieren un depósito de <strong>$20</strong> para confirmar la cita.</p>
                 
                 <h6>Métodos Aceptados</h6>
                 <ul className="mb-2">

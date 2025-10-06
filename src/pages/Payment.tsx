@@ -114,9 +114,9 @@ const Payment = () => {
       timeout: 600, // 10 minutes timeout
       theme: "btn",
       lang: "es",
-      total: 25.00,
+      total: 20.00,
       tax: 0,
-      subtotal: 25.00,
+      subtotal: 20.00,
       metadata1: `Booking ID: ${booking.id}`,
       metadata2: `Client: ${booking.clientName}`,
       phone: booking.clientPhone.replace(/[^0-9]/g, ''), // Remove non-numeric characters
@@ -129,7 +129,7 @@ const Payment = () => {
           name: booking.service,
           description: `Depósito para cita del ${booking.date.toLocaleDateString('es-PR')} a las ${booking.time}`,
           quantity: "1",
-          price: "25.00",
+          price: "20.00",
           tax: "0",
           metadata: `Date: ${booking.date.toISOString().split('T')[0]} Time: ${booking.time}`
         }
@@ -181,7 +181,7 @@ const Payment = () => {
     )
   }
 
-  const depositAmount = 25 // $25 USD deposit
+  const depositAmount = 20 // $20 USD deposit
 
   return (
     <section className="services-section" style={{ minHeight: '100vh' }}>
@@ -290,7 +290,7 @@ const Payment = () => {
                             <small className="text-muted">
                               1. Presiona "Pagar Ahora"<br/>
                               2. Se abrirá ATH Móvil en tu teléfono<br/>
-                              3. Autoriza el pago de $25<br/>
+                              3. Autoriza el pago de $20<br/>
                               4. ¡Tu cita quedará confirmada!
                             </small>
                           </div>
@@ -323,7 +323,7 @@ const Payment = () => {
                             </>
                           ) : (
                             <>
-                              💰 Pagar $25 con ATH Móvil
+                              💰 Pagar $20 con ATH Móvil
                             </>
                           )}
                         </Button>
@@ -363,7 +363,7 @@ const Payment = () => {
                   <div className="col-md-6">
                     <h6 className="text-primary">💰 Sobre el Depósito</h6>
                     <ul className="small">
-                      <li>El depósito de <strong>$25</strong> se aplicará al costo total de tu servicio</li>
+                      <li>El depósito de <strong>$20</strong> se aplicará al costo total de tu servicio</li>
                       <li>Solo aceptamos <strong>ATH Móvil</strong> para depósitos</li>
                       <li>El pago es seguro y está procesado por ATH Móvil</li>
                     </ul>
