@@ -129,6 +129,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       setLoading(true)
       
+      // Check if DATABASE_URL is available
+      if (!import.meta.env.DATABASE_URL && !import.meta.env.VITE_DATABASE_URL) {
+        console.warn('DATABASE_URL not configured, running in offline mode')
+        setLoading(false)
+        return
+      }
+      
       // Initialize admin accounts if needed
       await ApiService.initializeAdmins()
       
@@ -152,12 +159,20 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     } catch (error) {
       console.error('Error loading data from database:', error)
+      console.warn('Database connection failed, running in offline mode')
       // Fall back to localStorage if database fails
       const authStatus = localStorage.getItem('adminAuthenticated')
       if (authStatus === 'true') {
         setIsAuthenticated(true)
       }
-      // Load localStorage data as fallback...
+      
+      // Initialize with default data when database is unavailable
+      const defaultGalleryImages = [
+        { id: '1', src: '/images/gallery/manicures/manicure2.jpg', title: 'Diseño Elegante de Manicura', category: 'Manicura' as const, uploadedAt: new Date() },
+        { id: '2', src: '/images/gallery/manicures/manicure3.jpg', title: 'Arte Creativo en Uñas', category: 'Manicura' as const, uploadedAt: new Date() },
+        { id: '3', src: '/images/gallery/pedicures/pedicure-classic.JPG', title: 'Pedicura Clásica', category: 'Pedicura' as const, uploadedAt: new Date() }
+      ]
+      setGalleryImages(defaultGalleryImages)
     } finally {
       setLoading(false)
     }
@@ -220,7 +235,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return bookingId
     } catch (error) {
       console.error('Error adding booking:', error)
-      throw error
+      // Fallback to local state if database fails
+      const newBooking: Booking = {
+        ...bookingData,
+        id: Date.now().toString(),
+        createdAt: new Date(),
+        paymentDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+      }
+      setBookings(prev => [...prev, newBooking])
+      throw new Error('Database unavailable. Booking created locally but may not persist.')
     }
   }
 

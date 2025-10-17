@@ -1,6 +1,6 @@
 import { Container, Row, Col, Card } from 'react-bootstrap'
 import { useEffect } from 'react'
-import { useAdmin } from '../contexts/AdminContext'
+import { useAdmin } from '../contexts/AdminContextNew'
 
 const Gallery = () => {
   const { galleryImages } = useAdmin()

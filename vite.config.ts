@@ -7,8 +7,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      // Expose DATABASE_URL to the client (be careful in production)
-      'import.meta.env.DATABASE_URL': JSON.stringify(env.DATABASE_URL),
+      // Expose DATABASE_URL to the client (use VITE_ prefix for Netlify)
+      'import.meta.env.DATABASE_URL': JSON.stringify(env.DATABASE_URL || env.VITE_DATABASE_URL),
       // Define process for compatibility
       'process.env': {}
     },

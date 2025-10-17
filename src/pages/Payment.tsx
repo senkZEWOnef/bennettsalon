@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Button, Alert, Modal } from 'react-bootstrap'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useAdmin } from '../contexts/AdminContext'
+import { useAdmin } from '../contexts/AdminContextNew'
 
 // Declare ATH Móvil global functions
 declare global {

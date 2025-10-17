@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Form, Alert, Card } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { useAdmin } from '../contexts/AdminContext'
+import { useAdmin } from '../contexts/AdminContextNew'
 
 type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]

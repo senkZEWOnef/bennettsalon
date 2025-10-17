@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Container, Row, Col, Card, Nav, Button } from 'react-bootstrap'
-import { useAdmin } from '../contexts/AdminContext'
+import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 import AdminBookings from '../components/admin/AdminBookings'
 import AdminGallery from '../components/admin/AdminGallery'

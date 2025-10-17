@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
-import { useAdmin } from '../contexts/AdminContext'
+import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 
 const AdminLogin = () => {
   const [password, setPassword] = useState('')
   const [showError, setShowError] = useState(false)
-  const { login } = useAdmin()
+  const { loginLegacy } = useAdmin()
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (login(password)) {
+    if (loginLegacy(password)) {
       navigate('/admin/dashboard')
     } else {
       setShowError(true)

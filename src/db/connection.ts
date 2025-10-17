@@ -5,9 +5,11 @@ import * as schema from './schema'
 // Get the database URL from environment variables
 const getDatabaseUrl = (): string => {
   // In Vite, we need to access environment variables differently
-  const url = import.meta.env.DATABASE_URL
+  // Support both DATABASE_URL and VITE_DATABASE_URL for different deployment environments
+  const url = import.meta.env.DATABASE_URL || import.meta.env.VITE_DATABASE_URL
   
   if (!url) {
+    console.warn('DATABASE_URL environment variable is not set. Running in offline mode.')
     throw new Error('DATABASE_URL environment variable is not set')
   }
   
