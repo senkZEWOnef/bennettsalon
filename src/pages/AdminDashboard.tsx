@@ -8,8 +8,10 @@ import AdminSchedule from '../components/admin/AdminSchedule'
 import AdminCalendar from '../components/admin/AdminCalendar'
 import AdminWhatsApp from '../components/admin/AdminWhatsApp'
 import AdminATHMovil from '../components/admin/AdminATHMovil'
+import AdminServices from '../components/admin/AdminServices'
+import AdminJobApplications from '../components/admin/AdminJobApplications'
 
-type AdminTab = 'overview' | 'bookings' | 'gallery' | 'schedule' | 'calendar' | 'whatsapp' | 'athm'
+type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 'calendar' | 'whatsapp' | 'athm' | 'jobs'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
@@ -30,6 +32,10 @@ const AdminDashboard = () => {
         return <AdminBookings />
       case 'gallery':
         return <AdminGallery />
+      case 'services':
+        return <AdminServices />
+      case 'jobs':
+        return <AdminJobApplications />
       case 'schedule':
         return <AdminSchedule />
       case 'calendar':
@@ -118,7 +124,7 @@ const AdminDashboard = () => {
       <Container fluid style={{ position: 'relative', zIndex: 10 }}>
         <Row>
           {/* Modern Sidebar */}
-          <Col lg={3} xl={2} style={{ 
+          <Col lg={3} xl={2} className="admin-sidebar" style={{ 
             background: 'rgba(255,255,255,0.95)', 
             backdropFilter: 'blur(20px)',
             minHeight: '100vh',
@@ -149,6 +155,8 @@ const AdminDashboard = () => {
                   { key: 'overview', icon: '📊', label: 'Resumen' },
                   { key: 'bookings', icon: '📅', label: `Citas ${pendingBookings > 0 ? `(${pendingBookings})` : ''}` },
                   { key: 'gallery', icon: '🖼️', label: 'Galería' },
+                  { key: 'services', icon: '🛍️', label: 'Servicios' },
+                  { key: 'jobs', icon: '💼', label: 'Empleos' },
                   { key: 'schedule', icon: '⏰', label: 'Horarios' },
                   { key: 'calendar', icon: '📅', label: 'Calendario' },
                   { key: 'whatsapp', icon: '📱', label: 'WhatsApp' },
@@ -242,7 +250,7 @@ const AdminDashboard = () => {
           </Col>
 
           {/* Main Content */}
-          <Col lg={9} xl={10}>
+          <Col lg={9} xl={10} className="admin-main-content">
             <div style={{
               background: 'rgba(255,255,255,0.95)',
               backdropFilter: 'blur(20px)',

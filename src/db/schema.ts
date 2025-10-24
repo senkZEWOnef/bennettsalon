@@ -45,6 +45,32 @@ export const whatsappSettings = pgTable('whatsapp_settings', {
   updatedAt: timestamp('updated_at').notNull().defaultNow()
 })
 
+// Services table
+export const services = pgTable('services', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  category: text('category').notNull(), // 'Manicura' | 'Pedicura' | 'Especial' | 'Combo'
+  isActive: boolean('is_active').notNull().default(true),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+})
+
+// Job applications table
+export const jobApplications = pgTable('job_applications', {
+  id: serial('id').primaryKey(),
+  applicantName: text('applicant_name').notNull(),
+  applicantEmail: text('applicant_email').notNull(),
+  applicantPhone: text('applicant_phone').notNull(),
+  position: text('position').notNull(),
+  experience: text('experience'),
+  coverLetter: text('cover_letter'),
+  resumeFileName: text('resume_file_name'),
+  resumeFileSize: integer('resume_file_size'),
+  status: text('status').notNull().default('pending'), // 'pending' | 'reviewed' | 'contacted' | 'hired' | 'rejected'
+  notes: text('notes'), // Admin notes
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  reviewedAt: timestamp('reviewed_at')
+})
+
 // Admin authentication table (for future multi-admin support)
 export const adminUsers = pgTable('admin_users', {
   id: serial('id').primaryKey(),
@@ -66,6 +92,12 @@ export type NewScheduleSettings = typeof scheduleSettings.$inferInsert
 
 export type WhatsAppSettings = typeof whatsappSettings.$inferSelect
 export type NewWhatsAppSettings = typeof whatsappSettings.$inferInsert
+
+export type Service = typeof services.$inferSelect
+export type NewService = typeof services.$inferInsert
+
+export type JobApplication = typeof jobApplications.$inferSelect
+export type NewJobApplication = typeof jobApplications.$inferInsert
 
 export type AdminUser = typeof adminUsers.$inferSelect
 export type NewAdminUser = typeof adminUsers.$inferInsert

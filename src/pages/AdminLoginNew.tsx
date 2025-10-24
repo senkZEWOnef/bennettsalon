@@ -1,167 +1,172 @@
 import React, { useState } from 'react'
-import { Container, Row, Col, Card, Form, Button, Alert, Tabs, Tab } from 'react-bootstrap'
+import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [legacyPassword, setLegacyPassword] = useState('')
   const [showError, setShowError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState('new')
-  const { login, loginLegacy } = useAdmin()
+  const { loginLegacy } = useAdmin()
   const navigate = useNavigate()
 
-  const handleNewLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setShowError('')
     
-    try {
-      const success = await login(username, password)
-      if (success) {
-        navigate('/admin/dashboard')
-      } else {
-        setShowError('Usuario o contraseña incorrectos')
-        setTimeout(() => setShowError(''), 3000)
-      }
-    } catch (error) {
-      setShowError('Error de conexión. Inténtalo de nuevo.')
-      setTimeout(() => setShowError(''), 3000)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleLegacyLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setShowError('')
-    
-    if (loginLegacy(legacyPassword)) {
+    if (loginLegacy(password)) {
       navigate('/admin/dashboard')
     } else {
-      setShowError('Contraseña incorrecta')
+      setShowError('Contraseña incorrecta. Por favor, inténtalo de nuevo.')
       setTimeout(() => setShowError(''), 3000)
     }
     setLoading(false)
   }
 
   return (
-    <Container style={{ paddingTop: '120px', paddingBottom: '60px', minHeight: '100vh' }}>
-      <Row className="justify-content-center">
-        <Col md={8} lg={6}>
-          <Card className="salon-card">
-            <Card.Body className="p-5">
-              <div className="text-center mb-4">
-                <div className="mb-3" style={{ fontSize: '3rem' }}>🔐</div>
-                <h2 className="mb-3">Admin Login</h2>
-                <p className="text-muted">Acceso administrativo para Bennett Salon</p>
-              </div>
+    <div style={{
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      minHeight: '100vh',
+      position: 'relative'
+    }}>
+      {/* Background Pattern */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                          radial-gradient(circle at 40% 80%, rgba(255,255,255,0.03) 0%, transparent 50%)`,
+        zIndex: 1,
+        pointerEvents: 'none'
+      }}></div>
 
-              {showError && (
-                <Alert variant="danger" className="mb-4">
-                  {showError}
-                </Alert>
-              )}
+      <Container style={{ paddingTop: '120px', paddingBottom: '60px', position: 'relative', zIndex: 10 }}>
+        <Row className="justify-content-center">
+          <Col md={6} lg={5} xl={4}>
+            <Card style={{
+              background: 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,255,255,0.2)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+            }}>
+              <Card.Body className="p-5">
+                <div className="text-center mb-4">
+                  <div className="mb-3" style={{ 
+                    fontSize: '4rem',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  } as React.CSSProperties}>💅</div>
+                  <h2 className="mb-3" style={{
+                    fontWeight: '700',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  } as React.CSSProperties}>Admin Access</h2>
+                  <p style={{ color: '#666', fontSize: '1.1rem' }}>
+                    Acceso administrativo para Bennett Salon de Beauté
+                  </p>
+                </div>
 
-              <Tabs
-                activeKey={activeTab}
-                onSelect={(k) => setActiveTab(k || 'new')}
-                className="mb-4"
-                fill
-              >
-                <Tab eventKey="new" title="🆔 Login con Usuario">
-                  <Form onSubmit={handleNewLogin} className="mt-4">
-                    <Form.Group className="mb-3">
-                      <Form.Label>Usuario</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="admin, backdoor, test..."
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        size="lg"
-                      />
-                    </Form.Group>
+                {showError && (
+                  <Alert variant="danger" className="mb-4" style={{
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'rgba(220, 53, 69, 0.1)',
+                    color: '#721c24'
+                  }}>
+                    {showError}
+                  </Alert>
+                )}
 
-                    <Form.Group className="mb-4">
-                      <Form.Label>Contraseña</Form.Label>
-                      <Form.Control
-                        type="password"
-                        placeholder="Ingresa la contraseña"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        size="lg"
-                      />
-                    </Form.Group>
-
-                    <Button 
-                      type="submit" 
-                      className="btn-primary w-100" 
+                <Form onSubmit={handleLogin}>
+                  <Form.Group className="mb-4">
+                    <Form.Label style={{ fontWeight: '600', color: '#4a5568' }}>
+                      Contraseña de Administrador
+                    </Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Ingresa tu contraseña"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
                       size="lg"
-                      disabled={loading}
-                    >
-                      {loading ? '🔄 Iniciando...' : '🚪 Iniciar Sesión'}
-                    </Button>
-                  </Form>
-                </Tab>
+                      style={{
+                        borderRadius: '12px',
+                        border: '2px solid #e2e8f0',
+                        padding: '16px 20px',
+                        fontSize: '16px',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => {
+                        (e.target as HTMLElement).style.borderColor = '#667eea'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)'
+                      }}
+                      onBlur={(e) => {
+                        (e.target as HTMLElement).style.borderColor = '#e2e8f0'
+                        ;(e.target as HTMLElement).style.boxShadow = 'none'
+                      }}
+                    />
+                  </Form.Group>
 
-                <Tab eventKey="legacy" title="🔑 Login Legacy">
-                  <Form onSubmit={handleLegacyLogin} className="mt-4">
-                    <Form.Group className="mb-4">
-                      <Form.Label>Contraseña de Administrador (Legacy)</Form.Label>
-                      <Form.Control
-                        type="password"
-                        placeholder="Contraseña antigua"
-                        value={legacyPassword}
-                        onChange={(e) => setLegacyPassword(e.target.value)}
-                        required
-                        size="lg"
-                      />
-                      <Form.Text className="text-muted">
-                        Modo de compatibilidad con la contraseña anterior
-                      </Form.Text>
-                    </Form.Group>
+                  <Button 
+                    type="submit" 
+                    size="lg"
+                    disabled={loading}
+                    style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                      borderRadius: '12px',
+                      padding: '16px 20px',
+                      fontWeight: '600',
+                      fontSize: '1.1rem',
+                      color: 'white',
+                      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+                      transition: 'all 0.3s ease',
+                      width: '100%'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading) {
+                        (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!loading) {
+                        (e.target as HTMLElement).style.transform = 'translateY(0)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)'
+                      }
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Iniciando sesión...
+                      </>
+                    ) : (
+                      <>🚪 Iniciar Sesión</>
+                    )}
+                  </Button>
+                </Form>
 
-                    <Button 
-                      type="submit" 
-                      className="btn-outline-primary w-100" 
-                      size="lg"
-                      disabled={loading}
-                    >
-                      {loading ? '🔄 Iniciando...' : '🔑 Login Legacy'}
-                    </Button>
-                  </Form>
-                </Tab>
-              </Tabs>
-
-              <div className="text-center mt-4">
-                <div className="mb-2">
-                  <small className="text-muted d-block">
-                    <strong>Cuentas disponibles:</strong>
-                  </small>
-                  <small className="text-muted d-block">
-                    👑 <code>admin</code> - Cuenta principal
-                  </small>
-                  <small className="text-muted d-block">
-                    🚪 <code>backdoor</code> - Acceso de emergencia
-                  </small>
-                  <small className="text-muted d-block">
-                    🧪 <code>test</code> - Cuenta de pruebas
+                <div className="text-center mt-4">
+                  <small style={{ color: '#718096', fontSize: '0.9rem' }}>
+                    Solo para uso administrativo autorizado
                   </small>
                 </div>
-                <small className="text-muted">
-                  Solo para uso administrativo de Bennett Salon de Beauté
-                </small>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   )
 }
 

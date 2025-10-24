@@ -52,6 +52,14 @@ export interface WhatsAppSettings {
   enableNotifications: boolean
 }
 
+export interface Service {
+  id: string
+  name: string
+  category: 'Manicura' | 'Pedicura' | 'Especial' | 'Combo'
+  isActive: boolean
+  createdAt: Date
+}
+
 interface AdminContextType {
   isAuthenticated: boolean
   currentAdmin: { id: number; username: string; lastLogin: Date | null } | null
@@ -59,6 +67,7 @@ interface AdminContextType {
   galleryImages: GalleryImage[]
   scheduleSettings: ScheduleSettings
   whatsappSettings: WhatsAppSettings
+  services: Service[]
   loading: boolean
   login: (username: string, password: string) => Promise<boolean>
   loginLegacy: (password: string) => boolean
@@ -79,6 +88,11 @@ interface AdminContextType {
   updateTimeSlotBulk: (dates: string[], timeSlots: string[], available: boolean) => void
   generateDefaultSchedule: (year: number) => void
   isTimeSlotAvailable: (date: string, time: string) => boolean
+  // Service management methods
+  addService: (service: Omit<Service, 'id' | 'createdAt'>) => Promise<void>
+  updateService: (id: string, updates: Partial<Service>) => Promise<void>
+  deleteService: (id: string) => Promise<void>
+  getActiveServices: () => Service[]
   // Data loading method
   loadData: () => Promise<void>
 }
@@ -92,6 +106,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentAdmin, setCurrentAdmin] = useState<{ id: number; username: string; lastLogin: Date | null } | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   
   // Generate time slots from 6am to 9pm in 30-minute intervals
@@ -124,6 +139,22 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     enableNotifications: true
   })
 
+  // Initialize default services
+  const initializeDefaultServices = (): Service[] => {
+    return [
+      { id: '1', name: 'Manicura Clásica', category: 'Manicura', isActive: true, createdAt: new Date() },
+      { id: '2', name: 'Manicura en Gel', category: 'Manicura', isActive: true, createdAt: new Date() },
+      { id: '3', name: 'Manicura Rusa', category: 'Manicura', isActive: true, createdAt: new Date() },
+      { id: '4', name: 'Diseños Personalizados', category: 'Manicura', isActive: true, createdAt: new Date() },
+      { id: '5', name: 'Gel Tips', category: 'Manicura', isActive: true, createdAt: new Date() },
+      { id: '6', name: 'Hard Gel', category: 'Manicura', isActive: true, createdAt: new Date() },
+      { id: '7', name: 'Pedicura Clásica', category: 'Pedicura', isActive: true, createdAt: new Date() },
+      { id: '8', name: 'Pedicura Spa', category: 'Pedicura', isActive: true, createdAt: new Date() },
+      { id: '9', name: 'Combo Manicura & Pedicura', category: 'Combo', isActive: true, createdAt: new Date() },
+      { id: '10', name: 'Tratamiento Especial', category: 'Especial', isActive: true, createdAt: new Date() }
+    ]
+  }
+
   // Load data from database
   const loadData = async () => {
     try {
@@ -139,23 +170,29 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       // Initialize admin accounts if needed
       await ApiService.initializeAdmins()
       
+      // Initialize services first
+      await ApiService.initializeServices()
+      
       // Load all data in parallel
       const [
         dbBookings,
         dbGalleryImages,
         dbScheduleSettings,
-        dbWhatsAppSettings
+        dbWhatsAppSettings,
+        dbServices
       ] = await Promise.all([
         ApiService.getBookings(),
         ApiService.getGalleryImages(),
         ApiService.getScheduleSettings(),
-        ApiService.getWhatsAppSettings()
+        ApiService.getWhatsAppSettings(),
+        ApiService.getServices()
       ])
 
       setBookings(dbBookings)
       setGalleryImages(dbGalleryImages)
       setScheduleSettings(dbScheduleSettings)
       setWhatsAppSettings(dbWhatsAppSettings)
+      setServices(dbServices)
 
     } catch (error) {
       console.error('Error loading data from database:', error)
@@ -173,6 +210,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         { id: '3', src: '/images/gallery/pedicures/pedicure-classic.JPG', title: 'Pedicura Clásica', category: 'Pedicura' as const, uploadedAt: new Date() }
       ]
       setGalleryImages(defaultGalleryImages)
+      
+      // Initialize default services when database is unavailable
+      setServices(initializeDefaultServices())
     } finally {
       setLoading(false)
     }
@@ -363,6 +403,56 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }
 
+  // Service management methods
+  const addService = async (serviceData: Omit<Service, 'id' | 'createdAt'>) => {
+    try {
+      await ApiService.createService(serviceData)
+      // Reload services to get updated list
+      const updatedServices = await ApiService.getServices()
+      setServices(updatedServices)
+    } catch (error) {
+      console.error('Error adding service:', error)
+      // Fallback to local state if database fails
+      const newService: Service = {
+        ...serviceData,
+        id: Date.now().toString(),
+        createdAt: new Date()
+      }
+      setServices(prev => [...prev, newService])
+      throw new Error('Database unavailable. Service created locally but may not persist.')
+    }
+  }
+
+  const updateService = async (id: string, updates: Partial<Service>) => {
+    try {
+      await ApiService.updateService(id, updates)
+      // Update local state
+      setServices(prev => 
+        prev.map(service => 
+          service.id === id ? { ...service, ...updates } : service
+        )
+      )
+    } catch (error) {
+      console.error('Error updating service:', error)
+      throw error
+    }
+  }
+
+  const deleteService = async (id: string) => {
+    try {
+      await ApiService.deleteService(id)
+      // Update local state
+      setServices(prev => prev.filter(service => service.id !== id))
+    } catch (error) {
+      console.error('Error deleting service:', error)
+      throw error
+    }
+  }
+
+  const getActiveServices = (): Service[] => {
+    return services.filter(service => service.isActive)
+  }
+
   // Calendar management methods (local state for now, should be moved to database later)
   const generateDefaultSchedule = (year: number) => {
     const schedule: DaySchedule[] = []
@@ -469,6 +559,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     galleryImages,
     scheduleSettings,
     whatsappSettings,
+    services,
     loading,
     login,
     loginLegacy,
@@ -488,6 +579,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     updateTimeSlotBulk,
     generateDefaultSchedule,
     isTimeSlotAvailable,
+    addService,
+    updateService,
+    deleteService,
+    getActiveServices,
     loadData
   }
 

@@ -48,7 +48,30 @@ const Footer: React.FC = () => {
             <p className="mb-2">
               <strong>🇵🇷 Orgullosamente sirviendo a Puerto Rico 🇵🇷</strong>
             </p>
-            <p className="mb-0">&copy; {new Date().getFullYear()} Bennett Salon de Beauté. Todos los derechos reservados.</p>
+            <p className="mb-2">&copy; {new Date().getFullYear()} Bennett Salon de Beauté. Todos los derechos reservados.</p>
+            <p className="mb-0">
+              <small style={{ fontSize: '0.85rem', opacity: 0.8 }}>
+                Built by{' '}
+                <a 
+                  href="https://byzewo.com/engineer" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ 
+                    color: '#667eea', 
+                    textDecoration: 'none',
+                    fontWeight: '600'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.textDecoration = 'underline'
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.textDecoration = 'none'
+                  }}
+                >
+                  Zewo
+                </a>
+              </small>
+            </p>
           </Col>
         </Row>
       </Container>

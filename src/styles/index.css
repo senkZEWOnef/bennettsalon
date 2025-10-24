@@ -2180,3 +2180,127 @@ section.work-showcase-section,
     image-rendering: crisp-edges;
   }
 }
+
+/* Admin Dashboard Mobile Optimizations */
+@media (max-width: 991px) {
+  .admin-sidebar {
+    min-height: auto !important;
+    margin-bottom: 20px;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+  }
+  
+  .admin-main-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .admin-main-content > div {
+    margin: 0 !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Admin Dashboard Mobile */
+  .admin-sidebar .p-4 {
+    padding: 20px !important;
+  }
+  
+  .admin-sidebar .nav-link {
+    padding: 12px 16px !important;
+    margin-bottom: 8px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  /* Admin Tables Mobile */
+  .table-responsive {
+    font-size: 0.85rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 8px 4px !important;
+    vertical-align: middle;
+  }
+  
+  /* Admin Modals Mobile */
+  .modal-dialog {
+    margin: 5px !important;
+    max-width: calc(100vw - 10px) !important;
+  }
+  
+  .modal-body {
+    padding: 20px 15px !important;
+  }
+  
+  /* Admin Cards Mobile */
+  .admin-main-content .card {
+    margin-bottom: 15px !important;
+  }
+  
+  .admin-main-content .card-body {
+    padding: 20px 15px !important;
+  }
+  
+  /* Admin Form Controls */
+  .admin-main-content .form-control,
+  .admin-main-content .form-select {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    padding: 12px 15px !important;
+  }
+  
+  /* Admin Buttons */
+  .admin-main-content .btn {
+    padding: 10px 15px !important;
+    font-size: 0.85rem !important;
+    min-height: 44px !important;
+  }
+  
+  /* Admin Statistics Cards */
+  .admin-main-content .row .col-md-4,
+  .admin-main-content .row .col-md-3 {
+    margin-bottom: 15px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Small Mobile Admin Optimizations */
+  .admin-main-content h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .admin-main-content h4 {
+    font-size: 1.2rem !important;
+  }
+  
+  .admin-sidebar {
+    position: relative;
+    z-index: 1000;
+  }
+  
+  /* Stack admin cards vertically on very small screens */
+  .admin-main-content .row .col-md-4,
+  .admin-main-content .row .col-md-3,
+  .admin-main-content .row .col-md-6 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Improve admin navigation spacing on mobile */
+  .admin-sidebar .nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .admin-sidebar .nav-link {
+    flex: 1 1 45%;
+    margin: 2px;
+    text-align: center;
+    font-size: 0.75rem !important;
+    padding: 8px 4px !important;
+  }
+}

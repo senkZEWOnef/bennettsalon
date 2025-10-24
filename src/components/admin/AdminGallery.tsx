@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Row, Col, Card, Button, Modal, Form, Alert, Badge } from 'react-bootstrap'
-import { useAdmin, GalleryImage } from '../../contexts/AdminContext'
+import { useAdmin, GalleryImage } from '../../contexts/AdminContextNew'
 
 const AdminGallery = () => {
   const { galleryImages, addGalleryImage, removeGalleryImage, resetGalleryToDefaults } = useAdmin()

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
+import { ApiService } from '../services/api'
 
 const Hiring = () => {
   const [applicantName, setApplicantName] = useState<string>('')
@@ -10,6 +11,9 @@ const Hiring = () => {
   const [coverLetter, setCoverLetter] = useState<string>('')
   const [resume, setResume] = useState<File | null>(null)
   const [showAlert, setShowAlert] = useState<boolean>(false)
+  const [alertType, setAlertType] = useState<'success' | 'danger'>('success')
+  const [alertMessage, setAlertMessage] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const positions = [
     'Técnica en Uñas',
@@ -28,18 +32,55 @@ const Hiring = () => {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowAlert(true)
-    setTimeout(() => setShowAlert(false), 5000)
-    // Reset form
-    setApplicantName('')
-    setApplicantEmail('')
-    setApplicantPhone('')
-    setPosition('')
-    setExperience('')
-    setCoverLetter('')
-    setResume(null)
+    setIsSubmitting(true)
+    
+    try {
+      // Prepare application data
+      const applicationData = {
+        applicantName,
+        applicantEmail,
+        applicantPhone,
+        position,
+        experience,
+        coverLetter,
+        resumeFileName: resume?.name || '',
+        resumeFileSize: resume?.size || 0
+      }
+
+      // Save to database
+      await ApiService.createJobApplication(applicationData)
+      
+      // Show success message
+      setAlertMessage('¡Aplicación enviada exitosamente! Revisaremos tu aplicación y te contactaremos pronto.')
+      setAlertType('success')
+      setShowAlert(true)
+      
+      // Reset form
+      setApplicantName('')
+      setApplicantEmail('')
+      setApplicantPhone('')
+      setPosition('')
+      setExperience('')
+      setCoverLetter('')
+      setResume(null)
+      
+      // Reset file input
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
+      if (fileInput) {
+        fileInput.value = ''
+      }
+      
+    } catch (error) {
+      console.error('Error submitting application:', error)
+      setAlertMessage('Error al enviar la aplicación. Por favor, inténtalo de nuevo.')
+      setAlertType('danger')
+      setShowAlert(true)
+    } finally {
+      setIsSubmitting(false)
+      setTimeout(() => setShowAlert(false), 8000)
+    }
   }
 
   return (
@@ -78,8 +119,8 @@ const Hiring = () => {
               <h2 className="mb-4 text-center">Aplica Hoy</h2>
               
               {showAlert && (
-                <Alert variant="success" className="mb-4">
-                  <strong>¡Aplicación Enviada Exitosamente!</strong> Revisaremos tu aplicación y te contactaremos pronto.
+                <Alert variant={alertType} className="mb-4">
+                  {alertMessage}
                 </Alert>
               )}
 
@@ -193,8 +234,16 @@ const Hiring = () => {
                     className="btn-primary" 
                     size="lg"
                     style={{ minWidth: '200px' }}
+                    disabled={isSubmitting}
                   >
-                    Enviar Aplicación
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Enviando...
+                      </>
+                    ) : (
+                      'Enviar Aplicación'
+                    )}
                   </Button>
                 </div>
 

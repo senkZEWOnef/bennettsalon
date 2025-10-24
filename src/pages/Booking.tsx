@@ -11,7 +11,7 @@ type Value = ValuePiece | [ValuePiece, ValuePiece]
 const Booking = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { scheduleSettings, addBooking } = useAdmin()
+  const { scheduleSettings, addBooking, getActiveServices } = useAdmin()
   const [selectedDate, setSelectedDate] = useState<Value>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [selectedService, setSelectedService] = useState<string>('')
@@ -22,18 +22,9 @@ const Booking = () => {
   const [alertMessage, setAlertMessage] = useState<string>('')
   const [alertType, setAlertType] = useState<'success' | 'info' | 'warning'>('success')
 
-  const services = [
-    'Manicura Clásica',
-    'Manicura en Gel',
-    'Manicura Rusa',
-    'Diseños Personalizados',
-    'Gel Tips',
-    'Hard Gel',
-    'Pedicura Clásica',
-    'Pedicura Spa',
-    'Combo Manicura & Pedicura',
-    'Tratamiento Especial'
-  ]
+  // Get active services from admin context
+  const activeServices = getActiveServices()
+  const services = activeServices.map(service => service.name)
 
   // Handle messages from payment page redirects
   useEffect(() => {

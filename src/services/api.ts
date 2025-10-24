@@ -1,4 +1,4 @@
-import { bookingOperations, galleryOperations, scheduleOperations, whatsappOperations } from '../db/operations'
+import { bookingOperations, galleryOperations, scheduleOperations, whatsappOperations, serviceOperations, jobApplicationOperations } from '../db/operations'
 import { adminOperations } from '../db/adminOperations'
 import type { NewBooking, NewGalleryImage } from '../db/schema'
 
@@ -291,6 +291,163 @@ export class ApiService {
     } catch (error) {
       console.error('Error initializing admin accounts:', error)
       throw error
+    }
+  }
+
+  // Service methods
+  static async getServices() {
+    try {
+      const dbServices = await serviceOperations.getAll()
+      return dbServices.map(service => ({
+        id: service.id.toString(),
+        name: service.name,
+        category: service.category as 'Manicura' | 'Pedicura' | 'Especial' | 'Combo',
+        isActive: service.isActive,
+        createdAt: new Date(service.createdAt)
+      }))
+    } catch (error) {
+      console.error('Error fetching services:', error)
+      return []
+    }
+  }
+
+  static async getActiveServices() {
+    try {
+      const dbServices = await serviceOperations.getActive()
+      return dbServices.map(service => ({
+        id: service.id.toString(),
+        name: service.name,
+        category: service.category as 'Manicura' | 'Pedicura' | 'Especial' | 'Combo',
+        isActive: service.isActive,
+        createdAt: new Date(service.createdAt)
+      }))
+    } catch (error) {
+      console.error('Error fetching active services:', error)
+      return []
+    }
+  }
+
+  static async createService(data: { name: string; category: 'Manicura' | 'Pedicura' | 'Especial' | 'Combo'; isActive: boolean }) {
+    try {
+      const created = await serviceOperations.create(data)
+      return created.id.toString()
+    } catch (error) {
+      console.error('Error creating service:', error)
+      throw error
+    }
+  }
+
+  static async updateService(id: string, data: Partial<{ name: string; category: 'Manicura' | 'Pedicura' | 'Especial' | 'Combo'; isActive: boolean }>) {
+    try {
+      return await serviceOperations.update(parseInt(id), data)
+    } catch (error) {
+      console.error('Error updating service:', error)
+      throw error
+    }
+  }
+
+  static async deleteService(id: string) {
+    try {
+      return await serviceOperations.delete(parseInt(id))
+    } catch (error) {
+      console.error('Error deleting service:', error)
+      throw error
+    }
+  }
+
+  static async initializeServices() {
+    try {
+      return await serviceOperations.initializeDefaults()
+    } catch (error) {
+      console.error('Error initializing services:', error)
+      throw error
+    }
+  }
+
+  // Job application methods
+  static async getJobApplications() {
+    try {
+      const dbApplications = await jobApplicationOperations.getAll()
+      return dbApplications.map(app => ({
+        id: app.id.toString(),
+        applicantName: app.applicantName,
+        applicantEmail: app.applicantEmail,
+        applicantPhone: app.applicantPhone,
+        position: app.position,
+        experience: app.experience || '',
+        coverLetter: app.coverLetter || '',
+        resumeFileName: app.resumeFileName || '',
+        resumeFileSize: app.resumeFileSize || 0,
+        status: app.status as 'pending' | 'reviewed' | 'contacted' | 'hired' | 'rejected',
+        notes: app.notes || '',
+        createdAt: new Date(app.createdAt),
+        reviewedAt: app.reviewedAt ? new Date(app.reviewedAt) : null
+      }))
+    } catch (error) {
+      console.error('Error fetching job applications:', error)
+      return []
+    }
+  }
+
+  static async createJobApplication(data: {
+    applicantName: string
+    applicantEmail: string
+    applicantPhone: string
+    position: string
+    experience?: string
+    coverLetter?: string
+    resumeFileName?: string
+    resumeFileSize?: number
+  }) {
+    try {
+      const created = await jobApplicationOperations.create(data)
+      return created.id.toString()
+    } catch (error) {
+      console.error('Error creating job application:', error)
+      throw error
+    }
+  }
+
+  static async updateJobApplicationStatus(id: string, status: 'pending' | 'reviewed' | 'contacted' | 'hired' | 'rejected', notes?: string) {
+    try {
+      return await jobApplicationOperations.updateStatus(parseInt(id), status, notes)
+    } catch (error) {
+      console.error('Error updating job application status:', error)
+      throw error
+    }
+  }
+
+  static async addJobApplicationNotes(id: string, notes: string) {
+    try {
+      return await jobApplicationOperations.addNotes(parseInt(id), notes)
+    } catch (error) {
+      console.error('Error adding job application notes:', error)
+      throw error
+    }
+  }
+
+  static async deleteJobApplication(id: string) {
+    try {
+      return await jobApplicationOperations.delete(parseInt(id))
+    } catch (error) {
+      console.error('Error deleting job application:', error)
+      throw error
+    }
+  }
+
+  static async getJobApplicationStats() {
+    try {
+      return await jobApplicationOperations.getStats()
+    } catch (error) {
+      console.error('Error fetching job application stats:', error)
+      return {
+        total: 0,
+        pending: 0,
+        reviewed: 0,
+        contacted: 0,
+        hired: 0,
+        rejected: 0
+      }
     }
   }
 }

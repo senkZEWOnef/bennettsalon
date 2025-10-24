@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Row, Col, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap'
-import { useAdmin } from '../../contexts/AdminContext'
+import { useAdmin } from '../../contexts/AdminContextNew'
 
 const AdminWhatsApp = () => {
   const { whatsappSettings, updateWhatsAppSettings } = useAdmin()

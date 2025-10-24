@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Row, Col, Card, Button, Form, Alert, Badge, ListGroup } from 'react-bootstrap'
-import { useAdmin, ScheduleSettings } from '../../contexts/AdminContext'
+import { useAdmin, ScheduleSettings } from '../../contexts/AdminContextNew'
 
 const AdminSchedule = () => {
   const { scheduleSettings, updateScheduleSettings } = useAdmin()

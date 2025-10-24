@@ -1,11 +1,25 @@
 import { useState } from 'react'
-import { Row, Col, Card, Badge, Button, Table, Modal } from 'react-bootstrap'
-import { useAdmin, Booking } from '../../contexts/AdminContext'
+import { Row, Col, Card, Badge, Button, Table, Modal, Form, Alert } from 'react-bootstrap'
+import { useAdmin, Booking } from '../../contexts/AdminContextNew'
 
 const AdminBookings = () => {
-  const { bookings, updateBookingStatus, confirmBookingManually } = useAdmin()
+  const { bookings, updateBookingStatus, confirmBookingManually, addBooking, getActiveServices } = useAdmin()
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertType, setAlertType] = useState<'success' | 'danger'>('success')
+  
+  // New booking form state
+  const [newBooking, setNewBooking] = useState({
+    clientName: '',
+    clientEmail: '',
+    clientPhone: '',
+    service: '',
+    date: '',
+    time: ''
+  })
 
   const getStatusBadge = (status: Booking['status']) => {
     switch (status) {
@@ -39,12 +53,72 @@ const AdminBookings = () => {
     })
   }
 
+  const handleAddBooking = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await addBooking({
+        date: new Date(newBooking.date),
+        time: newBooking.time,
+        service: newBooking.service,
+        clientName: newBooking.clientName,
+        clientEmail: newBooking.clientEmail,
+        clientPhone: newBooking.clientPhone,
+        status: 'confirmed', // Admin bookings are automatically confirmed
+        paymentMethod: 'admin_override'
+      })
+      
+      setShowAddModal(false)
+      setNewBooking({
+        clientName: '',
+        clientEmail: '',
+        clientPhone: '',
+        service: '',
+        date: '',
+        time: ''
+      })
+      
+      setAlertMessage('Cita agregada exitosamente')
+      setAlertType('success')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    } catch (error) {
+      setAlertMessage('Error al agregar la cita')
+      setAlertType('danger')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    }
+  }
+
+  // Generate time slots for dropdown
+  const generateTimeSlots = () => {
+    const slots = []
+    for (let hour = 9; hour <= 17; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        slots.push(time)
+      }
+    }
+    return slots
+  }
+
+  // Get active services for dropdown
+  const activeServices = getActiveServices()
+
+  // Get minimum date (today)
+  const today = new Date().toISOString().split('T')[0]
+
   const pendingBookings = bookings.filter(b => b.status === 'pending')
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed')
   const cancelledBookings = bookings.filter(b => b.status === 'cancelled')
 
   return (
     <>
+      {showAlert && (
+        <Alert variant={alertType} className="mb-4">
+          {alertMessage}
+        </Alert>
+      )}
+
       <Row className="mb-4">
         <Col md={4} className="mb-3">
           <Card style={{ 
@@ -155,14 +229,40 @@ const AdminBookings = () => {
           borderRadius: '20px 20px 0 0',
           padding: '24px 32px'
         }}>
-          <h4 style={{ 
-            margin: 0,
-            fontWeight: '700',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          } as React.CSSProperties}>📅 Todas las Citas</h4>
+          <div className="d-flex justify-content-between align-items-center">
+            <h4 style={{ 
+              margin: 0,
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            } as React.CSSProperties}>📅 Todas las Citas</h4>
+            <Button 
+              onClick={() => setShowAddModal(true)}
+              style={{
+                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '10px 20px',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                color: 'white',
+                boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)'
+                ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(40, 167, 69, 0.4)'
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.transform = 'translateY(0)'
+                ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(40, 167, 69, 0.3)'
+              }}
+            >
+              ➕ Agregar Cita
+            </Button>
+          </div>
         </Card.Header>
         <Card.Body style={{ padding: '32px' }}>
           {bookings.length === 0 ? (
@@ -398,6 +498,173 @@ const AdminBookings = () => {
             Cerrar
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      {/* Add Booking Modal */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} size="lg">
+        <Modal.Header closeButton style={{ 
+          background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+          border: 'none',
+          borderRadius: '12px 12px 0 0',
+          color: 'white'
+        }}>
+          <Modal.Title style={{ fontWeight: '700', color: 'white' }}>
+            ➕ Agregar Nueva Cita
+          </Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleAddBooking}>
+          <Modal.Body style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            padding: '32px'
+          }}>
+            <Row>
+              <Col md={6}>
+                <h6 className="mb-3" style={{ 
+                  fontWeight: '700',
+                  color: '#667eea'
+                }}>Información del Cliente</h6>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label>Nombre Completo *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Ej: María González"
+                    value={newBooking.clientName}
+                    onChange={(e) => setNewBooking({ ...newBooking, clientName: e.target.value })}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="cliente@ejemplo.com"
+                    value={newBooking.clientEmail}
+                    onChange={(e) => setNewBooking({ ...newBooking, clientEmail: e.target.value })}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Teléfono *</Form.Label>
+                  <Form.Control
+                    type="tel"
+                    placeholder="787-123-4567"
+                    value={newBooking.clientPhone}
+                    onChange={(e) => setNewBooking({ ...newBooking, clientPhone: e.target.value })}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+
+              <Col md={6}>
+                <h6 className="mb-3" style={{ 
+                  fontWeight: '700',
+                  color: '#667eea'
+                }}>Detalles de la Cita</h6>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Servicio *</Form.Label>
+                  <Form.Select
+                    value={newBooking.service}
+                    onChange={(e) => setNewBooking({ ...newBooking, service: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona un servicio...</option>
+                    {activeServices.map((service) => (
+                      <option key={service.id} value={service.name}>
+                        {service.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Fecha *</Form.Label>
+                  <Form.Control
+                    type="date"
+                    min={today}
+                    value={newBooking.date}
+                    onChange={(e) => setNewBooking({ ...newBooking, date: e.target.value })}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Hora *</Form.Label>
+                  <Form.Select
+                    value={newBooking.time}
+                    onChange={(e) => setNewBooking({ ...newBooking, time: e.target.value })}
+                    required
+                  >
+                    <option value="">Selecciona una hora...</option>
+                    {generateTimeSlots().map((time) => (
+                      <option key={time} value={time}>
+                        {time}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+            </Row>
+            
+            <div style={{
+              background: 'rgba(40, 167, 69, 0.1)',
+              border: '1px solid rgba(40, 167, 69, 0.3)',
+              borderRadius: '12px',
+              padding: '16px',
+              marginTop: '20px'
+            }}>
+              <div className="d-flex align-items-center">
+                <div style={{ fontSize: '1.5rem', marginRight: '12px' }}>ℹ️</div>
+                <div>
+                  <strong>Cita de Administrador</strong>
+                  <p className="mb-0 text-muted" style={{ fontSize: '0.9rem' }}>
+                    Esta cita será confirmada automáticamente sin requerir pago.
+                    Ideal para clientes frecuentes o arreglos especiales.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer style={{ 
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px)',
+            border: 'none',
+            borderRadius: '0 0 12px 12px',
+            padding: '24px 32px'
+          }}>
+            <Button 
+              type="button"
+              onClick={() => setShowAddModal(false)}
+              style={{
+                background: 'rgba(108, 117, 125, 0.1)',
+                border: '1px solid rgba(108, 117, 125, 0.3)',
+                borderRadius: '12px',
+                padding: '10px 20px',
+                fontWeight: '600',
+                color: '#6c757d'
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              type="submit"
+              style={{
+                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '10px 20px',
+                fontWeight: '600',
+                color: 'white',
+                boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)'
+              }}
+            >
+              ➕ Crear Cita
+            </Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
     </>
   )
