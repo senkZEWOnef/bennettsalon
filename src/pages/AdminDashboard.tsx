@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Container, Row, Col, Card, Nav, Button } from 'react-bootstrap'
+import { Row, Col, Card, Nav, Button } from 'react-bootstrap'
 import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 import AdminBookings from '../components/admin/AdminBookings'
@@ -10,12 +10,13 @@ import AdminWhatsApp from '../components/admin/AdminWhatsApp'
 import AdminATHMovil from '../components/admin/AdminATHMovil'
 import AdminServices from '../components/admin/AdminServices'
 import AdminJobApplications from '../components/admin/AdminJobApplications'
+import AdminSocialSnapshots from '../components/admin/AdminSocialSnapshots'
 
-type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 'calendar' | 'whatsapp' | 'athm' | 'jobs'
+type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 'calendar' | 'whatsapp' | 'athm' | 'jobs' | 'social'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
-  const { logout, bookings, galleryImages, services, getActiveServices } = useAdmin()
+  const { logout, bookings, galleryImages, getActiveServices } = useAdmin()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -68,6 +69,8 @@ const AdminDashboard = () => {
         return <AdminWhatsApp />
       case 'athm':
         return <AdminATHMovil />
+      case 'social':
+        return <AdminSocialSnapshots />
       default:
         return (
           <>
@@ -577,6 +580,7 @@ const AdminDashboard = () => {
               { key: 'bookings', icon: 'fas fa-clock', label: 'Bookings', badge: pendingBookings },
               { key: 'services', icon: 'fas fa-cut', label: 'Services' },
               { key: 'gallery', icon: 'fas fa-images', label: 'Gallery' },
+              { key: 'social', icon: 'fas fa-camera', label: 'Social Media' },
               { key: 'whatsapp', icon: 'fab fa-whatsapp', label: 'WhatsApp' },
               { key: 'schedule', icon: 'fas fa-business-time', label: 'Schedule' },
               { key: 'athm', icon: 'fas fa-credit-card', label: 'Payments' },

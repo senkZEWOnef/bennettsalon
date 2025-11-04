@@ -12,6 +12,7 @@ interface JobApplication {
   coverLetter: string
   resumeFileName: string
   resumeFileSize: number
+  resumeFileContent?: string // Base64 encoded file content
   status: 'pending' | 'reviewed' | 'contacted' | 'hired' | 'rejected'
   notes: string
   createdAt: Date
@@ -143,6 +144,68 @@ const AdminJobApplications = () => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  const downloadResume = (application: JobApplication) => {
+    if (!application.resumeFileContent || !application.resumeFileName) {
+      setAlertMessage('El archivo CV no está disponible para descarga')
+      setAlertType('danger')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+      return
+    }
+
+    try {
+      // Convert base64 to blob
+      const byteCharacters = atob(application.resumeFileContent)
+      const byteNumbers = new Array(byteCharacters.length)
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i)
+      }
+      const byteArray = new Uint8Array(byteNumbers)
+      
+      // Determine MIME type based on file extension
+      const extension = application.resumeFileName.split('.').pop()?.toLowerCase()
+      let mimeType = 'application/octet-stream'
+      
+      switch (extension) {
+        case 'pdf':
+          mimeType = 'application/pdf'
+          break
+        case 'doc':
+          mimeType = 'application/msword'
+          break
+        case 'docx':
+          mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          break
+        case 'txt':
+          mimeType = 'text/plain'
+          break
+      }
+      
+      const blob = new Blob([byteArray], { type: mimeType })
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = application.resumeFileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      
+      setAlertMessage('CV descargado exitosamente')
+      setAlertType('success')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 3000)
+    } catch (error) {
+      console.error('Error downloading resume:', error)
+      setAlertMessage('Error al descargar el CV')
+      setAlertType('danger')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    }
   }
 
   if (loading) {
@@ -418,7 +481,30 @@ const AdminJobApplications = () => {
                     <p><strong>Revisada:</strong> {formatDate(selectedApplication.reviewedAt)}</p>
                   )}
                   {selectedApplication.resumeFileName && (
-                    <p><strong>CV:</strong> {selectedApplication.resumeFileName} ({formatFileSize(selectedApplication.resumeFileSize)})</p>
+                    <div>
+                      <p style={{ marginBottom: '8px' }}>
+                        <strong>CV:</strong> {selectedApplication.resumeFileName} ({formatFileSize(selectedApplication.resumeFileSize)})
+                      </p>
+                      {selectedApplication.resumeFileContent ? (
+                        <Button
+                          size="sm"
+                          variant="outline-primary"
+                          onClick={() => downloadResume(selectedApplication)}
+                          style={{
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontWeight: '500',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          📄 Descargar CV
+                        </Button>
+                      ) : (
+                        <small className="text-muted">
+                          <em>Archivo no disponible para descarga</em>
+                        </small>
+                      )}
+                    </div>
                   )}
                 </Col>
               </Row>

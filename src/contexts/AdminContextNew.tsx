@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { triggerWhatsAppNotifications } from '../utils/whatsapp'
 import { ApiService } from '../services/api'
+import { runMigration } from '../db/migrate'
 
 export interface Booking {
   id: string
@@ -85,10 +86,10 @@ interface AdminContextType {
   updateWhatsAppSettings: (settings: WhatsAppSettings) => Promise<void>
   cleanupExpiredBookings: () => Promise<void>
   // New calendar management methods
-  updateTimeSlot: (date: string, time: string, available: boolean) => void
-  updateDayStatus: (date: string, isOpen: boolean) => void
+  updateTimeSlot: (date: string, time: string, available: boolean) => Promise<void>
+  updateDayStatus: (date: string, isOpen: boolean) => Promise<void>
   updateMultipleDays: (dates: string[], isOpen: boolean) => void
-  updateTimeSlotBulk: (dates: string[], timeSlots: string[], available: boolean) => void
+  updateTimeSlotBulk: (dates: string[], timeSlots: string[], available: boolean) => Promise<void>
   generateDefaultSchedule: (year: number) => void
   isTimeSlotAvailable: (date: string, time: string) => boolean
   // Service management methods
@@ -169,6 +170,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setLoading(false)
         return
       }
+      
+      // Run database migration to ensure schema is up to date
+      await runMigration()
       
       // Initialize admin accounts if needed
       await ApiService.initializeAdmins()
@@ -496,10 +500,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }))
   }
 
-  const updateTimeSlot = (date: string, time: string, available: boolean) => {
-    setScheduleSettings(prev => ({
-      ...prev,
-      yearSchedule: prev.yearSchedule.map(day => 
+  const updateTimeSlot = async (date: string, time: string, available: boolean) => {
+    const updatedSettings = {
+      ...scheduleSettings,
+      yearSchedule: scheduleSettings.yearSchedule.map(day => 
         day.date === date 
           ? {
               ...day,
@@ -509,13 +513,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }
           : day
       )
-    }))
+    }
+    
+    // Update local state immediately for responsiveness
+    setScheduleSettings(updatedSettings)
+    
+    // Save to database
+    try {
+      await ApiService.updateScheduleSettings(updatedSettings)
+    } catch (error) {
+      console.error('Error saving time slot update:', error)
+      // Revert local state on error
+      setScheduleSettings(scheduleSettings)
+    }
   }
 
-  const updateDayStatus = (date: string, isOpen: boolean) => {
-    setScheduleSettings(prev => ({
-      ...prev,
-      yearSchedule: prev.yearSchedule.map(day => 
+  const updateDayStatus = async (date: string, isOpen: boolean) => {
+    const updatedSettings = {
+      ...scheduleSettings,
+      yearSchedule: scheduleSettings.yearSchedule.map(day => 
         day.date === date 
           ? {
               ...day,
@@ -524,7 +540,19 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }
           : day
       )
-    }))
+    }
+    
+    // Update local state immediately for responsiveness
+    setScheduleSettings(updatedSettings)
+    
+    // Save to database
+    try {
+      await ApiService.updateScheduleSettings(updatedSettings)
+    } catch (error) {
+      console.error('Error saving day status update:', error)
+      // Revert local state on error
+      setScheduleSettings(scheduleSettings)
+    }
   }
 
   const updateMultipleDays = (dates: string[], isOpen: boolean) => {
@@ -542,10 +570,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }))
   }
 
-  const updateTimeSlotBulk = (dates: string[], timeSlots: string[], available: boolean) => {
-    setScheduleSettings(prev => ({
-      ...prev,
-      yearSchedule: prev.yearSchedule.map(day => 
+  const updateTimeSlotBulk = async (dates: string[], timeSlots: string[], available: boolean) => {
+    const updatedSettings = {
+      ...scheduleSettings,
+      yearSchedule: scheduleSettings.yearSchedule.map(day => 
         dates.includes(day.date)
           ? {
               ...day,
@@ -555,7 +583,19 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }
           : day
       )
-    }))
+    }
+    
+    // Update local state immediately for responsiveness
+    setScheduleSettings(updatedSettings)
+    
+    // Save to database
+    try {
+      await ApiService.updateScheduleSettings(updatedSettings)
+    } catch (error) {
+      console.error('Error saving bulk time slot update:', error)
+      // Revert local state on error
+      setScheduleSettings(scheduleSettings)
+    }
   }
 
   const isTimeSlotAvailable = (date: string, time: string): boolean => {

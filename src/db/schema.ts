@@ -67,6 +67,7 @@ export const jobApplications = pgTable('job_applications', {
   coverLetter: text('cover_letter'),
   resumeFileName: text('resume_file_name'),
   resumeFileSize: integer('resume_file_size'),
+  resumeFileContent: text('resume_file_content'), // Base64 encoded file content
   status: text('status').notNull().default('pending'), // 'pending' | 'reviewed' | 'contacted' | 'hired' | 'rejected'
   notes: text('notes'), // Admin notes
   createdAt: timestamp('created_at').notNull().defaultNow(),

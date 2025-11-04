@@ -105,7 +105,7 @@ const Testimonials = () => {
                 Tus comentarios nos ayudan a continuar brindando el mejor servicio posible.
               </p>
               <p className="mb-0">
-                <strong>Déjanos una reseña en Instagram:</strong> @bennettsalondebeaute
+                <strong>Déjanos una reseña en Instagram:</strong> @bennettsalon
               </p>
             </Card.Body>
           </Card>

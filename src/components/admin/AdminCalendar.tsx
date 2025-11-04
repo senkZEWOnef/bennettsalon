@@ -51,24 +51,36 @@ const AdminCalendar = () => {
 
   const selectedDay = scheduleSettings.yearSchedule.find(day => day.date === selectedDate)
 
-  const handleTimeSlotToggle = (time: string, available: boolean) => {
-    updateTimeSlot(selectedDate, time, available)
-  }
-
-  const handleDayToggle = (isOpen: boolean) => {
-    updateDayStatus(selectedDate, isOpen)
-  }
-
-  const handleBulkOperation = () => {
-    if (bulkOperation === 'vacation') {
-      updateMultipleDays(selectedDates, false)
-    } else if (bulkOperation === 'hours' && bulkTimeSlots.length > 0) {
-      updateTimeSlotBulk(selectedDates, bulkTimeSlots, true)
+  const handleTimeSlotToggle = async (time: string, available: boolean) => {
+    try {
+      await updateTimeSlot(selectedDate, time, available)
+    } catch (error) {
+      console.error('Error updating time slot:', error)
     }
-    setShowBulkModal(false)
-    setSelectedDates([])
-    setBulkTimeSlots([])
-    setBulkOperation('')
+  }
+
+  const handleDayToggle = async (isOpen: boolean) => {
+    try {
+      await updateDayStatus(selectedDate, isOpen)
+    } catch (error) {
+      console.error('Error updating day status:', error)
+    }
+  }
+
+  const handleBulkOperation = async () => {
+    try {
+      if (bulkOperation === 'vacation') {
+        updateMultipleDays(selectedDates, false)
+      } else if (bulkOperation === 'hours' && bulkTimeSlots.length > 0) {
+        await updateTimeSlotBulk(selectedDates, bulkTimeSlots, true)
+      }
+      setShowBulkModal(false)
+      setSelectedDates([])
+      setBulkTimeSlots([])
+      setBulkOperation('')
+    } catch (error) {
+      console.error('Error performing bulk operation:', error)
+    }
   }
 
   const formatTime = (time: string) => {

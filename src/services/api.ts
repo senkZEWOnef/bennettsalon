@@ -391,6 +391,7 @@ export class ApiService {
         coverLetter: app.coverLetter || '',
         resumeFileName: app.resumeFileName || '',
         resumeFileSize: app.resumeFileSize || 0,
+        resumeFileContent: app.resumeFileContent || undefined,
         status: app.status as 'pending' | 'reviewed' | 'contacted' | 'hired' | 'rejected',
         notes: app.notes || '',
         createdAt: new Date(app.createdAt),
@@ -411,6 +412,7 @@ export class ApiService {
     coverLetter?: string
     resumeFileName?: string
     resumeFileSize?: number
+    resumeFileContent?: string
   }) {
     try {
       const created = await jobApplicationOperations.create(data)

@@ -70,7 +70,14 @@ const BookingCTASection = () => {
       const bookingDate = Array.isArray(selectedDate) ? selectedDate[0] : selectedDate
       
       if (bookingDate) {
-        const bookingId = addBooking({
+        console.log('Creating booking...', {
+          date: bookingDate,
+          time: selectedTime,
+          service: selectedService,
+          clientName: clientName.trim()
+        })
+
+        const bookingId = await addBooking({
           date: bookingDate,
           time: selectedTime,
           service: selectedService,
@@ -80,25 +87,27 @@ const BookingCTASection = () => {
           status: 'pending'
         })
 
+        console.log('Booking created with ID:', bookingId)
+
         // Create booking object for payment page
         const newBooking = {
           id: bookingId,
-          date: bookingDate,
+          date: bookingDate, // Keep as Date object
           time: selectedTime,
           service: selectedService,
           clientName: clientName.trim(),
           clientEmail: clientEmail.trim(),
-          clientPhone: clientPhone.trim(),
-          status: 'pending' as const,
-          createdAt: new Date(),
-          paymentDeadline: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes from now
-          depositAmount: 20
+          clientPhone: clientPhone.trim()
         }
 
         setShowAlert(true)
+        setValidationErrors([]) // Clear any previous errors
+        
+        console.log('Navigating to payment page with booking:', newBooking)
         
         // Redirect to payment page with booking data after a short delay
         setTimeout(() => {
+          console.log('Executing navigation to payment page')
           navigate('/payment', { 
             state: { booking: newBooking }
           })
@@ -325,11 +334,8 @@ const BookingCTASection = () => {
             <div className="social-proof">
               <p className="mb-3 text-dark" style={{textShadow: '1px 1px 2px rgba(255,255,255,0.6)'}}>🌟 Síguenos y mantente al día con nuestros trabajos</p>
               <div className="d-flex justify-content-center gap-4">
-                <a href="https://instagram.com/bennettsalondebeaute" target="_blank" className="btn btn-social-lg btn-social-insta-lg">
+                <a href="https://www.instagram.com/bennettsalon/" target="_blank" className="btn btn-social-lg btn-social-insta-lg">
                   <i className="fab fa-instagram"></i> Instagram
-                </a>
-                <a href="https://facebook.com/bennettsalondebeaute" target="_blank" className="btn btn-social-lg btn-social-fb-lg">
-                  <i className="fab fa-facebook"></i> Facebook
                 </a>
               </div>
             </div>

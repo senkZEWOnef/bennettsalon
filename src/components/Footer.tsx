@@ -17,24 +17,17 @@ const Footer: React.FC = () => {
           <Col md={4} className="text-center">
             <h5 className="mb-3">🌐 Síguenos en Redes</h5>
             <div className="d-flex justify-content-center gap-3 mb-3">
-              <a href="https://instagram.com/bennettsalondebeaute" target="_blank" className="text-white">
+              <a href="https://www.instagram.com/bennettsalon/" target="_blank" className="text-white">
                 <i className="fab fa-instagram" style={{fontSize: '2rem'}}></i>
               </a>
-              <a href="https://facebook.com/bennettsalondebeaute" target="_blank" className="text-white">
-                <i className="fab fa-facebook" style={{fontSize: '2rem'}}></i>
-              </a>
             </div>
-            <p className="mb-0">@bennettsalondebeaute</p>
+            <p className="mb-0">@bennettsalon</p>
           </Col>
           <Col md={4} className="text-md-end">
             <h5 className="mb-3">📞 Contáctanos</h5>
             <p className="mb-2">
               <i className="fab fa-instagram me-2"></i>
-              Instagram: @bennettsalondebeaute
-            </p>
-            <p className="mb-2">
-              <i className="fab fa-facebook me-2"></i>
-              Facebook: Bennett Salon
+              Instagram: @bennettsalon
             </p>
             <p className="mb-0">
               <i className="fas fa-calendar-check me-2"></i>

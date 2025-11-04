@@ -32,11 +32,34 @@ const Hiring = () => {
     }
   }
 
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          // Remove the data:mime/type;base64, prefix
+          const base64 = reader.result.split(',')[1]
+          resolve(base64)
+        } else {
+          reject(new Error('Failed to convert file to base64'))
+        }
+      }
+      reader.onerror = (error) => reject(error)
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     
     try {
+      // Convert file to base64 if present
+      let resumeFileContent = ''
+      if (resume) {
+        resumeFileContent = await convertFileToBase64(resume)
+      }
+
       // Prepare application data
       const applicationData = {
         applicantName,
@@ -46,7 +69,8 @@ const Hiring = () => {
         experience,
         coverLetter,
         resumeFileName: resume?.name || '',
-        resumeFileSize: resume?.size || 0
+        resumeFileSize: resume?.size || 0,
+        resumeFileContent
       }
 
       // Save to database
