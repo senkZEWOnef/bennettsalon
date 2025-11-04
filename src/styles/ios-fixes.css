@@ -1,0 +1,63 @@
+/* iOS Safari specific fixes */
+
+/* Fix viewport height issues on iOS */
+:root {
+  --vh: 1vh;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-viewport-fix {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Use custom viewport height for mobile */
+.mobile-viewport {
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Fix offcanvas on iOS */
+.ios-offcanvas {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Prevent iOS zoom on input focus */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+/* Fix iOS tap highlights */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve touch scrolling */
+.ios-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
+
+/* Fix position fixed elements on iOS */
+.ios-fixed {
+  position: -webkit-sticky;
+  position: sticky;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Fix Bootstrap offcanvas backdrop on iOS */
+.offcanvas-backdrop {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Prevent body scroll when offcanvas is open on iOS */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}

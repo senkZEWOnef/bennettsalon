@@ -21,18 +21,34 @@ const AdminDashboard = () => {
   const { logout, bookings, galleryImages, getActiveServices } = useAdmin()
   const navigate = useNavigate()
 
-  // Check for mobile screen size
+  // Check for mobile screen size and iOS
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768)
-      if (window.innerWidth >= 768) {
+      // Use 820px for iPhone Pro Max compatibility
+      setIsMobile(window.innerWidth <= 820)
+      if (window.innerWidth > 820) {
         setShowSidebar(false)
       }
     }
     
+    // iOS viewport height fix
+    const setViewportHeight = () => {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+    
     checkScreenSize()
+    setViewportHeight()
+    
     window.addEventListener('resize', checkScreenSize)
-    return () => window.removeEventListener('resize', checkScreenSize)
+    window.addEventListener('resize', setViewportHeight)
+    window.addEventListener('orientationchange', setViewportHeight)
+    
+    return () => {
+      window.removeEventListener('resize', checkScreenSize)
+      window.removeEventListener('resize', setViewportHeight)
+      window.removeEventListener('orientationchange', setViewportHeight)
+    }
   }, [])
 
   const handleLogout = () => {
@@ -667,10 +683,14 @@ const AdminDashboard = () => {
   )
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#F8F9FA'
-    }}>
+    <div 
+      className={isMobile ? 'mobile-viewport ios-viewport-fix' : ''}
+      style={{ 
+        minHeight: isMobile ? 'calc(var(--vh, 1vh) * 100)' : '100vh',
+        backgroundColor: '#F8F9FA',
+        position: 'relative',
+        overflow: isMobile ? 'hidden' : 'auto' // Prevent scroll issues on mobile
+      }}>
       {/* Mobile Header with Menu Button */}
       {isMobile && (
         <div style={{
@@ -684,8 +704,10 @@ const AdminDashboard = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 20px',
-          zIndex: 1050,
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+          zIndex: 9999, // Higher z-index for iOS
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          WebkitBackfaceVisibility: 'hidden', // Fix iOS rendering issues
+          backfaceVisibility: 'hidden'
         }}>
           <div className="d-flex align-items-center">
             <span style={{ fontSize: '20px', marginRight: '10px' }}>💅</span>
@@ -695,7 +717,10 @@ const AdminDashboard = () => {
             variant="outline-light"
             size="sm"
             onClick={() => setShowSidebar(true)}
-            style={{ border: 'none' }}
+            style={{ 
+              border: 'none',
+              WebkitTapHighlightColor: 'transparent' // Remove iOS tap highlight
+            }}
           >
             <i className="fas fa-bars"></i>
           </Button>
@@ -723,11 +748,19 @@ const AdminDashboard = () => {
         show={showSidebar} 
         onHide={() => setShowSidebar(false)} 
         placement="start"
-        style={{ width: '280px' }}
+        style={{ 
+          width: '280px',
+          zIndex: 10000, // High z-index for iOS
+          WebkitTransform: 'translateZ(0)', // Force hardware acceleration
+          transform: 'translateZ(0)'
+        }}
+        className="ios-offcanvas"
       >
         <div style={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          minHeight: '100vh'
+          minHeight: isMobile ? '100dvh' : '100vh',
+          WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+          overflow: 'auto'
         }}>
           <SidebarContent onItemClick={() => setShowSidebar(false)} />
         </div>
@@ -737,8 +770,11 @@ const AdminDashboard = () => {
       <div style={{
         marginLeft: isMobile ? '0' : '250px',
         paddingTop: isMobile ? '60px' : '0',
-        minHeight: '100vh',
-        background: '#F8F9FA'
+        minHeight: isMobile ? '100dvh' : '100vh',
+        background: '#F8F9FA',
+        WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+        overflow: isMobile ? 'auto' : 'visible',
+        position: 'relative'
       }}>
         {/* Header */}
         <div style={{
