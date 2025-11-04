@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Row, Col, Card, Badge, Button, Table, Modal, Form, Alert, InputGroup } from 'react-bootstrap'
 import { useAdmin, Booking } from '../../contexts/AdminContextNew'
 
@@ -10,6 +10,18 @@ const AdminBookings = () => {
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
   const [alertMessage, setAlertMessage] = useState('')
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success')
   const [editingPrice, setEditingPrice] = useState({ totalPrice: '', notes: '' })
@@ -328,7 +340,92 @@ const AdminBookings = () => {
               <h5>No hay citas aún</h5>
               <p className="text-muted">Las nuevas citas aparecerán aquí cuando los clientes hagan reservas.</p>
             </div>
+          ) : isMobile ? (
+            // Mobile Card Layout
+            <div className="mobile-bookings">
+              {bookings.map((booking) => (
+                <Card key={booking.id} className="mb-3" style={{
+                  border: '1px solid #E9ECEF',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                }}>
+                  <Card.Body className="p-3">
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <div>
+                        <h6 className="mb-1" style={{ fontWeight: '600', color: '#2C3E50' }}>
+                          {booking.clientName}
+                        </h6>
+                        <div style={{ fontSize: '0.85rem', color: '#6C757D' }}>
+                          {formatDate(booking.date)} • {booking.time}
+                        </div>
+                      </div>
+                      <div>
+                        {getStatusBadge(booking.status)}
+                      </div>
+                    </div>
+                    
+                    <div className="mb-2">
+                      <div style={{ fontSize: '0.9rem', marginBottom: '4px' }}>
+                        <strong>Servicio:</strong> {booking.service}
+                      </div>
+                      <div style={{ fontSize: '0.9rem', marginBottom: '4px' }}>
+                        <strong>Precio:</strong> {booking.totalPrice ? (
+                          <span className="text-success">${(booking.totalPrice / 100).toFixed(2)}</span>
+                        ) : (
+                          <span className="text-muted">Sin precio</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '0.85rem', color: '#6C757D' }}>
+                        📱 {booking.clientPhone} • ✉️ {booking.clientEmail}
+                      </div>
+                    </div>
+
+                    <div className="d-flex gap-2 flex-wrap">
+                      <Button
+                        size="sm"
+                        onClick={() => handleViewDetails(booking)}
+                        style={{
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '4px 8px',
+                          fontSize: '0.75rem',
+                          color: 'white'
+                        }}
+                      >
+                        👁️ Ver
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-success"
+                        onClick={() => handleEditPrice(booking)}
+                        style={{
+                          borderRadius: '6px',
+                          padding: '4px 8px',
+                          fontSize: '0.75rem'
+                        }}
+                      >
+                        💰 Precio
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => handleDeleteBooking(booking)}
+                        style={{
+                          borderRadius: '6px',
+                          padding: '4px 8px',
+                          fontSize: '0.75rem'
+                        }}
+                      >
+                        🗑️ Eliminar
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              ))}
+            </div>
           ) : (
+            // Desktop Table Layout
             <Table responsive hover>
               <thead>
                 <tr>

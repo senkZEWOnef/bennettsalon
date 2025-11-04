@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Row, Col, Card, Nav, Button } from 'react-bootstrap'
+import { useState, useEffect } from 'react'
+import { Row, Col, Card, Nav, Button, Offcanvas } from 'react-bootstrap'
 import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 import AdminBookings from '../components/admin/AdminBookings'
@@ -16,8 +16,24 @@ type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
+  const [showSidebar, setShowSidebar] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const { logout, bookings, galleryImages, getActiveServices } = useAdmin()
   const navigate = useNavigate()
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768)
+      if (window.innerWidth >= 768) {
+        setShowSidebar(false)
+      }
+    }
+    
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -521,53 +537,264 @@ const AdminDashboard = () => {
     }
   }
 
+  // Sidebar component for reuse
+  const SidebarContent = ({ onItemClick }: { onItemClick?: () => void }) => (
+    <>
+      {/* Logo Section */}
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <div className="d-flex align-items-center">
+          <div style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '12px'
+          }}>
+            <span style={{ fontSize: '20px' }}>💅</span>
+          </div>
+          <div>
+            <h5 style={{ 
+              margin: '0', 
+              color: 'white', 
+              fontWeight: '600',
+              fontSize: '16px'
+            }}>Bennett</h5>
+            <small style={{ 
+              color: 'rgba(255,255,255,0.8)', 
+              fontSize: '12px'
+            }}>by Bennett Salon</small>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div style={{ padding: '20px 0' }}>
+        <Nav className="flex-column">
+          {[
+            { key: 'overview', icon: 'fas fa-tachometer-alt', label: 'Dashboard' },
+            { key: 'calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
+            { key: 'bookings', icon: 'fas fa-clock', label: 'Bookings', badge: pendingBookings },
+            { key: 'services', icon: 'fas fa-cut', label: 'Services' },
+            { key: 'gallery', icon: 'fas fa-images', label: 'Gallery' },
+            { key: 'social', icon: 'fas fa-camera', label: 'Social Media' },
+            { key: 'whatsapp', icon: 'fab fa-whatsapp', label: 'WhatsApp' },
+            { key: 'schedule', icon: 'fas fa-business-time', label: 'Schedule' },
+            { key: 'athm', icon: 'fas fa-credit-card', label: 'Payments' },
+            { key: 'jobs', icon: 'fas fa-briefcase', label: 'Jobs' }
+          ].map((item) => (
+            <Nav.Link 
+              key={item.key}
+              onClick={() => {
+                setActiveTab(item.key as any)
+                if (onItemClick) onItemClick()
+              }}
+              style={{ 
+                cursor: 'pointer',
+                padding: '12px 20px',
+                margin: '2px 0',
+                fontWeight: '500',
+                fontSize: '14px',
+                border: 'none',
+                color: activeTab === item.key ? '#667eea' : 'rgba(255,255,255,0.8)',
+                backgroundColor: activeTab === item.key ? 'white' : 'transparent',
+                borderRadius: activeTab === item.key ? '0 25px 25px 0' : '0',
+                marginRight: activeTab === item.key ? '0' : '0',
+                transition: 'all 0.2s ease',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== item.key) {
+                  (e.target as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.1)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== item.key) {
+                  (e.target as HTMLElement).style.backgroundColor = 'transparent'
+                }
+              }}
+            >
+              <div className="d-flex align-items-center">
+                <i className={item.icon} style={{ 
+                  marginRight: '12px', 
+                  fontSize: '16px'
+                }} />
+                <span>{item.label}</span>
+              </div>
+              {item.badge && item.badge > 0 && (
+                <span style={{
+                  backgroundColor: '#ff6b87',
+                  color: 'white',
+                  fontSize: '11px',
+                  padding: '2px 6px',
+                  borderRadius: '10px',
+                  fontWeight: '600'
+                }}>
+                  {item.badge}
+                </span>
+              )}
+            </Nav.Link>
+          ))}
+        </Nav>
+        
+        {/* Logout Button */}
+        <div style={{ padding: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '20px' }}>
+          <Button 
+            variant="outline-light" 
+            onClick={handleLogout}
+            className="w-100"
+            style={{
+              borderRadius: '8px',
+              borderColor: 'rgba(255,255,255,0.3)',
+              fontWeight: '500',
+              fontSize: '14px'
+            }}
+          >
+            <i className="fas fa-sign-out-alt me-2"></i>
+            Cerrar Sesión
+          </Button>
+        </div>
+      </div>
+    </>
+  )
+
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#F8F9FA',
-      display: 'flex'
+      backgroundColor: '#F8F9FA'
     }}>
-      {/* Purple Sidebar - Bennett Style */}
-      <div style={{
-        width: '250px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        minHeight: '100vh',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        zIndex: 1000,
-        boxShadow: '4px 0 10px rgba(0,0,0,0.1)'
-      }}>
-        {/* Logo Section */}
+      {/* Mobile Header with Menu Button */}
+      {isMobile && (
         <div style={{
-          padding: '20px',
-          borderBottom: '1px solid rgba(255,255,255,0.1)'
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '60px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 20px',
+          zIndex: 1050,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
         }}>
           <div className="d-flex align-items-center">
-            <div style={{
-              width: '40px',
-              height: '40px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '12px'
-            }}>
-              <span style={{ fontSize: '20px' }}>💅</span>
-            </div>
+            <span style={{ fontSize: '20px', marginRight: '10px' }}>💅</span>
+            <h5 style={{ margin: '0', color: 'white', fontWeight: '600' }}>Bennett Admin</h5>
+          </div>
+          <Button
+            variant="outline-light"
+            size="sm"
+            onClick={() => setShowSidebar(true)}
+            style={{ border: 'none' }}
+          >
+            <i className="fas fa-bars"></i>
+          </Button>
+        </div>
+      )}
+
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <div style={{
+          width: '250px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          minHeight: '100vh',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          zIndex: 1000,
+          boxShadow: '4px 0 10px rgba(0,0,0,0.1)'
+        }}>
+          <SidebarContent />
+        </div>
+      )}
+
+      {/* Mobile Offcanvas Sidebar */}
+      <Offcanvas 
+        show={showSidebar} 
+        onHide={() => setShowSidebar(false)} 
+        placement="start"
+        style={{ width: '280px' }}
+      >
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          minHeight: '100vh'
+        }}>
+          <SidebarContent onItemClick={() => setShowSidebar(false)} />
+        </div>
+      </Offcanvas>
+
+      {/* Main Content */}
+      <div style={{
+        marginLeft: isMobile ? '0' : '250px',
+        paddingTop: isMobile ? '60px' : '0',
+        minHeight: '100vh',
+        background: '#F8F9FA'
+      }}>
+        {/* Header */}
+        <div style={{
+          background: 'white',
+          borderBottom: '1px solid #E9ECEF',
+          padding: '20px 30px',
+          position: 'sticky',
+          top: isMobile ? '60px' : '0',
+          zIndex: 100
+        }}>
+          <div className="d-flex justify-content-between align-items-center">
             <div>
-              <h5 style={{ 
+              <h1 style={{ 
                 margin: '0', 
-                color: 'white', 
-                fontWeight: '600',
-                fontSize: '16px'
-              }}>Bennett</h5>
-              <small style={{ 
-                color: 'rgba(255,255,255,0.8)', 
-                fontSize: '12px'
-              }}>by Bennett Salon</small>
+                fontSize: isMobile ? '1.5rem' : '2rem',
+                fontWeight: '700',
+                color: '#2C3E50'
+              }}>
+                {(() => {
+                  switch (activeTab) {
+                    case 'overview': return '📊 Dashboard'
+                    case 'calendar': return '📅 Calendar'
+                    case 'bookings': return '🕐 Bookings'
+                    case 'services': return '✂️ Services'
+                    case 'gallery': return '🖼️ Gallery'
+                    case 'social': return '📸 Social Media'
+                    case 'whatsapp': return '📱 WhatsApp'
+                    case 'schedule': return '⏰ Schedule'
+                    case 'athm': return '💳 Payments'
+                    case 'jobs': return '💼 Jobs'
+                    default: return '📊 Dashboard'
+                  }
+                })()}
+              </h1>
+              <p style={{ 
+                margin: '5px 0 0 0', 
+                color: '#6C757D',
+                fontSize: isMobile ? '0.9rem' : '1rem'
+              }}>
+                Gestiona tu salón con facilidad
+              </p>
             </div>
+            <Button
+              variant="outline-primary"
+              size={isMobile ? "sm" : "lg"}
+              onClick={() => window.open('/booking', '_blank')}
+              style={{
+                borderRadius: '8px',
+                fontWeight: '500',
+                color: '#667eea',
+                borderColor: '#667eea'
+              }}
+            >
+              <i className="fas fa-external-link-alt me-2"></i>
+              {isMobile ? 'Ver Sitio' : 'View Booking Page'}
+            </Button>
           </div>
         </div>
 
@@ -772,7 +999,11 @@ const AdminDashboard = () => {
           </div>
 
           {/* Content */}
-          <div style={{ padding: '30px' }}>
+          <div style={{ 
+            padding: isMobile ? '15px' : '30px',
+            maxWidth: '100%',
+            overflow: 'hidden'
+          }}>
             {renderTabContent()}
           </div>
         </div>
