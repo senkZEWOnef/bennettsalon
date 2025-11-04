@@ -26,52 +26,43 @@ const AdminLogin = () => {
 
   return (
     <div style={{
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      backgroundColor: '#F8F9FA',
       minHeight: '100vh',
-      position: 'relative'
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     }}>
-      {/* Background Pattern */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundImage: `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
-                          radial-gradient(circle at 40% 80%, rgba(255,255,255,0.03) 0%, transparent 50%)`,
-        zIndex: 1,
-        pointerEvents: 'none'
-      }}></div>
-
-      <Container style={{ paddingTop: '120px', paddingBottom: '60px', position: 'relative', zIndex: 10 }}>
+      <Container>
         <Row className="justify-content-center">
           <Col md={6} lg={5} xl={4}>
             <Card style={{
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              border: '1px solid rgba(255,255,255,0.2)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+              background: 'white',
+              borderRadius: '12px',
+              border: 'none',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
             }}>
               <Card.Body className="p-5">
                 <div className="text-center mb-4">
-                  <div className="mb-3" style={{ 
-                    fontSize: '4rem',
+                  <div style={{
+                    width: '80px',
+                    height: '80px',
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  } as React.CSSProperties}>💅</div>
-                  <h2 className="mb-3" style={{
-                    fontWeight: '700',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  } as React.CSSProperties}>Admin Access</h2>
-                  <p style={{ color: '#666', fontSize: '1.1rem' }}>
-                    Acceso administrativo para Bennett Salon de Beauté
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 20px auto',
+                    boxShadow: '0 8px 25px rgba(102, 126, 234, 0.3)'
+                  }}>
+                    <span style={{ fontSize: '2.5rem' }}>💅</span>
+                  </div>
+                  <h3 className="mb-3" style={{
+                    fontWeight: '600',
+                    color: '#2C3E50',
+                    fontSize: '1.5rem'
+                  }}>Welcome Back</h3>
+                  <p style={{ color: '#95A5A6', fontSize: '14px', margin: '0' }}>
+                    Sign in to Bennett Salon Admin Panel
                   </p>
                 </div>
 
@@ -88,29 +79,31 @@ const AdminLogin = () => {
 
                 <Form onSubmit={handleLogin}>
                   <Form.Group className="mb-4">
-                    <Form.Label style={{ fontWeight: '600', color: '#4a5568' }}>
-                      Contraseña de Administrador
+                    <Form.Label style={{ fontWeight: '500', color: '#2C3E50', fontSize: '14px' }}>
+                      Admin Password
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      placeholder="Ingresa tu contraseña"
+                      placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      size="lg"
                       style={{
-                        borderRadius: '12px',
-                        border: '2px solid #e2e8f0',
-                        padding: '16px 20px',
-                        fontSize: '16px',
-                        transition: 'all 0.3s ease'
+                        borderRadius: '8px',
+                        border: '1px solid #E9ECEF',
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        transition: 'all 0.2s ease',
+                        backgroundColor: '#F8F9FA'
                       }}
                       onFocus={(e) => {
                         (e.target as HTMLElement).style.borderColor = '#667eea'
+                        ;(e.target as HTMLElement).style.backgroundColor = 'white'
                         ;(e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)'
                       }}
                       onBlur={(e) => {
-                        (e.target as HTMLElement).style.borderColor = '#e2e8f0'
+                        (e.target as HTMLElement).style.borderColor = '#E9ECEF'
+                        ;(e.target as HTMLElement).style.backgroundColor = '#F8F9FA'
                         ;(e.target as HTMLElement).style.boxShadow = 'none'
                       }}
                     />
@@ -118,47 +111,46 @@ const AdminLogin = () => {
 
                   <Button 
                     type="submit" 
-                    size="lg"
                     disabled={loading}
                     style={{
                       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                       border: 'none',
-                      borderRadius: '12px',
-                      padding: '16px 20px',
-                      fontWeight: '600',
-                      fontSize: '1.1rem',
+                      borderRadius: '8px',
+                      padding: '12px 16px',
+                      fontWeight: '500',
+                      fontSize: '14px',
                       color: 'white',
-                      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                      transition: 'all 0.3s ease',
+                      boxShadow: '0 2px 8px rgba(102, 126, 234, 0.2)',
+                      transition: 'all 0.2s ease',
                       width: '100%'
                     }}
                     onMouseEnter={(e) => {
                       if (!loading) {
-                        (e.target as HTMLElement).style.transform = 'translateY(-2px)'
-                        ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)'
+                        (e.target as HTMLElement).style.transform = 'translateY(-1px)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)'
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!loading) {
                         (e.target as HTMLElement).style.transform = 'translateY(0)'
-                        ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 2px 8px rgba(102, 126, 234, 0.2)'
                       }
                     }}
                   >
                     {loading ? (
                       <>
                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Iniciando sesión...
+                        Signing in...
                       </>
                     ) : (
-                      <>🚪 Iniciar Sesión</>
+                      <>Sign In</>
                     )}
                   </Button>
                 </Form>
 
                 <div className="text-center mt-4">
-                  <small style={{ color: '#718096', fontSize: '0.9rem' }}>
-                    Solo para uso administrativo autorizado
+                  <small style={{ color: '#95A5A6', fontSize: '12px' }}>
+                    Authorized admin access only
                   </small>
                 </div>
               </Card.Body>

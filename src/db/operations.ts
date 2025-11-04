@@ -32,6 +32,21 @@ export const bookingOperations = {
     return updatedBooking
   },
 
+  async updatePrice(id: number, totalPrice: number, notes?: string) {
+    const updateData: any = { totalPrice }
+    if (notes !== undefined) {
+      updateData.notes = notes
+    }
+    
+    const [updatedBooking] = await db
+      .update(bookings)
+      .set(updateData)
+      .where(eq(bookings.id, id))
+      .returning()
+    
+    return updatedBooking
+  },
+
   async delete(id: number) {
     await db.delete(bookings).where(eq(bookings.id, id))
   },

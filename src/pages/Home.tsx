@@ -180,6 +180,9 @@ const Home = () => {
         </Container>
       </section>
 
+      {/* Booking CTA Section */}
+      <BookingCTASection />
+
       {/* Work Showcase Carousel */}
       <section
         id="gallery-section"
@@ -262,9 +265,6 @@ const Home = () => {
           </Row>
         </Container>
       </section>
-
-      {/* Booking CTA Section */}
-      <BookingCTASection />
 
       {/* Services Section - Compact Card Style */}
       <section style={{ 
@@ -602,94 +602,6 @@ const Home = () => {
         </Container>
       </section>
 
-      {/* Location & Contact Section */}
-      <section className="location-section" style={{ padding: '80px 0' }}>
-        <Container>
-          <Row className="align-items-center">
-            <Col lg={6} className="mb-4 mb-lg-0">
-              <div className="location-content">
-                <span className="section-badge-orange">📍 ENCUÉNTRANOS</span>
-                <h2 className="display-5 fw-bold mb-3 text-gradient-orange">
-                  Estamos en Aguada, PR
-                </h2>
-                <p
-                  className="lead mb-4"
-                  style={{ fontSize: "1.2rem", fontWeight: 500 }}
-                >
-                  Ubicados en el corazón de Aguada, Puerto Rico. ¡Fácil acceso y
-                  estacionamiento disponible!
-                </p>
-                <div className="contact-info mb-4">
-                  <div className="contact-item">
-                    <i className="fas fa-map-marker-alt text-orange"></i>
-                    <span>Aguada, Puerto Rico</span>
-                  </div>
-                  <div className="contact-item">
-                    <i className="fab fa-instagram text-orange"></i>
-                    <span>@bennettsalondebeaute</span>
-                  </div>
-                  <div className="contact-item">
-                    <i className="fas fa-calendar-check text-orange"></i>
-                    <span>Reservas por DM o en línea</span>
-                  </div>
-                </div>
-                <Button
-                  href="https://maps.google.com/?q=Aguada,PR+Bennett+Salon"
-                  target="_blank"
-                  size="lg"
-                  className="btn-gradient-orange px-5 d-block d-sm-inline-block"
-                  style={{ width: 'fit-content', margin: '0 auto' }}
-                >
-                  🗺️ ABRIR EN GOOGLE MAPS
-                </Button>
-              </div>
-            </Col>
-            <Col lg={6}>
-              <div 
-                className="map-container"
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  paddingBottom: '56.25%', // 16:9 aspect ratio
-                  height: 0,
-                  overflow: 'hidden'
-                }}
-              >
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.8!2d-67.1847!3d18.3831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c037f6d1b1b1b1b%3A0x1b1b1b1b1b1b1b1b!2sAguada%2C%20PR!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus"
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    border: 0,
-                    borderRadius: "20px",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
-                  }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Bennett Salon de Beauté - Aguada, PR"
-                ></iframe>
-              </div>
-              
-              {/* Mobile-friendly Google Maps button */}
-              <div className="d-lg-none text-center mt-3">
-                <Button
-                  href="https://maps.google.com/?q=Aguada,PR+Bennett+Salon"
-                  target="_blank"
-                  size="sm"
-                  variant="outline-primary"
-                  className="px-4"
-                >
-                  📱 Abrir en Google Maps
-                </Button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
     </>
   );
 };

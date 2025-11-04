@@ -15,7 +15,7 @@ type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
-  const { logout, bookings } = useAdmin()
+  const { logout, bookings, galleryImages, services, getActiveServices } = useAdmin()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -23,8 +23,32 @@ const AdminDashboard = () => {
     navigate('/')
   }
 
+  // Real-time statistics from database
   const pendingBookings = bookings.filter(b => b.status === 'pending').length
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed').length
+  const totalBookings = bookings.length
+  const totalGalleryImages = galleryImages?.length || 0
+  const activeServices = getActiveServices()
+  const totalActiveServices = activeServices.length
+  
+  // Calculate real monthly revenue from actual booking prices
+  const currentMonth = new Date().getMonth()
+  const currentYear = new Date().getFullYear()
+  const monthlyBookings = bookings.filter(booking => {
+    const bookingDate = new Date(booking.date)
+    return bookingDate.getMonth() === currentMonth && 
+           bookingDate.getFullYear() === currentYear &&
+           booking.status === 'confirmed'
+  })
+  
+  // Calculate actual revenue from bookings with prices
+  const actualMonthlyRevenue = monthlyBookings.reduce((total, booking) => {
+    return total + (booking.totalPrice ? booking.totalPrice / 100 : 0)
+  }, 0)
+  
+  // Count bookings with prices vs without prices for insights
+  const bookingsWithPrices = monthlyBookings.filter(b => b.totalPrice).length
+  const bookingsWithoutPrices = monthlyBookings.length - bookingsWithPrices
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -46,270 +70,709 @@ const AdminDashboard = () => {
         return <AdminATHMovil />
       default:
         return (
-          <Row>
-            <Col md={4} className="mb-4">
-              <Card className="text-center h-100">
-                <Card.Body>
-                  <div style={{ fontSize: '3rem' }} className="mb-3">📅</div>
-                  <Card.Title>Citas Pendientes</Card.Title>
-                  <h2 className="text-warning">{pendingBookings}</h2>
-                  <Button 
-                    variant="outline-warning" 
-                    size="sm"
-                    onClick={() => setActiveTab('bookings')}
-                  >
-                    Ver Citas
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={4} className="mb-4">
-              <Card className="text-center h-100">
-                <Card.Body>
-                  <div style={{ fontSize: '3rem' }} className="mb-3">✅</div>
-                  <Card.Title>Citas Confirmadas</Card.Title>
-                  <h2 className="text-success">{confirmedBookings}</h2>
-                  <Button 
-                    variant="outline-success" 
-                    size="sm"
-                    onClick={() => setActiveTab('bookings')}
-                  >
-                    Gestionar
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={4} className="mb-4">
-              <Card className="text-center h-100">
-                <Card.Body>
-                  <div style={{ fontSize: '3rem' }} className="mb-3">🖼️</div>
-                  <Card.Title>Galería Total</Card.Title>
-                  <h2 className="text-info">{bookings.length} fotos</h2>
-                  <Button 
-                    variant="outline-info" 
-                    size="sm"
-                    onClick={() => setActiveTab('gallery')}
-                  >
-                    Administrar
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+          <>
+            {/* Statistics Cards */}
+            <Row className="mb-4">
+              <Col lg={3} md={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'}
+                onClick={() => setActiveTab('bookings')}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 15px auto'
+                    }}>
+                      <i className="fas fa-calendar-alt" style={{ fontSize: '24px' }}></i>
+                    </div>
+                    <h3 style={{ fontSize: '2rem', fontWeight: '700', margin: '0' }}>{pendingBookings}</h3>
+                    <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>Citas Pendientes</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+              
+              <Col lg={3} md={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #3498DB 0%, #2980B9 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'}
+                onClick={() => setActiveTab('bookings')}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 15px auto'
+                    }}>
+                      <i className="fas fa-check-circle" style={{ fontSize: '24px' }}></i>
+                    </div>
+                    <h3 style={{ fontSize: '2rem', fontWeight: '700', margin: '0' }}>{confirmedBookings}</h3>
+                    <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>Citas Confirmadas</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+              
+              <Col lg={3} md={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #F39C12 0%, #E67E22 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'}
+                onClick={() => setActiveTab('gallery')}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 15px auto'
+                    }}>
+                      <i className="fas fa-images" style={{ fontSize: '24px' }}></i>
+                    </div>
+                    <h3 style={{ fontSize: '2rem', fontWeight: '700', margin: '0' }}>{totalGalleryImages}</h3>
+                    <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>Fotos en Galería</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+              
+              <Col lg={3} md={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #E91E63 0%, #C2185B 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'}
+                onClick={() => setActiveTab('services')}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 15px auto'
+                    }}>
+                      <i className="fas fa-cut" style={{ fontSize: '24px' }}></i>
+                    </div>
+                    <h3 style={{ fontSize: '2rem', fontWeight: '700', margin: '0' }}>{totalActiveServices}</h3>
+                    <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>Servicios Activos</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            {/* Monthly Revenue Card */}
+            <Row className="mb-4">
+              <Col lg={6} md={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #9C27B0 0%, #673AB7 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'}
+                onClick={() => setActiveTab('athm')}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 15px auto'
+                    }}>
+                      <i className="fas fa-dollar-sign" style={{ fontSize: '24px' }}></i>
+                    </div>
+                    <h3 style={{ fontSize: '2rem', fontWeight: '700', margin: '0' }}>${actualMonthlyRevenue.toFixed(2)}</h3>
+                    <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>
+                      Ingresos del Mes
+                      {bookingsWithoutPrices > 0 && (
+                        <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                          ({bookingsWithoutPrices} sin precio)
+                        </div>
+                      )}
+                    </p>
+                  </Card.Body>
+                </Card>
+              </Col>
+              
+              <Col lg={6} md={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'}
+                onClick={() => setActiveTab('bookings')}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 15px auto'
+                    }}>
+                      <i className="fas fa-calendar-week" style={{ fontSize: '24px' }}></i>
+                    </div>
+                    <h3 style={{ fontSize: '2rem', fontWeight: '700', margin: '0' }}>{monthlyBookings.length}</h3>
+                    <p style={{ margin: '5px 0 0 0', opacity: 0.9, fontSize: '14px' }}>Citas Este Mes</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            {/* Quick Actions */}
+            <Row className="mb-4">
+              <Col lg={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'white'
+                }}>
+                  <Card.Body className="p-4">
+                    <div className="d-flex align-items-center mb-3">
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        backgroundColor: '#667eea',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: '15px'
+                      }}>
+                        <i className="fas fa-qrcode" style={{ color: 'white', fontSize: '18px' }}></i>
+                      </div>
+                      <div>
+                        <h5 style={{ margin: '0', fontWeight: '600' }}>Código QR de Reservas</h5>
+                        <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>Comparte con clientes</p>
+                      </div>
+                    </div>
+                    <Button 
+                      style={{
+                        backgroundColor: '#667eea',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '8px 16px',
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}
+                      size="sm"
+                      onClick={() => window.open('/', '_blank')}
+                    >
+                      <i className="fas fa-external-link-alt me-2"></i>
+                      Ver Página de Reservas
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+              
+              <Col lg={6} className="mb-3">
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'white'
+                }}>
+                  <Card.Body className="p-4">
+                    <div className="d-flex align-items-center mb-3">
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        backgroundColor: '#3498DB',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: '15px'
+                      }}>
+                        <i className="fas fa-bolt" style={{ color: 'white', fontSize: '18px' }}></i>
+                      </div>
+                      <div>
+                        <h5 style={{ margin: '0', fontWeight: '600' }}>Acciones Rápidas</h5>
+                        <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>Gestiona tu negocio</p>
+                      </div>
+                    </div>
+                    <div className="d-flex gap-2">
+                      <Button 
+                        style={{
+                          backgroundColor: '#E67E22',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '6px 12px',
+                          fontSize: '12px'
+                        }}
+                        size="sm"
+                        onClick={() => setActiveTab('services')}
+                      >
+                        <i className="fas fa-plus me-1"></i>
+                        Servicio
+                      </Button>
+                      <Button 
+                        style={{
+                          backgroundColor: '#9B59B6',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '6px 12px',
+                          fontSize: '12px'
+                        }}
+                        size="sm"
+                        onClick={() => setActiveTab('gallery')}
+                      >
+                        <i className="fas fa-upload me-1"></i>
+                        Foto
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            {/* Recent Activity */}
+            <Row>
+              <Col lg={12}>
+                <Card style={{
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  background: 'white'
+                }}>
+                  <Card.Body className="p-4">
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                      <div className="d-flex align-items-center">
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          backgroundColor: '#764ba2',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginRight: '15px'
+                        }}>
+                          <i className="fas fa-calendar-check" style={{ color: 'white', fontSize: '18px' }}></i>
+                        </div>
+                        <div>
+                          <h5 style={{ margin: '0', fontWeight: '600' }}>Citas Recientes</h5>
+                          <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>Última actividad de reservas</p>
+                        </div>
+                      </div>
+                      <Button 
+                        variant="link" 
+                        style={{ color: '#667eea', textDecoration: 'none', fontSize: '14px' }}
+                        onClick={() => setActiveTab('bookings')}
+                      >
+                        <i className="fas fa-external-link-alt me-1"></i>
+                        Ver Todas
+                      </Button>
+                    </div>
+                    
+                    {totalBookings === 0 ? (
+                      <div className="text-center py-5">
+                        <div style={{
+                          width: '80px',
+                          height: '80px',
+                          backgroundColor: '#F8F9FA',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: '0 auto 20px auto'
+                        }}>
+                          <i className="fas fa-calendar-alt" style={{ fontSize: '32px', color: '#BDC3C7' }}></i>
+                        </div>
+                        <h6 style={{ color: '#7F8C8D', fontWeight: '500' }}>No hay citas aún</h6>
+                        <p style={{ color: '#BDC3C7', fontSize: '14px' }}>Las nuevas reservas aparecerán aquí</p>
+                      </div>
+                    ) : (
+                      <div>
+                        {/* Show last 3 bookings */}
+                        {bookings
+                          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                          .slice(0, 3)
+                          .map((booking) => (
+                            <div key={booking.id} style={{
+                              padding: '12px 0',
+                              borderBottom: '1px solid #F8F9FA',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between'
+                            }}>
+                              <div className="d-flex align-items-center">
+                                <div style={{
+                                  width: '40px',
+                                  height: '40px',
+                                  backgroundColor: booking.status === 'pending' ? '#FFF3CD' : 
+                                                  booking.status === 'confirmed' ? '#D1ECF1' : '#F8D7DA',
+                                  borderRadius: '8px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  marginRight: '12px'
+                                }}>
+                                  <i className={`fas ${booking.status === 'pending' ? 'fa-clock' : 
+                                                    booking.status === 'confirmed' ? 'fa-check' : 'fa-times'}`} 
+                                     style={{ 
+                                       color: booking.status === 'pending' ? '#856404' : 
+                                              booking.status === 'confirmed' ? '#0C5460' : '#721C24',
+                                       fontSize: '16px' 
+                                     }}></i>
+                                </div>
+                                <div>
+                                  <div style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>
+                                    {booking.clientName}
+                                  </div>
+                                  <div style={{ fontSize: '12px', color: '#95A5A6' }}>
+                                    {booking.service} • {new Date(booking.date).toLocaleDateString('es-ES')} a las {booking.time}
+                                  </div>
+                                </div>
+                              </div>
+                              <span style={{
+                                backgroundColor: booking.status === 'pending' ? '#FFF3CD' : 
+                                                booking.status === 'confirmed' ? '#D1ECF1' : '#F8D7DA',
+                                color: booking.status === 'pending' ? '#856404' : 
+                                       booking.status === 'confirmed' ? '#0C5460' : '#721C24',
+                                padding: '4px 8px',
+                                borderRadius: '12px',
+                                fontSize: '11px',
+                                fontWeight: '500',
+                                textTransform: 'capitalize'
+                              }}>
+                                {booking.status === 'pending' ? 'Pendiente' : 
+                                 booking.status === 'confirmed' ? 'Confirmada' : 'Cancelada'}
+                              </span>
+                            </div>
+                          ))}
+                        
+                        {totalBookings > 3 && (
+                          <div className="text-center mt-3">
+                            <p style={{ color: '#95A5A6', fontSize: '12px', margin: '0' }}>
+                              Y {totalBookings - 3} cita{totalBookings - 3 !== 1 ? 's' : ''} más...
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </>
         )
     }
   }
 
   return (
     <div style={{ 
-      paddingTop: '120px', 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      position: 'relative'
+      backgroundColor: '#F8F9FA',
+      display: 'flex'
     }}>
-      {/* Background Pattern */}
+      {/* Purple Sidebar - Bennett Style */}
       <div style={{
+        width: '250px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        minHeight: '100vh',
         position: 'fixed',
-        top: 0,
         left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundImage: `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
-                          radial-gradient(circle at 40% 80%, rgba(255,255,255,0.03) 0%, transparent 50%)`,
-        zIndex: 1,
-        pointerEvents: 'none'
-      }}></div>
-      
-      <Container fluid style={{ position: 'relative', zIndex: 10 }}>
-        <Row>
-          {/* Modern Sidebar */}
-          <Col lg={3} xl={2} className="admin-sidebar" style={{ 
-            background: 'rgba(255,255,255,0.95)', 
-            backdropFilter: 'blur(20px)',
-            minHeight: '100vh',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-            borderRight: '1px solid rgba(255,255,255,0.2)'
-          }}>
-            <div className="p-4">
-              <div className="text-center mb-4">
-                <div style={{ 
-                  fontSize: '2.5rem',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
-                }} className="mb-3">💅</div>
-                <h5 className="mb-0" style={{ fontWeight: '700', color: '#2d3748' }}>Admin Panel</h5>
-                <small style={{ 
-                  color: '#667eea', 
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  fontSize: '0.75rem'
-                }}>Bennett Salon</small>
-              </div>
+        top: 0,
+        zIndex: 1000,
+        boxShadow: '4px 0 10px rgba(0,0,0,0.1)'
+      }}>
+        {/* Logo Section */}
+        <div style={{
+          padding: '20px',
+          borderBottom: '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <div className="d-flex align-items-center">
+            <div style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '12px'
+            }}>
+              <span style={{ fontSize: '20px' }}>💅</span>
+            </div>
+            <div>
+              <h5 style={{ 
+                margin: '0', 
+                color: 'white', 
+                fontWeight: '600',
+                fontSize: '16px'
+              }}>Bennett</h5>
+              <small style={{ 
+                color: 'rgba(255,255,255,0.8)', 
+                fontSize: '12px'
+              }}>by Bennett Salon</small>
+            </div>
+          </div>
+        </div>
 
-              <Nav className="flex-column">
-                {[
-                  { key: 'overview', icon: '📊', label: 'Resumen' },
-                  { key: 'bookings', icon: '📅', label: `Citas ${pendingBookings > 0 ? `(${pendingBookings})` : ''}` },
-                  { key: 'gallery', icon: '🖼️', label: 'Galería' },
-                  { key: 'services', icon: '🛍️', label: 'Servicios' },
-                  { key: 'jobs', icon: '💼', label: 'Empleos' },
-                  { key: 'schedule', icon: '⏰', label: 'Horarios' },
-                  { key: 'calendar', icon: '📅', label: 'Calendario' },
-                  { key: 'whatsapp', icon: '📱', label: 'WhatsApp' },
-                  { key: 'athm', icon: '💳', label: 'ATH Móvil' }
-                ].map((item) => (
-                  <Nav.Link 
-                    key={item.key}
-                    onClick={() => setActiveTab(item.key as any)}
-                    style={{ 
-                      cursor: 'pointer',
-                      borderRadius: '12px',
-                      padding: '12px 16px',
-                      marginBottom: '8px',
-                      fontWeight: '600',
-                      fontSize: '0.9rem',
-                      border: 'none',
-                      transition: 'all 0.3s ease',
-                      background: activeTab === item.key 
-                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
-                        : 'transparent',
-                      color: activeTab === item.key ? 'white' : '#4a5568',
-                      boxShadow: activeTab === item.key 
-                        ? '0 4px 15px rgba(102, 126, 234, 0.3)' 
-                        : 'none',
-                      transform: activeTab === item.key ? 'translateX(4px)' : 'none'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeTab !== item.key) {
-                        (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.1)'
-                        ;(e.target as HTMLElement).style.transform = 'translateX(2px)'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeTab !== item.key) {
-                        (e.target as HTMLElement).style.background = 'transparent'
-                        ;(e.target as HTMLElement).style.transform = 'none'
-                      }
-                    }}
-                  >
-                    <span style={{ marginRight: '8px' }}>{item.icon}</span>
-                    {item.label}
-                    {item.key === 'bookings' && pendingBookings > 0 && (
-                      <span style={{
-                        background: '#ff6b35',
-                        color: 'white',
-                        borderRadius: '10px',
-                        padding: '2px 6px',
-                        fontSize: '0.7rem',
-                        marginLeft: '8px',
-                        fontWeight: '700'
-                      }}>{pendingBookings}</span>
-                    )}
-                  </Nav.Link>
-                ))}
-              </Nav>
-
-              <div style={{ 
-                height: '1px',
-                background: 'linear-gradient(90deg, transparent 0%, rgba(102, 126, 234, 0.3) 50%, transparent 100%)',
-                margin: '24px 0'
-              }}></div>
-
-              <div className="text-center">
-                <Button 
-                  onClick={handleLogout}
-                  style={{
-                    background: 'linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%)',
-                    border: 'none',
+        {/* Navigation */}
+        <div style={{ padding: '20px 0' }}>
+          <Nav className="flex-column">
+            {[
+              { key: 'overview', icon: 'fas fa-tachometer-alt', label: 'Dashboard' },
+              { key: 'calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
+              { key: 'bookings', icon: 'fas fa-clock', label: 'Bookings', badge: pendingBookings },
+              { key: 'services', icon: 'fas fa-cut', label: 'Services' },
+              { key: 'gallery', icon: 'fas fa-images', label: 'Gallery' },
+              { key: 'whatsapp', icon: 'fab fa-whatsapp', label: 'WhatsApp' },
+              { key: 'schedule', icon: 'fas fa-business-time', label: 'Schedule' },
+              { key: 'athm', icon: 'fas fa-credit-card', label: 'Payments' },
+              { key: 'jobs', icon: 'fas fa-briefcase', label: 'Jobs' }
+            ].map((item) => (
+              <Nav.Link 
+                key={item.key}
+                onClick={() => setActiveTab(item.key as any)}
+                style={{ 
+                  cursor: 'pointer',
+                  padding: '12px 20px',
+                  margin: '2px 0',
+                  fontWeight: '500',
+                  fontSize: '14px',
+                  border: 'none',
+                  color: activeTab === item.key ? '#667eea' : 'rgba(255,255,255,0.8)',
+                  backgroundColor: activeTab === item.key ? 'white' : 'transparent',
+                  borderRadius: activeTab === item.key ? '0 25px 25px 0' : '0',
+                  marginRight: activeTab === item.key ? '0' : '0',
+                  transition: 'all 0.2s ease',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== item.key) {
+                    (e.target as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.1)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== item.key) {
+                    (e.target as HTMLElement).style.backgroundColor = 'transparent'
+                  }
+                }}
+              >
+                <div className="d-flex align-items-center">
+                  <i className={item.icon} style={{ 
+                    marginRight: '12px', 
+                    fontSize: '16px',
+                    width: '16px'
+                  }}></i>
+                  {item.label}
+                </div>
+                {item.badge && item.badge > 0 && (
+                  <span style={{
+                    backgroundColor: activeTab === item.key ? '#ff6b87' : 'rgba(255,255,255,0.3)',
+                    color: activeTab === item.key ? 'white' : 'white',
                     borderRadius: '12px',
-                    padding: '10px 20px',
+                    padding: '2px 8px',
+                    fontSize: '11px',
                     fontWeight: '600',
-                    fontSize: '0.9rem',
-                    color: 'white',
-                    boxShadow: '0 4px 15px rgba(255, 107, 53, 0.3)',
-                    transition: 'all 0.3s ease',
-                    width: '100%'
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.target as HTMLElement).style.transform = 'translateY(-2px)'
-                    ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(255, 107, 53, 0.4)'
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.target as HTMLElement).style.transform = 'translateY(0)'
-                    ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(255, 107, 53, 0.3)'
+                    minWidth: '20px',
+                    textAlign: 'center'
+                  }}>{item.badge}</span>
+                )}
+              </Nav.Link>
+            ))}
+          </Nav>
+        </div>
+
+        {/* User Profile */}
+        <div style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '20px',
+          right: '20px'
+        }}>
+          <div style={{
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            borderRadius: '12px',
+            padding: '12px'
+          }}>
+            <div className="d-flex align-items-center">
+              <div style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '8px'
+              }}>
+                <i className="fas fa-user" style={{ color: 'white', fontSize: '14px' }}></i>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ 
+                  color: 'white', 
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}>Bennett Admin</div>
+                <div style={{ 
+                  color: 'rgba(255,255,255,0.7)', 
+                  fontSize: '10px'
+                }}>admin@bennett.com</div>
+              </div>
+              <Button
+                onClick={handleLogout}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'rgba(255,255,255,0.8)',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  fontSize: '12px'
+                }}
+                onMouseEnter={(e) => {
+                  (e.target as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.1)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.target as HTMLElement).style.backgroundColor = 'transparent'
+                }}
+              >
+                <i className="fas fa-sign-out-alt"></i>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div style={{
+        marginLeft: '250px',
+        width: 'calc(100% - 250px)',
+        padding: '20px',
+        backgroundColor: '#F8F9FA'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+          minHeight: 'calc(100vh - 40px)'
+        }}>
+          {/* Header */}
+          <div style={{
+            padding: '20px 30px',
+            borderBottom: '1px solid #E9ECEF',
+            backgroundColor: 'white',
+            borderRadius: '12px 12px 0 0'
+          }}>
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <h4 style={{ 
+                  margin: '0',
+                  fontWeight: '600',
+                  color: '#2C3E50'
+                }}>Dashboard</h4>
+                <p style={{ 
+                  margin: '4px 0 0 0',
+                  color: '#95A5A6',
+                  fontSize: '14px'
+                }}>Welcome back, manage your salon bookings</p>
+              </div>
+              <div className="d-flex gap-2">
+                <Button 
+                  onClick={() => setActiveTab('bookings')}
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: 'white'
                   }}
                 >
-                  🚪 Cerrar Sesión
+                  <i className="fas fa-plus me-2"></i>
+                  Quick Action
                 </Button>
-              </div>
-            </div>
-          </Col>
-
-          {/* Main Content */}
-          <Col lg={9} xl={10} className="admin-main-content">
-            <div style={{
-              background: 'rgba(255,255,255,0.95)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              margin: '16px',
-              padding: '32px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              minHeight: 'calc(100vh - 180px)'
-            }}>
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                  <h1 style={{ 
-                    fontSize: '2rem',
-                    fontWeight: '700',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    marginBottom: '4px'
-                  } as React.CSSProperties}>Panel de Administración</h1>
-                  <p style={{ 
-                    color: '#718096', 
-                    margin: 0,
-                    fontSize: '1.1rem',
-                    fontWeight: '500'
-                  }}>Gestiona tu salón de belleza</p>
-                </div>
                 <Button 
                   href="/" 
                   target="_blank"
                   style={{
-                    background: 'rgba(102, 126, 234, 0.1)',
-                    border: '1px solid rgba(102, 126, 234, 0.3)',
-                    borderRadius: '12px',
+                    backgroundColor: 'transparent',
+                    border: '1px solid #E9ECEF',
+                    borderRadius: '8px',
                     padding: '8px 16px',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    color: '#667eea',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.2)'
-                    ;(e.target as HTMLElement).style.transform = 'translateY(-2px)'
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.target as HTMLElement).style.background = 'rgba(102, 126, 234, 0.1)'
-                    ;(e.target as HTMLElement).style.transform = 'translateY(0)'
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#6C757D'
                   }}
                 >
-                  👁️ Ver Sitio Web
+                  <i className="fas fa-external-link-alt me-2"></i>
+                  View Booking Page
                 </Button>
               </div>
-
-              {renderTabContent()}
             </div>
-          </Col>
-        </Row>
-      </Container>
+          </div>
+
+          {/* Content */}
+          <div style={{ padding: '30px' }}>
+            {renderTabContent()}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

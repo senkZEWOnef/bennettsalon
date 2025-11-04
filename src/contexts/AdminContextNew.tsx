@@ -15,6 +15,8 @@ export interface Booking {
   paymentDeadline?: Date
   paymentMethod?: 'ath' | 'admin_override'
   depositAmount?: number
+  totalPrice?: number // Total amount charged for the service in cents
+  notes?: string // Admin notes about the booking
 }
 
 export interface GalleryImage {
@@ -74,6 +76,7 @@ interface AdminContextType {
   logout: () => void
   addBooking: (booking: Omit<Booking, 'id' | 'createdAt' | 'paymentDeadline'>) => Promise<string>
   updateBookingStatus: (id: string, status: Booking['status'], paymentMethod?: string) => Promise<void>
+  updateBookingPrice: (id: string, totalPrice: number, notes?: string) => Promise<void>
   confirmBookingManually: (id: string) => Promise<void>
   addGalleryImage: (image: Omit<GalleryImage, 'id' | 'uploadedAt'>) => Promise<void>
   removeGalleryImage: (id: string) => Promise<void>
@@ -335,6 +338,24 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }
 
+  const updateBookingPrice = async (id: string, totalPrice: number, notes?: string) => {
+    try {
+      await ApiService.updateBookingPrice(id, totalPrice, notes)
+      
+      // Update local state
+      setBookings(prev => 
+        prev.map(booking => 
+          booking.id === id 
+            ? { ...booking, totalPrice, notes }
+            : booking
+        )
+      )
+    } catch (error) {
+      console.error('Error updating booking price:', error)
+      throw error
+    }
+  }
+
   const confirmBookingManually = async (id: string) => {
     await updateBookingStatus(id, 'confirmed', 'admin_override')
   }
@@ -566,6 +587,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     logout,
     addBooking,
     updateBookingStatus,
+    updateBookingPrice,
     confirmBookingManually,
     addGalleryImage,
     removeGalleryImage,

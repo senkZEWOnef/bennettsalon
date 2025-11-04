@@ -13,6 +13,8 @@ export interface BookingData {
   status: 'pending' | 'confirmed' | 'cancelled'
   paymentMethod?: 'ath' | 'admin_override'
   depositAmount?: number
+  totalPrice?: number
+  notes?: string
 }
 
 export interface GalleryImageData {
@@ -54,7 +56,9 @@ export class ApiService {
         createdAt: new Date(booking.createdAt),
         paymentDeadline: booking.paymentDeadline ? new Date(booking.paymentDeadline) : undefined,
         paymentMethod: booking.paymentMethod as 'ath' | 'admin_override' | undefined,
-        depositAmount: booking.depositAmount || undefined
+        depositAmount: booking.depositAmount || undefined,
+        totalPrice: booking.totalPrice || undefined,
+        notes: booking.notes || undefined
       }))
     } catch (error) {
       console.error('Error fetching bookings:', error)
@@ -93,6 +97,15 @@ export class ApiService {
       return await bookingOperations.updateStatus(parseInt(id), status, paymentMethod)
     } catch (error) {
       console.error('Error updating booking status:', error)
+      throw error
+    }
+  }
+
+  static async updateBookingPrice(id: string, totalPrice: number, notes?: string) {
+    try {
+      return await bookingOperations.updatePrice(parseInt(id), totalPrice, notes)
+    } catch (error) {
+      console.error('Error updating booking price:', error)
       throw error
     }
   }

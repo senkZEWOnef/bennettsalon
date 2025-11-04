@@ -1,15 +1,17 @@
 import { useState } from 'react'
-import { Row, Col, Card, Badge, Button, Table, Modal, Form, Alert } from 'react-bootstrap'
+import { Row, Col, Card, Badge, Button, Table, Modal, Form, Alert, InputGroup } from 'react-bootstrap'
 import { useAdmin, Booking } from '../../contexts/AdminContextNew'
 
 const AdminBookings = () => {
-  const { bookings, updateBookingStatus, confirmBookingManually, addBooking, getActiveServices } = useAdmin()
+  const { bookings, updateBookingStatus, updateBookingPrice, confirmBookingManually, addBooking, getActiveServices } = useAdmin()
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showPriceModal, setShowPriceModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success')
+  const [editingPrice, setEditingPrice] = useState({ totalPrice: '', notes: '' })
   
   // New booking form state
   const [newBooking, setNewBooking] = useState({
@@ -42,6 +44,36 @@ const AdminBookings = () => {
   const handleStatusUpdate = (id: string, newStatus: Booking['status']) => {
     updateBookingStatus(id, newStatus)
     setShowModal(false)
+  }
+
+  const handleEditPrice = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setEditingPrice({
+      totalPrice: booking.totalPrice ? (booking.totalPrice / 100).toString() : '',
+      notes: booking.notes || ''
+    })
+    setShowPriceModal(true)
+  }
+
+  const handleSavePrice = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!selectedBooking) return
+
+    try {
+      const priceInCents = Math.round(parseFloat(editingPrice.totalPrice) * 100)
+      await updateBookingPrice(selectedBooking.id, priceInCents, editingPrice.notes)
+      
+      setShowPriceModal(false)
+      setAlertMessage('Precio actualizado exitosamente')
+      setAlertType('success')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    } catch (error) {
+      setAlertMessage('Error al actualizar el precio')
+      setAlertType('danger')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    }
   }
 
   const formatDate = (date: Date) => {
@@ -279,6 +311,7 @@ const AdminBookings = () => {
                   <th>Fecha & Hora</th>
                   <th>Servicio</th>
                   <th>Estado</th>
+                  <th>Precio</th>
                   <th>Contacto</th>
                   <th>Acciones</th>
                 </tr>
@@ -296,35 +329,54 @@ const AdminBookings = () => {
                     <td>{booking.service}</td>
                     <td>{getStatusBadge(booking.status)}</td>
                     <td>
+                      {booking.totalPrice ? (
+                        <div>
+                          <strong>${(booking.totalPrice / 100).toFixed(2)}</strong>
+                          {booking.notes && (
+                            <div>
+                              <small className="text-muted">{booking.notes}</small>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted">Sin precio</span>
+                      )}
+                    </td>
+                    <td>
                       <div>{booking.clientPhone}</div>
                       <small className="text-muted">{booking.clientEmail}</small>
                     </td>
                     <td>
-                      <Button
-                        size="sm"
-                        onClick={() => handleViewDetails(booking)}
-                        style={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          border: 'none',
-                          borderRadius: '12px',
-                          padding: '8px 16px',
-                          fontWeight: '600',
-                          fontSize: '0.85rem',
-                          color: 'white',
-                          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                          transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          (e.target as HTMLElement).style.transform = 'translateY(-2px)'
-                          ;(e.target as HTMLElement).style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)'
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.target as HTMLElement).style.transform = 'translateY(0)'
-                          ;(e.target as HTMLElement).style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)'
-                        }}
-                      >
-                        👁️ Ver Detalles
-                      </Button>
+                      <div className="d-flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handleViewDetails(booking)}
+                          style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontWeight: '500',
+                            fontSize: '0.8rem',
+                            color: 'white'
+                          }}
+                        >
+                          👁️ Ver
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-success"
+                          onClick={() => handleEditPrice(booking)}
+                          style={{
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontWeight: '500',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          💰 Precio
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -662,6 +714,127 @@ const AdminBookings = () => {
               }}
             >
               ➕ Crear Cita
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      {/* Price Edit Modal */}
+      <Modal show={showPriceModal} onHide={() => setShowPriceModal(false)}>
+        <Form onSubmit={handleSavePrice}>
+          <Modal.Header closeButton style={{ 
+            background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+            border: 'none',
+            borderRadius: '12px 12px 0 0',
+            color: 'white'
+          }}>
+            <Modal.Title style={{ 
+              fontWeight: '700',
+              color: 'white'
+            }}>
+              💰 Editar Precio - {selectedBooking?.clientName}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ padding: '30px' }}>
+            <Form.Group className="mb-4">
+              <Form.Label style={{ fontWeight: '600', color: '#2d3748' }}>
+                Precio Total del Servicio
+              </Form.Label>
+              <InputGroup>
+                <InputGroup.Text>$</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="35.00"
+                  value={editingPrice.totalPrice}
+                  onChange={(e) => setEditingPrice(prev => ({ ...prev, totalPrice: e.target.value }))}
+                  required
+                  style={{
+                    borderRadius: '0 8px 8px 0',
+                    border: '1px solid #e2e8f0',
+                    padding: '12px',
+                    fontSize: '16px'
+                  }}
+                />
+              </InputGroup>
+              <Form.Text className="text-muted">
+                Ingresa el precio total que se cobró por este servicio
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label style={{ fontWeight: '600', color: '#2d3748' }}>
+                Notas (Opcional)
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Ej: Incluye gel extra, diseño especial, etc."
+                value={editingPrice.notes}
+                onChange={(e) => setEditingPrice(prev => ({ ...prev, notes: e.target.value }))}
+                style={{
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  padding: '12px',
+                  resize: 'none'
+                }}
+              />
+              <Form.Text className="text-muted">
+                Detalles adicionales sobre el servicio o precio
+              </Form.Text>
+            </Form.Group>
+
+            {selectedBooking && (
+              <div style={{
+                background: '#f8f9fa',
+                borderRadius: '8px',
+                padding: '16px',
+                marginTop: '20px'
+              }}>
+                <h6 style={{ color: '#495057', marginBottom: '8px' }}>Información de la Cita:</h6>
+                <p style={{ margin: '4px 0', fontSize: '14px' }}>
+                  <strong>Servicio:</strong> {selectedBooking.service}
+                </p>
+                <p style={{ margin: '4px 0', fontSize: '14px' }}>
+                  <strong>Fecha:</strong> {formatDate(selectedBooking.date)} a las {selectedBooking.time}
+                </p>
+                <p style={{ margin: '0', fontSize: '14px' }}>
+                  <strong>Estado:</strong> {getStatusBadge(selectedBooking.status)}
+                </p>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer style={{ 
+            padding: '20px 30px',
+            borderTop: '1px solid #e9ecef'
+          }}>
+            <Button 
+              variant="secondary" 
+              onClick={() => setShowPriceModal(false)}
+              style={{
+                borderRadius: '12px',
+                padding: '10px 20px',
+                fontWeight: '600',
+                backgroundColor: '#6c757d',
+                border: 'none'
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              type="submit"
+              style={{
+                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '10px 20px',
+                fontWeight: '600',
+                color: 'white',
+                boxShadow: '0 4px 15px rgba(40, 167, 69, 0.3)'
+              }}
+            >
+              💾 Guardar Precio
             </Button>
           </Modal.Footer>
         </Form>

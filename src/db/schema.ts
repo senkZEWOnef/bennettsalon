@@ -13,7 +13,9 @@ export const bookings = pgTable('bookings', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   paymentDeadline: timestamp('payment_deadline'),
   paymentMethod: text('payment_method'), // 'ath' | 'admin_override'
-  depositAmount: integer('deposit_amount').default(25)
+  depositAmount: integer('deposit_amount').default(25),
+  totalPrice: integer('total_price'), // Total amount charged for the service in cents (e.g., 3500 = $35.00)
+  notes: text('notes') // Admin notes about the booking
 })
 
 // Gallery images table
