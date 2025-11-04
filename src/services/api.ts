@@ -110,6 +110,15 @@ export class ApiService {
     }
   }
 
+  static async deleteBooking(id: string) {
+    try {
+      return await bookingOperations.delete(parseInt(id))
+    } catch (error) {
+      console.error('Error deleting booking:', error)
+      throw error
+    }
+  }
+
   // Gallery methods
   static async getGalleryImages() {
     try {

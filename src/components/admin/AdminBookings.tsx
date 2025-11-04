@@ -3,11 +3,12 @@ import { Row, Col, Card, Badge, Button, Table, Modal, Form, Alert, InputGroup } 
 import { useAdmin, Booking } from '../../contexts/AdminContextNew'
 
 const AdminBookings = () => {
-  const { bookings, updateBookingStatus, updateBookingPrice, confirmBookingManually, addBooking, getActiveServices } = useAdmin()
+  const { bookings, updateBookingStatus, updateBookingPrice, deleteBooking, confirmBookingManually, addBooking, getActiveServices } = useAdmin()
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showPriceModal, setShowPriceModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [alertType, setAlertType] = useState<'success' | 'danger'>('success')
@@ -115,6 +116,30 @@ const AdminBookings = () => {
       setTimeout(() => setShowAlert(false), 5000)
     } catch (error) {
       setAlertMessage('Error al agregar la cita')
+      setAlertType('danger')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    }
+  }
+
+  const handleDeleteBooking = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteBooking = async () => {
+    if (!selectedBooking) return
+    
+    try {
+      await deleteBooking(selectedBooking.id)
+      setShowDeleteModal(false)
+      setSelectedBooking(null)
+      setAlertMessage('Cita eliminada exitosamente')
+      setAlertType('success')
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 5000)
+    } catch (error) {
+      setAlertMessage('Error al eliminar la cita')
       setAlertType('danger')
       setShowAlert(true)
       setTimeout(() => setShowAlert(false), 5000)
@@ -375,6 +400,19 @@ const AdminBookings = () => {
                           }}
                         >
                           💰 Precio
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          onClick={() => handleDeleteBooking(booking)}
+                          style={{
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontWeight: '500',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          🗑️ Eliminar
                         </Button>
                       </div>
                     </td>
@@ -838,6 +876,77 @@ const AdminBookings = () => {
             </Button>
           </Modal.Footer>
         </Form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton style={{ 
+          background: 'linear-gradient(135deg, #dc3545 0%, #e83e8c 100%)',
+          border: 'none',
+          borderRadius: '12px 12px 0 0',
+          color: 'white'
+        }}>
+          <Modal.Title style={{ 
+            fontWeight: '700',
+            color: 'white'
+          }}>
+            🗑️ Eliminar Cita
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ padding: '30px' }}>
+          {selectedBooking && (
+            <div>
+              <div className="text-center mb-4">
+                <div style={{ fontSize: '4rem', marginBottom: '20px' }}>⚠️</div>
+                <h5 style={{ color: '#dc3545', fontWeight: '600' }}>
+                  ¿Estás segura de que deseas eliminar esta cita?
+                </h5>
+                <p className="text-muted mb-4">
+                  Esta acción no se puede deshacer. La cita será eliminada permanentemente.
+                </p>
+              </div>
+              
+              <div className="bg-light p-3 rounded mb-3">
+                <h6 className="mb-2">📋 Detalles de la cita:</h6>
+                <div><strong>Cliente:</strong> {selectedBooking.clientName}</div>
+                <div><strong>Fecha:</strong> {formatDate(selectedBooking.date)}</div>
+                <div><strong>Hora:</strong> {selectedBooking.time}</div>
+                <div><strong>Servicio:</strong> {selectedBooking.service}</div>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer style={{ 
+          background: '#f8f9fa',
+          border: 'none',
+          borderRadius: '0 0 12px 12px',
+          padding: '20px 30px'
+        }}>
+          <Button 
+            variant="outline-secondary" 
+            onClick={() => setShowDeleteModal(false)}
+            style={{
+              borderRadius: '8px',
+              padding: '8px 20px',
+              fontWeight: '500'
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            variant="danger" 
+            onClick={confirmDeleteBooking}
+            style={{
+              borderRadius: '8px',
+              padding: '8px 20px',
+              fontWeight: '500',
+              background: 'linear-gradient(135deg, #dc3545 0%, #e83e8c 100%)',
+              border: 'none'
+            }}
+          >
+            🗑️ Eliminar Cita
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   )

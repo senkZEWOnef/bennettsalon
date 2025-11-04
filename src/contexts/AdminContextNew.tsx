@@ -78,6 +78,7 @@ interface AdminContextType {
   addBooking: (booking: Omit<Booking, 'id' | 'createdAt' | 'paymentDeadline'>) => Promise<string>
   updateBookingStatus: (id: string, status: Booking['status'], paymentMethod?: string) => Promise<void>
   updateBookingPrice: (id: string, totalPrice: number, notes?: string) => Promise<void>
+  deleteBooking: (id: string) => Promise<void>
   confirmBookingManually: (id: string) => Promise<void>
   addGalleryImage: (image: Omit<GalleryImage, 'id' | 'uploadedAt'>) => Promise<void>
   removeGalleryImage: (id: string) => Promise<void>
@@ -360,6 +361,18 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }
 
+  const deleteBooking = async (id: string) => {
+    try {
+      await ApiService.deleteBooking(id)
+      
+      // Remove from local state
+      setBookings(prev => prev.filter(booking => booking.id !== id))
+    } catch (error) {
+      console.error('Error deleting booking:', error)
+      throw error
+    }
+  }
+
   const confirmBookingManually = async (id: string) => {
     await updateBookingStatus(id, 'confirmed', 'admin_override')
   }
@@ -628,6 +641,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     addBooking,
     updateBookingStatus,
     updateBookingPrice,
+    deleteBooking,
     confirmBookingManually,
     addGalleryImage,
     removeGalleryImage,
