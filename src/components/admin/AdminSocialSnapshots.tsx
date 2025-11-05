@@ -515,16 +515,11 @@ const AdminSocialSnapshots = () => {
             boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
           }}>
             <Card.Body className="p-4">
-              <div 
-                className="social-snapshot-container"
-                style={{ 
-                  display: 'flex', 
-                  justifyContent: 'center',
-                  overflow: 'auto',
-                  width: '100%',
-                  padding: '10px'
-                }}
-              >
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center',
+                overflow: 'auto'
+              }}>
                 {viewType === 'daily' && renderDailyView()}
                 {viewType === 'weekly' && renderWeeklyView()}
                 {viewType === 'monthly' && renderMonthlyView()}

@@ -2338,12 +2338,4 @@ section.work-showcase-section,
   .ios-scroll {
     -webkit-overflow-scrolling: touch;
   }
-  
-  /* Mobile Social Snapshots */
-  .social-snapshot-container > div {
-    max-width: calc(100vw - 80px) !important;
-    transform: scale(0.75);
-    transform-origin: center center;
-    margin: -50px 0;
-  }
 }
