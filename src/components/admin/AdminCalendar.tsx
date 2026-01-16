@@ -20,8 +20,40 @@ const AdminCalendar = () => {
   const [bulkTimeSlots, setBulkTimeSlots] = useState<string[]>([])
   const [viewMode, setViewMode] = useState<'calendar' | 'timeline'>('calendar')
 
-  // Generate time slots for display (6am to 9pm)
+  // Convert "8:00 AM" format to "08:00" format
+  const convertTo24Hour = (time12h: string): string => {
+    const [time, modifier] = time12h.split(' ')
+    let [hours, minutes] = time.split(':').map(Number)
+
+    if (modifier === 'PM' && hours !== 12) {
+      hours += 12
+    } else if (modifier === 'AM' && hours === 12) {
+      hours = 0
+    }
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+  }
+
+  // Generate time slots based on schedule settings (with 30-min intervals)
   const timeSlots = useMemo(() => {
+    // If availableHours is set in schedule settings, use those
+    if (scheduleSettings.availableHours && scheduleSettings.availableHours.length > 0) {
+      const slots: string[] = []
+      const hours24 = scheduleSettings.availableHours.map(convertTo24Hour).sort()
+
+      // Get the range from first to last hour and add 30-min intervals
+      const firstHour = parseInt(hours24[0].split(':')[0])
+      const lastHour = parseInt(hours24[hours24.length - 1].split(':')[0])
+
+      for (let hour = firstHour; hour <= lastHour; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+          slots.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`)
+        }
+      }
+      return slots
+    }
+
+    // Default: 6am to 9pm
     const slots: string[] = []
     for (let hour = 6; hour <= 21; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
@@ -30,7 +62,7 @@ const AdminCalendar = () => {
       }
     }
     return slots
-  }, [])
+  }, [scheduleSettings.availableHours])
 
   // Get calendar days for current month
   const calendarDays = useMemo(() => {

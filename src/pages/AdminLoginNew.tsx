@@ -4,24 +4,32 @@ import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 
 const AdminLogin = () => {
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showError, setShowError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { loginLegacy } = useAdmin()
+  const { login } = useAdmin()
   const navigate = useNavigate()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setShowError('')
-    
-    if (loginLegacy(password)) {
-      navigate('/admin/dashboard')
-    } else {
-      setShowError('Contraseña incorrecta. Por favor, inténtalo de nuevo.')
+
+    try {
+      const success = await login(username, password)
+      if (success) {
+        navigate('/admin/dashboard')
+      } else {
+        setShowError('Usuario o contraseña incorrecta.')
+        setTimeout(() => setShowError(''), 3000)
+      }
+    } catch (error) {
+      setShowError('Error de conexión. Inténtalo de nuevo.')
       setTimeout(() => setShowError(''), 3000)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
@@ -78,13 +86,44 @@ const AdminLogin = () => {
                 )}
 
                 <Form onSubmit={handleLogin}>
+                  <Form.Group className="mb-3">
+                    <Form.Label style={{ fontWeight: '500', color: '#2C3E50', fontSize: '14px' }}>
+                      Usuario
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Ingresa tu usuario"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid #E9ECEF',
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        transition: 'all 0.2s ease',
+                        backgroundColor: '#F8F9FA'
+                      }}
+                      onFocus={(e) => {
+                        (e.target as HTMLElement).style.borderColor = '#667eea'
+                        ;(e.target as HTMLElement).style.backgroundColor = 'white'
+                        ;(e.target as HTMLElement).style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)'
+                      }}
+                      onBlur={(e) => {
+                        (e.target as HTMLElement).style.borderColor = '#E9ECEF'
+                        ;(e.target as HTMLElement).style.backgroundColor = '#F8F9FA'
+                        ;(e.target as HTMLElement).style.boxShadow = 'none'
+                      }}
+                    />
+                  </Form.Group>
+
                   <Form.Group className="mb-4">
                     <Form.Label style={{ fontWeight: '500', color: '#2C3E50', fontSize: '14px' }}>
-                      Admin Password
+                      Contraseña
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="Ingresa tu contraseña"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required

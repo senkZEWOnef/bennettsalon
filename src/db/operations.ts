@@ -1,4 +1,4 @@
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and, lt, isNotNull } from 'drizzle-orm'
 import { db } from './connection'
 import { bookings, galleryImages, scheduleSettings, whatsappSettings, services, jobApplications } from './schema'
 import type { NewBooking, NewGalleryImage, NewService, NewJobApplication } from './schema'
@@ -52,11 +52,18 @@ export const bookingOperations = {
   },
 
   async cleanup() {
+    const now = new Date()
+    // Only cancel pending bookings whose payment deadline has passed
     await db
       .update(bookings)
       .set({ status: 'cancelled' })
-      .where(eq(bookings.status, 'pending'))
-      // Note: Add proper date comparison for paymentDeadline later
+      .where(
+        and(
+          eq(bookings.status, 'pending'),
+          isNotNull(bookings.paymentDeadline),
+          lt(bookings.paymentDeadline, now)
+        )
+      )
   }
 }
 

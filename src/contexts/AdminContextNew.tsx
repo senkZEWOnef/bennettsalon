@@ -112,14 +112,44 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   
-  // Generate time slots from 6am to 9pm in 30-minute intervals
-  const generateTimeSlots = (): TimeSlot[] => {
+  // Convert "8:00 AM" format to "08:00" format
+  const convertTo24Hour = (time12h: string): string => {
+    const [time, modifier] = time12h.split(' ')
+    let [hours, minutes] = time.split(':').map(Number)
+
+    if (modifier === 'PM' && hours !== 12) {
+      hours += 12
+    } else if (modifier === 'AM' && hours === 12) {
+      hours = 0
+    }
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+  }
+
+  // Generate time slots based on available hours from schedule settings
+  const generateTimeSlots = (availableHours?: string[]): TimeSlot[] => {
     const slots: TimeSlot[] = []
+
+    if (availableHours && availableHours.length > 0) {
+      const hours24 = availableHours.map(convertTo24Hour).sort()
+      const firstHour = parseInt(hours24[0].split(':')[0])
+      const lastHour = parseInt(hours24[hours24.length - 1].split(':')[0])
+
+      for (let hour = firstHour; hour <= lastHour; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+          const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+          slots.push({ time, available: true })
+        }
+      }
+      return slots
+    }
+
+    // Default: 6am to 9pm
     for (let hour = 6; hour <= 21; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
-        if (hour === 21 && minute > 0) break // Stop at 9:00 PM
+        if (hour === 21 && minute > 0) break
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-        slots.push({ time, available: true }) // Default to open
+        slots.push({ time, available: true })
       }
     }
     return slots
@@ -488,17 +518,17 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const schedule: DaySchedule[] = []
     const startDate = new Date(year, 0, 1)
     const endDate = new Date(year, 11, 31)
-    
+
     for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
       const dateString = date.toISOString().split('T')[0]
-      
+
       schedule.push({
         date: dateString,
         isOpen: true, // Default to open
-        timeSlots: generateTimeSlots()
+        timeSlots: generateTimeSlots(scheduleSettings.availableHours)
       })
     }
-    
+
     setScheduleSettings(prev => ({
       ...prev,
       yearSchedule: schedule
@@ -534,10 +564,14 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }
 
   const updateDayStatus = async (date: string, isOpen: boolean) => {
-    const updatedSettings = {
-      ...scheduleSettings,
-      yearSchedule: scheduleSettings.yearSchedule.map(day => 
-        day.date === date 
+    // Check if day exists in schedule
+    const dayExists = scheduleSettings.yearSchedule.some(day => day.date === date)
+
+    let updatedYearSchedule
+    if (dayExists) {
+      // Update existing day
+      updatedYearSchedule = scheduleSettings.yearSchedule.map(day =>
+        day.date === date
           ? {
               ...day,
               isOpen,
@@ -545,8 +579,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }
           : day
       )
+    } else {
+      // Create new day with time slots based on schedule settings
+      const newDay = {
+        date,
+        isOpen,
+        timeSlots: generateTimeSlots(scheduleSettings.availableHours).map(slot => ({ ...slot, available: isOpen }))
+      }
+      updatedYearSchedule = [...scheduleSettings.yearSchedule, newDay].sort((a, b) => a.date.localeCompare(b.date))
     }
-    
+
+    const updatedSettings = {
+      ...scheduleSettings,
+      yearSchedule: updatedYearSchedule
+    }
+
     // Update local state immediately for responsiveness
     setScheduleSettings(updatedSettings)
     

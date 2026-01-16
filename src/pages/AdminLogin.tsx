@@ -4,18 +4,31 @@ import { useAdmin } from '../contexts/AdminContextNew'
 import { useNavigate } from 'react-router-dom'
 
 const AdminLogin = () => {
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showError, setShowError] = useState(false)
-  const { loginLegacy } = useAdmin()
+  const [loading, setLoading] = useState(false)
+  const { login } = useAdmin()
   const navigate = useNavigate()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (loginLegacy(password)) {
-      navigate('/admin/dashboard')
-    } else {
+    setLoading(true)
+    setShowError(false)
+
+    try {
+      const success = await login(username, password)
+      if (success) {
+        navigate('/admin/dashboard')
+      } else {
+        setShowError(true)
+        setTimeout(() => setShowError(false), 3000)
+      }
+    } catch (error) {
       setShowError(true)
       setTimeout(() => setShowError(false), 3000)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -33,13 +46,25 @@ const AdminLogin = () => {
 
               {showError && (
                 <Alert variant="danger" className="mb-4">
-                  Contraseña incorrecta. Por favor, inténtalo de nuevo.
+                  Usuario o contraseña incorrecta. Por favor, inténtalo de nuevo.
                 </Alert>
               )}
 
               <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Usuario</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Ingresa tu usuario"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    size="lg"
+                  />
+                </Form.Group>
+
                 <Form.Group className="mb-4">
-                  <Form.Label>Contraseña de Administrador</Form.Label>
+                  <Form.Label>Contraseña</Form.Label>
                   <Form.Control
                     type="password"
                     placeholder="Ingresa la contraseña"
@@ -50,12 +75,20 @@ const AdminLogin = () => {
                   />
                 </Form.Group>
 
-                <Button 
-                  type="submit" 
-                  className="btn-primary w-100" 
+                <Button
+                  type="submit"
+                  className="btn-primary w-100"
                   size="lg"
+                  disabled={loading}
                 >
-                  🚪 Iniciar Sesión
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" />
+                      Iniciando...
+                    </>
+                  ) : (
+                    '🚪 Iniciar Sesión'
+                  )}
                 </Button>
               </Form>
 
