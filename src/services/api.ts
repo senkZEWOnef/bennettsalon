@@ -307,12 +307,12 @@ export class ApiService {
     }
   }
 
-  static async initializeAdmins() {
+  static async checkAdminAccountsExist(): Promise<boolean> {
     try {
-      return await adminOperations.initializeDefaultAdmins()
+      return await adminOperations.hasAdminAccounts()
     } catch (error) {
-      console.error('Error initializing admin accounts:', error)
-      throw error
+      console.error('Error checking admin accounts:', error)
+      return false
     }
   }
 

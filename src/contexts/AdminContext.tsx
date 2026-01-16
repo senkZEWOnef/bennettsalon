@@ -79,8 +79,6 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
-const ADMIN_PASSWORD = 'Bennett2024!'
-
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -187,12 +185,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('adminWhatsApp', JSON.stringify(whatsappSettings))
   }, [whatsappSettings])
 
-  const login = (password: string): boolean => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true)
-      localStorage.setItem('adminAuthenticated', 'true')
-      return true
-    }
+  // Login disabled - this legacy context should not be used for authentication
+  // Use AdminContextNew with database authentication instead
+  const login = (_password: string): boolean => {
+    console.warn('Legacy login is disabled. Please use AdminContextNew with database authentication.')
     return false
   }
 

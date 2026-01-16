@@ -104,8 +104,6 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
-const ADMIN_PASSWORD = 'Bennett2024!'
-
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const [currentAdmin, setCurrentAdmin] = useState<{ id: number; username: string; lastLogin: Date | null } | null>(null)
@@ -175,8 +173,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       // Run database migration to ensure schema is up to date
       await runMigration()
       
-      // Initialize admin accounts if needed
-      await ApiService.initializeAdmins()
+      // Check if admin accounts exist (admins must be created manually for security)
+      const hasAdmins = await ApiService.checkAdminAccountsExist()
+      if (!hasAdmins) {
+        console.warn('No admin accounts found. Please create an admin account using the database.')
+      }
       
       // Initialize services first
       await ApiService.initializeServices()
@@ -255,15 +256,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }
 
-  // Legacy login for backward compatibility
-  const loginLegacy = (password: string): boolean => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true)
-      setCurrentAdmin({ id: 0, username: 'legacy', lastLogin: null })
-      localStorage.setItem('adminAuthenticated', 'true')
-      localStorage.setItem('currentAdmin', JSON.stringify({ id: 0, username: 'legacy', lastLogin: null }))
-      return true
-    }
+  // Legacy login - disabled for security (use database authentication instead)
+  const loginLegacy = (_password: string): boolean => {
+    console.warn('Legacy login is disabled. Please use database authentication with username and password.')
     return false
   }
 
