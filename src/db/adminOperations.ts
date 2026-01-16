@@ -64,5 +64,49 @@ export const adminOperations = {
   async hasAdminAccounts(): Promise<boolean> {
     const existingAdmins = await this.getAllAdmins()
     return existingAdmins.length > 0
+  },
+
+  // Change password for an admin
+  async changePassword(username: string, currentPassword: string, newPassword: string): Promise<boolean> {
+    const admin = await db.select().from(adminUsers).where(eq(adminUsers.username, username)).limit(1)
+
+    if (admin.length === 0) {
+      return false
+    }
+
+    const isValid = await this.verifyPassword(currentPassword, admin[0].passwordHash)
+    if (!isValid) {
+      return false
+    }
+
+    const newHash = await this.hashPassword(newPassword)
+    await db.update(adminUsers)
+      .set({ passwordHash: newHash })
+      .where(eq(adminUsers.id, admin[0].id))
+
+    return true
+  },
+
+  // Initialize admin from environment variables (secure setup)
+  async initializeAdminFromEnv(): Promise<boolean> {
+    const username = import.meta.env.VITE_INITIAL_ADMIN_USERNAME
+    const password = import.meta.env.VITE_INITIAL_ADMIN_PASSWORD
+
+    if (!username || !password) {
+      console.log('No initial admin credentials in environment variables')
+      return false
+    }
+
+    // Check if admin already exists
+    const existing = await db.select().from(adminUsers).where(eq(adminUsers.username, username)).limit(1)
+    if (existing.length > 0) {
+      console.log('Admin account already exists')
+      return true
+    }
+
+    // Create the admin
+    await this.createAdmin(username, password)
+    console.log('✅ Initial admin account created')
+    return true
   }
 }

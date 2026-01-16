@@ -316,6 +316,24 @@ export class ApiService {
     }
   }
 
+  static async initializeAdminFromEnv(): Promise<boolean> {
+    try {
+      return await adminOperations.initializeAdminFromEnv()
+    } catch (error) {
+      console.error('Error initializing admin from env:', error)
+      return false
+    }
+  }
+
+  static async changeAdminPassword(username: string, currentPassword: string, newPassword: string): Promise<boolean> {
+    try {
+      return await adminOperations.changePassword(username, currentPassword, newPassword)
+    } catch (error) {
+      console.error('Error changing password:', error)
+      return false
+    }
+  }
+
   // Service methods
   static async getServices() {
     try {

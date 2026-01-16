@@ -173,11 +173,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       // Run database migration to ensure schema is up to date
       await runMigration()
       
-      // Check if admin accounts exist (admins must be created manually for security)
-      const hasAdmins = await ApiService.checkAdminAccountsExist()
-      if (!hasAdmins) {
-        console.warn('No admin accounts found. Please create an admin account using the database.')
-      }
+      // Initialize admin from environment variables if no admins exist
+      await ApiService.initializeAdminFromEnv()
       
       // Initialize services first
       await ApiService.initializeServices()

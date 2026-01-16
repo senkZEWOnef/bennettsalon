@@ -11,8 +11,9 @@ import AdminATHMovil from '../components/admin/AdminATHMovil'
 import AdminServices from '../components/admin/AdminServices'
 import AdminJobApplications from '../components/admin/AdminJobApplications'
 import AdminSocialSnapshots from '../components/admin/AdminSocialSnapshots'
+import AdminSettings from '../components/admin/AdminSettings'
 
-type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 'calendar' | 'whatsapp' | 'athm' | 'jobs' | 'social'
+type AdminTab = 'overview' | 'bookings' | 'gallery' | 'services' | 'schedule' | 'calendar' | 'whatsapp' | 'athm' | 'jobs' | 'social' | 'settings'
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview')
@@ -103,6 +104,8 @@ const AdminDashboard = () => {
         return <AdminATHMovil />
       case 'social':
         return <AdminSocialSnapshots />
+      case 'settings':
+        return <AdminSettings />
       default:
         return (
           <>
@@ -602,7 +605,8 @@ const AdminDashboard = () => {
             { key: 'whatsapp', icon: 'fab fa-whatsapp', label: 'WhatsApp' },
             { key: 'schedule', icon: 'fas fa-business-time', label: 'Schedule' },
             { key: 'athm', icon: 'fas fa-credit-card', label: 'Payments' },
-            { key: 'jobs', icon: 'fas fa-briefcase', label: 'Jobs' }
+            { key: 'jobs', icon: 'fas fa-briefcase', label: 'Jobs' },
+            { key: 'settings', icon: 'fas fa-cog', label: 'Settings' }
           ].map((item) => (
             <Nav.Link 
               key={item.key}
